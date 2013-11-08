@@ -1,11 +1,11 @@
 
 void Draw() {
 
- TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
- TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
+//  TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
+//  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
 
-//  TFile* f1 = new TFile ("gen_126_jjme.root","READ"); // ---- B
-//  TFile* f2 = new TFile ("gen_500_jjme.root","READ"); // ---- S+B
+ TFile* f1 = new TFile ("gen_126_jjme.root","READ"); // ---- B
+ TFile* f2 = new TFile ("gen_500_jjme.root","READ"); // ---- S+B
 
  TNtuple* t1 = (TNtuple*) f1->Get ("ntu");
  TNtuple* t2 = (TNtuple*) f2->Get ("ntu");
@@ -27,8 +27,8 @@ void Draw() {
  h_mWW_1->SetLineWidth(2);
  h_mWW_2->SetLineWidth(2);
 
- //  h_mWW_1->Scale (1.2);  //--- me
- h_mWW_1->Scale (0.37);  //--- mm
+ h_mWW_1->Scale (1.2);  //--- me
+//  h_mWW_1->Scale (0.37);  //--- mm
 
 
 
