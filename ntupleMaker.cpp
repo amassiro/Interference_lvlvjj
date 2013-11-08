@@ -1,5 +1,5 @@
 // to compile:
-//   c++ -o ntupleMaker.exe `root-config --glibs --cflags` -lm ntupleMaker.cpp
+//   c++ -o ntupleMaker.exe `root-config --glibs --cflags` `lhapdf-config --cppflags  --ldflags` -lm ntupleMaker.cpp
 //
 // to use:
 //   ./ntupleMaker.exe fileLHE    outputFileRoot
@@ -18,6 +18,11 @@
 
 #include "LHEF.h"
 
+
+#include "LHAPDF/LHAPDF.h"
+
+
+
 #include "TNtuple.h"
 #include "TFile.h"
 #include "TLorentzVector.h"
@@ -30,6 +35,18 @@ struct ptsort: public std::binary_function<TLorentzVector, TLorentzVector, bool>
   return  (x.Perp () < y.Perp () ) ;
  }
 } ;
+
+TLorentzVector buildP (const LHEF::HEPEUP & event, int iPart) {
+ TLorentzVector dummy ;
+ dummy.SetPxPyPzE (
+   event.PUP.at (iPart).at (0), // px
+   event.PUP.at (iPart).at (1), // py
+   event.PUP.at (iPart).at (2), // pz
+   event.PUP.at (iPart).at (3) // E
+   ) ;
+ return dummy ;
+}
+
 
 
 
@@ -144,6 +161,35 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
   // the sum pf the two quarks
   TLorentzVector dijet = v_f_quarks.at (0) + v_f_quarks.at (1) ;
 
+
+  // weights
+  // ---- the B (=h126) has been calculated with a scale at 126 GeV
+  // ---- S+B has been calculated at the "S" scale
+  // ---- need to scale B to "S" scale
+  //
+
+  double x[2] = {0., 0.} ;
+  int flavour[2] = {0, 0} ;
+
+  for (int iPart = 0 ; iPart < reader.hepeup.IDUP.size (); ++iPart) {
+   if (reader.hepeup.ISTUP.at (iPart) == -1) { // incoming particles
+    TLorentzVector dummy = buildP (reader.hepeup, iPart);
+    x[iPart] = dummy.P () / 4000. ;
+    flavour[iPart] = reader.hepeup.IDUP.at (iPart) ;
+   }
+  }
+
+  float weight[10] =         { 1.,  1.,  1.,  1.,   1.};
+  float referenceScale[10] = {350, 500, 650, 800, 1000};
+  float scale = reader.hepeup.SCALUP ;
+  if (referenceScale != 0 ) {
+   std::cout << " scale = " << scale << " :: x[0] = " << x[0] << ", flavour[0] = " << flavour[0] << " x[1] = " << x[1] << ", flavour[1] = " << flavour[1] << std::endl;
+   for (int iMass = 0; iMass < 5; iMass++) {
+    weight[iMass] = LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0]) * LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
+    std::cout << " >> weight[" << iMass << "] = " << weight[iMass] << " = " << LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0])  << " * " << LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) << " / " << " ( " << LHAPDF::xfx (x[0], scale, flavour[0]) << " * " << LHAPDF::xfx (x[1], scale, flavour[1]) << " ) " << std::endl;
+   }
+  }
+
   ntuple.Fill (
     mH ,
     dilepton_plus_dineutrinos.M() ,
@@ -151,14 +197,19 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
     fabs (v_f_quarks.at (0).Eta() - v_f_quarks.at (1).Eta()),
     v_f_quarks.at (0).Pt (),
     v_f_quarks.at (1).Pt (),
-    v_f_quarks.at (0).Eta (),
-    v_f_quarks.at (1).Eta (), 
+//     v_f_quarks.at (0).Eta (),
+//     v_f_quarks.at (1).Eta (), 
     v_f_leptons.at (0).Pt (),
     v_f_leptons.at (1).Pt (),
     diLepton.M (),
-    diLepton.Pt (),
-    isSF
-    ) ;
+//     diLepton.Pt (),
+    isSF,
+    weight[0],  //  350
+    weight[1],  //  500
+    weight[2],  //  650
+    weight[3],  //  800
+    weight[4]   // 1000
+   ) ;
 
  } // loop over events
 
@@ -174,7 +225,8 @@ int main (int argc, char **argv) {
  std::cout << " Output ROOT =" << argv[2] << std::endl;
 
 
- TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:jeteta1:jeteta2:pt1:pt2:mll:ptll:sameflav");
+//  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:jeteta1:jeteta2:pt1:pt2:mll:ptll:sameflav:w1:w2:w3:w4:w5");
+ TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:pt1:pt2:mll:sameflav:w1:w2:w3:w4:w5");
  fillNtuple (argv[1], ntu) ;
 
  TFile output (argv[2], "recreate") ;
