@@ -39,8 +39,8 @@ B and S+B
     eos cp  /eos/cms/store/user/govoni/LHE/phantom/lvlv/gen_350.tgz ./
     eos cp  /eos/cms/store/user/govoni/LHE/phantom/lvlv/gen_126.tgz ./
 
-    ls *.tgz | awk '{print "tar -xzf "$1}'
-    ls *.tgz | awk '{print "tar -xzf "$1}' | /bin/sh
+    ls *.tgz --color=none  | awk '{print "tar -xzf "$1}'
+    ls *.tgz --color=none  | awk '{print "tar -xzf "$1}' | /bin/sh
 
     cd gen_126/gen2jmu-e+/
     ../../../LHEActions/mergeLHEfiles  `find . -name "phamom.dat"
@@ -49,15 +49,25 @@ B and S+B
     ../../../LHEActions/mergeLHEfiles  `find . -name "phamom.dat"
     cd -
 
-    ls -d  gen_*/ | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\";  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\";  cd -;"}'
-    ls -d  gen_*/ | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\";  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\";  cd -;"}' | /bin/sh
+    ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'
+    ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\";  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'
+    ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\";  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}' | /bin/sh
 
 
-    ls -d  gen_*/ | tr "/" "" | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  "$1"_jjme.root"}'
-    ls -d  gen_*/ | tr "/" "" | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  "$1"_jjme.root"}' | /bin/sh
+    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  "$1"_jjme.root"}'
+    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  "$1"_jjme.root"}' | /bin/sh
 
-    ls -d  gen_*/ | tr "/" "" | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}'
-    ls -d  gen_*/ | tr "/" "" | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}' | /bin/sh
+    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}'
+    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}' | /bin/sh
+
+
+
+Plot:
+
+    root -l Draw.cxx
+
+
+
 
 
 
