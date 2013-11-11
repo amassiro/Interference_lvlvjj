@@ -47,7 +47,11 @@ and do:
     export LD_LIBRARY_PATH=$BOOST_LIBRARYDIR:$LD_LIBRARY_PATH
     export BOOSTFLAGS_ENV="-I${BOOST_ROOT}include/boost-1_50"
     export BOOSTLIBS_ENV="-L${BOOST_ROOT}lib -lboost_program_options-gcc43-mt-1_50"
-    ./configure  --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc5-gcc43-opt/
+    ./configure  --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc5-gcc43-opt/  
+    ./configure  --with-boost=/afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc5-gcc43-opt/  -enable-pdfsets=mrst,cteq
+    lhapdf-getdata
+    lhapdf-getdata CTEQ6ll CTEQ66 cteq6ll lomod MCal --dest=/usr/local/share/lhapdf
+    lhapdf-getdata CTEQ6ll CTEQ66 cteq6ll lomod MCal --dest=/usr/share/lhapdf/PDFsets/
     make
     su
     make install

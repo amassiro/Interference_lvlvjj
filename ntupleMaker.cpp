@@ -183,10 +183,10 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
   float referenceScale[10] = {350, 500, 650, 800, 1000};
   float scale = reader.hepeup.SCALUP ;
   if (referenceScale != 0 ) {
-   std::cout << " scale = " << scale << " :: x[0] = " << x[0] << ", flavour[0] = " << flavour[0] << " x[1] = " << x[1] << ", flavour[1] = " << flavour[1] << std::endl;
+//    std::cout << " scale = " << scale << " :: x[0] = " << x[0] << ", flavour[0] = " << flavour[0] << " x[1] = " << x[1] << ", flavour[1] = " << flavour[1] << std::endl;
    for (int iMass = 0; iMass < 5; iMass++) {
     weight[iMass] = LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0]) * LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
-    std::cout << " >> weight[" << iMass << "] = " << weight[iMass] << " = " << LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0])  << " * " << LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) << " / " << " ( " << LHAPDF::xfx (x[0], scale, flavour[0]) << " * " << LHAPDF::xfx (x[1], scale, flavour[1]) << " ) " << std::endl;
+//     std::cout << " >> weight[" << iMass << "] = " << weight[iMass] << " = " << LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0])  << " * " << LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) << " / " << " ( " << LHAPDF::xfx (x[0], scale, flavour[0]) << " * " << LHAPDF::xfx (x[1], scale, flavour[1]) << " ) " << std::endl;
    }
   }
 
@@ -223,6 +223,15 @@ int main (int argc, char **argv) {
 
  std::cout << " Input  LHE  =" << argv[1] << std::endl;
  std::cout << " Output ROOT =" << argv[2] << std::endl;
+
+ 
+ const int SUBSET = 0 ;
+ const std::string NAME = "cteq6ll" ; //"cteq6l1"
+
+ LHAPDF::initPDFSet (NAME, LHAPDF::LHPDF, SUBSET) ;
+ const int NUMBER = LHAPDF::numberPDF () ;
+
+ LHAPDF::initPDF (0) ;
 
 
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:jeteta1:jeteta2:pt1:pt2:mll:ptll:sameflav:w1:w2:w3:w4:w5");
