@@ -204,11 +204,11 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
     diLepton.M (),
 //     diLepton.Pt (),
     isSF,
-    weight[0],  //  350
-    weight[1],  //  500
-    weight[2],  //  650
-    weight[3],  //  800
-    weight[4]   // 1000
+    weight[0],  //  350  w1
+    weight[1],  //  500  w2
+    weight[2],  //  650  w3
+    weight[3],  //  800  w4
+    weight[4]   // 1000  w5
    ) ;
 
  } // loop over events

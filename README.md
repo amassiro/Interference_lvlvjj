@@ -80,8 +80,8 @@ B and S+B
     cd -
 
     ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'
-    ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\";  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'
-    ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\";  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}' | /bin/sh
+    ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'
+    ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}' | /bin/sh
 
 
     ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  "$1"_jjme.root"}'
@@ -95,75 +95,34 @@ B and S+B
 Plot:
 
     root -l Draw.cxx
+    root -l Draw.cxx\(0,350\)
+    root -l Draw.cxx\(1,350\)
+
+    root -l Draw.cxx\(0,500\)
+    root -l Draw.cxx\(1,500\)
+
+    root -l Draw.cxx\(0,650\)
+    root -l Draw.cxx\(1,650\)
+
+    root -l Draw.cxx\(0,800\)
+    root -l Draw.cxx\(1,800\)
+
+    root -l Draw.cxx\(0,1000\)
+    root -l Draw.cxx\(1,1000\)
 
 
 
 
 
+To get the cross-sections then hardcoded in Draw.cxx
+
+    cd gen_350
+
+    for fol in `ls --color=none | grep -v gen` ; do \
+      echo $fol ; \
+      tail -n 1 $fol/result ; \
+      tail -n 1 gen$fol/result ; \
+    done;
 
 
 
-cfg 1, 2
-S 1 SF
-S 1 DF
-S 2 SF
-S 2 DF
-S 3 SF
-S 3 DF
-126
-xx
-x
-x
-x
-x
-1.81380874131530090E-002  +/-  1.28243141770084274E-005 
-3.58829916258534554E-002  +/-  2.53689338772571570E-005 
-350
-xx
-x
-x
-x
-x
-1.69704956339057321E-002  +/-  1.19989820384445323E-005 
-3.30573359105044151E-002  +/-  2.33671980835533764E-005 
-500
-xx
-x
-x
-x
-x
-1.56725248231346197E-002  +/-  1.12515631381070598E-005 
-3.08353695382097698E-002  +/-  2.17995313962022446E-005 
-650
-xx
-x
-x
-x
-x
-1.54272529321224164E-002  +/-  1.09071518849106450E-005 
-3.04248483997987193E-002  +/-  2.15059855817530323E-005 
-800
-xx
-x
-x
-x
-x
-1.50076130007520663E-002  +/-  1.06101411767053291E-005 
-2.96581397883867830E-002  +/-  2.09646224095354691E-005 
-1000
-xx
-x
-x
-x
-x
-1.49636481256262849E-002  +/-  1.05794974486291771E-005 
-2.96046079632492319E-002  +/-  2.09289686253768846E-005
-
-
-
-
-for fol in `ls | grep -v gen` ; do \
-  echo $fol ; \
-  tail -n 1 $fol/result ; \
-  tail -n 1 gen$fol/result ; \
-done;
