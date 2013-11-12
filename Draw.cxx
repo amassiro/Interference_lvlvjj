@@ -9,6 +9,7 @@ void Draw(int kind = 0,         int mass = 350) {
  int NBIN = 200;
  if (mass>500) NBIN = 100;
  if (mass>700) NBIN =  90;
+ if (mass>900) NBIN =  40;
 
  TString name1;
  if (kind == 0) name1 = Form ("gen_126_jjme.root");
@@ -60,11 +61,11 @@ void Draw(int kind = 0,         int mass = 350) {
  if (mass ==  800) xsecToUse = xsec[4];
  if (mass == 1000) xsecToUse = xsec[5];
 
- TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
- TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
+//  TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
+//  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
 
-//  TString weightWithXsec126 = Form ("%s * %f",weight.Data(),xsec[0]);
-//  TString weightWithXsec    = Form ("%f",xsecToUse);
+ TString weightWithXsec126 = Form ("%s * %f",weight.Data(),xsec[0]);
+ TString weightWithXsec    = Form ("%f",xsecToUse);
 
  std::cout << " weightWithXsec126 = " << weightWithXsec126.Data() << std::endl;
  std::cout << " weightWithXsec    = " << weightWithXsec.Data()    << std::endl;
