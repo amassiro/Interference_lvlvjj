@@ -5,6 +5,7 @@ Interference for vbf h>WW>lvlv with ww+2jets
 
 Working here:
 
+    cmsneu
     /home/amassiro/Interference
 
 
@@ -90,7 +91,16 @@ B and S+B
     ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}'
     ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}' | /bin/sh
 
+S
 
+    ls qqHWWuvev/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvev/"$1"_"$2"."$3"  S_"$2"_jjme.root"}'
+    ls qqHWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvuv/"$1"_"$2"."$3"  S_"$2"_jjmm.root"}'
+
+    ls qqHWWuvev/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvev/"$1"_"$2"."$3"  S_"$2"_jjme.root"}' | /bin/sh
+    ls qqHWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvuv/"$1"_"$2"."$3"  S_"$2"_jjmm.root"}' | /bin/sh
+
+    ls qqHWWuvuv/ --color=none  | awk '{print "cat   qqHWWuvuv/"$1" | grep Integrated"}' 
+    ls qqHWWuvev/ --color=none  | awk '{print "cat   qqHWWuvev/"$1" | grep Integrated"}' 
 
 Plot:
 
