@@ -58,7 +58,7 @@ void Draw(int kind = 0,         int mass = 350) {
  if (kind == 1) gROOT->ProcessLine ("float xsec[100] = {1.81489087459999997E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};");
 
  //---- me
- if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {0.23539E-01, 0.16986E-01, 0.16991E-01, 0.35875E-02, 0.20252E-02, 0.91164E-03};");
+ if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {0.23539E-01, 0.16986E-01, 0.65801E-02, 0.35875E-02, 0.20252E-02, 0.91164E-03};");
  //---- mm
  if (kind == 1) gROOT->ProcessLine ("float xsec_S[100] = {0.11912E-01, 0.99646E-02, 0.38685E-02, 0.20920E-02, 0.11599E-02, 0.50136E-03};");
 
@@ -109,15 +109,15 @@ void Draw(int kind = 0,         int mass = 350) {
 
  h_mWW_1->SetLineColor(kBlue);
  h_mWW_2->SetLineColor(kRed);
- h_mWW_2->SetLineColor(kGreen);
+ h_mWW_3->SetLineColor(kGreen);
 
  h_mWW_1->SetLineStyle(1);
  h_mWW_2->SetLineStyle(2);
- h_mWW_3->SetLineStyle(3);
+ h_mWW_3->SetLineStyle(2);
 
  h_mWW_1->SetLineWidth(2);
  h_mWW_2->SetLineWidth(2);
- h_mWW_3->SetLineWidth(2);
+ h_mWW_3->SetLineWidth(3);
 
 //  h_mWW_1->Scale (1.2);  //--- me
 //  h_mWW_1->Scale (0.37);  //--- mm
