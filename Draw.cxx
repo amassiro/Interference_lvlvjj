@@ -1,20 +1,140 @@
 #include "TString.h"
 
+
+
+double doubleGausCrystalBallLowHigh (double* x, double* par) {
+  //[0] = N
+  //[1] = mean
+  //[2] = sigma
+  //[3] = alpha
+  //[4] = n
+  //[5] = alpha2
+  //[6] = n2
+
+ double xx = x[0];
+ double mean = par[1] ; // mean
+ double sigmaP = par[2] ; // sigma of the positive side of the gaussian
+ double sigmaN = par[3] ; // sigma of the negative side of the gaussian
+ double alpha = par[4] ; // junction point on the positive side of the gaussian
+ double n = par[5] ; // power of the power law on the positive side of the gaussian
+ double alpha2 = par[6] ; // junction point on the negative side of the gaussian
+ double n2 = par[7] ; // power of the power law on the negative side of the gaussian
+
+ if ((xx-mean)/sigmaP > fabs(alpha)) {
+  double A = pow(n/fabs(alpha), n) * exp(-0.5 * alpha*alpha);
+  double B = n/fabs(alpha) - fabs(alpha);
+    
+  return par[0] * A * pow(B + (xx-mean)/sigmaP, -1.*n);
+ }
+  
+ else if ((xx-mean)/sigmaN < -1.*fabs(alpha2)) {
+  double A = pow(n2/fabs(alpha2), n2) * exp(-0.5 * alpha2*alpha2);
+  double B = n2/fabs(alpha2) - fabs(alpha2);
+    
+  return par[0] * A * pow(B - (xx-mean)/sigmaN, -1.*n2);
+ }
+  
+ else if ((xx-mean) > 0) {
+  return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaP*sigmaP) );
+ }
+  
+ else {
+  return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaN*sigmaN) );
+ }
+  
+}
+
+
+
+
+//Crystal ball function for signal, parameters are 0:alpha,1:n,2:mean,3:sigma,4:normalization;
+
+Double_t CrystalBall(Double_t *x,Double_t *par) {
+
+ Double_t t = (x[0]-par[2])/par[3];
+ if (par[0] < 0) t = -t;
+
+ Double_t absAlpha = fabs((Double_t)par[0]);
+
+ if (t >= -absAlpha) {
+  return par[4]*exp(-0.5*t*t);
+ }
+ else {
+  Double_t a =  TMath::Power(par[1]/absAlpha,par[1])*exp(-0.5*absAlpha*absAlpha);
+  Double_t b= par[1]/absAlpha - absAlpha;
+
+  return par[4]*(a/TMath::Power(b - t, par[1]));
+ }
+}
+
+
+Double_t RightCrystalBall(Double_t *x,Double_t *par) {
+
+ Double_t t = (x[0]-par[2])/par[3];
+ if (par[0] > 0) t = -t;
+
+ Double_t absAlpha = fabs((Double_t)par[0]);
+
+ if (t >= -absAlpha) {
+  return par[4]*exp(-0.5*t*t);
+ }
+ else {
+  Double_t a =  TMath::Power(par[1]/absAlpha,par[1])*exp(-0.5*absAlpha*absAlpha);
+  Double_t b= par[1]/absAlpha - absAlpha;
+
+  return par[4]*(a/TMath::Power(b - t, par[1]));
+ }
+}
+
+
+//Superposition of 2 gaussians
+
+Double_t G1(Double_t *x, Double_t *par) {
+ Double_t arg = 0;
+ if (par[2]) arg = (x[0] - par[1])/par[2];
+
+ Double_t sig = par[0]*TMath::Exp(-0.5*arg*arg);
+ return sig;
+}
+
+
+Double_t G2(Double_t *x, Double_t *par) {
+ Double_t arg = 0;
+ if (par[2]) arg = (x[0] - par[1])/par[2];
+
+ Double_t sig = par[0]*TMath::Exp(-0.5*arg*arg);
+ return sig;
+}
+
+
+Double_t Total(Double_t *x, Double_t *par) {
+ Double_t tot = G1(x,par) + G2(x,&par[3]);
+ return tot;
+}
+
+
+
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+//-----------------------------------------------------------
+
+
 //           0 = em, 1 = mm
 void Draw(int kind = 0,         int mass = 350) {
 
 //  TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
 
- int NBIN = 200;
- if (mass>500) NBIN = 100;
- if (mass>700) NBIN =  90;
+ int NBIN = 150;
+ if (mass>500) NBIN =  70;
+ if (mass>700) NBIN =  60;
  if (mass>900) NBIN =  40;
 
- int MAX = 2000;
+ int MAX = 1000;
  if (mass>500) MAX =  2000;
  if (mass>700) MAX =  2000;
- if (mass>900) MAX =  2000;
+ if (mass>900) MAX =  4000;
 
 
  TString name1;
@@ -148,13 +268,53 @@ void Draw(int kind = 0,         int mass = 350) {
 
  TCanvas* cc_Subtraction = new TCanvas("cc_Subtraction","cc_Subtraction",800,600);
 //  h_Subtraction->GetYaxis()->SetRangeUser(-10,5000);
- h_Subtraction->GetYaxis()->SetRangeUser(0.001,5000);
+ h_Subtraction->GetYaxis()->SetRangeUser(0.001,h_Subtraction->GetMaximum()*2.5);
  h_Subtraction->SetLineColor(kMagenta);
  h_Subtraction->SetLineStyle(1);
  h_Subtraction->SetLineWidth(2);
  h_Subtraction -> Draw();
  h_mWW_3 -> Draw("same");
  cc_Subtraction->SetGrid();
+
+
+
+
+ //---- fit with function ----
+ TCanvas* cc_Subtraction_fit = new TCanvas("cc_Subtraction_fit","cc_Subtraction_fit",800,600);
+ cc_Subtraction_fit->cd();
+ cc_Subtraction_fit->SetGrid();
+
+ TF1 *crystal_S = new TF1("crystal_S",RightCrystalBall,200,MAX,5);
+ crystal_S->SetParameters(1,1,mass,h_mWW_3->GetRMS(),h_mWW_3->Integral());
+ crystal_S->SetParNames("#alpha","n","Mean","#sigma","N");
+
+//  TF1 *crystal_S = new TF1("crystal_S",doubleGausCrystalBallLowHigh,200,MAX,7);
+//  crystal_S->SetParameters(h_mWW_3->Integral(),mass,h_mWW_3->GetRMS(),1.,2,1.,2);
+//  crystal_S->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+ crystal_S->SetLineColor(kBlue);
+ h_mWW_3->Fit(crystal_S,"r");
+
+
+
+ TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
+ crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
+ crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
+
+//  TF1 *crystal_SI = new TF1("crystal_SI",doubleGausCrystalBallLowHigh,200,MAX,7);
+//  crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
+//  crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+ h_Subtraction->Fit(crystal_SI,"r");
+ crystal_SI->SetLineColor(kRed);
+
+ h_mWW_3 -> Draw();
+ h_Subtraction -> Draw("same");
+ crystal_S->Draw("same");
+ crystal_SI->Draw("same");
+ cc_Subtraction_fit->SetGrid();
+
+
+
+
 
 }
 
