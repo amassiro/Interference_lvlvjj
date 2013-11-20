@@ -131,7 +131,8 @@ void Draw(int kind = 0,         int mass = 350) {
  if (mass>700) NBIN =  60;
  if (mass>900) NBIN =  40;
 
- int MAX = 1000;
+ int MAX = 500;
+ if (mass>400) MAX =  1000;
  if (mass>500) MAX =  2000;
  if (mass>700) MAX =  2000;
  if (mass>900) MAX =  4000;
@@ -280,6 +281,11 @@ void Draw(int kind = 0,         int mass = 350) {
 
 
  //---- fit with function ----
+
+ std::cout << " -------------------------------- " << std::endl;
+ std::cout << " ------------ SIGNAL ------------ " << std::endl;
+ std::cout << " -------------------------------- " << std::endl;
+
  TCanvas* cc_Subtraction_fit = new TCanvas("cc_Subtraction_fit","cc_Subtraction_fit",800,600);
  cc_Subtraction_fit->cd();
  cc_Subtraction_fit->SetGrid();
@@ -295,9 +301,14 @@ void Draw(int kind = 0,         int mass = 350) {
  h_mWW_3->Fit(crystal_S,"r");
 
 
+ std::cout << " ----------------------------------------------- " << std::endl;
+ std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
+ std::cout << " ----------------------------------------------- " << std::endl;
 
  TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
- crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
+//  800   ok:    crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
+//  800 em ok:  crystal_SI->SetParameters(1,1,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
+ crystal_SI->SetParameters(0.1,2.,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
  crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
 
 //  TF1 *crystal_SI = new TF1("crystal_SI",doubleGausCrystalBallLowHigh,200,MAX,7);
