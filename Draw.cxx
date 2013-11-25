@@ -175,13 +175,13 @@ void Draw(int kind = 0,         int mass = 350) {
  int NBIN = 350;
  if (mass>400) NBIN = 120;
  if (mass>500) NBIN =  70;
- if (mass>700) NBIN =  60;
+ if (mass>700) NBIN = 120;
  if (mass>900) NBIN =  40;
 
  int MAX = 800;
  if (mass>400) MAX =  1500;
  if (mass>500) MAX =  2000;
- if (mass>700) MAX =  2000;
+ if (mass>700) MAX =  4000;
  if (mass>900) MAX =  4000;
 
 
@@ -325,136 +325,150 @@ void Draw(int kind = 0,         int mass = 350) {
  cc_Subtraction->SetGrid();
 
 
+ bool doFit = true;
+//  bool doFit = false;
 
+ if (doFit) {
 
  //---- fit with function ----
 
- std::cout << " -------------------------------- " << std::endl;
- std::cout << " ------------ SIGNAL ------------ " << std::endl;
- std::cout << " -------------------------------- " << std::endl;
+  std::cout << " -------------------------------- " << std::endl;
+  std::cout << " ------------ SIGNAL ------------ " << std::endl;
+  std::cout << " -------------------------------- " << std::endl;
 
- TCanvas* cc_Subtraction_fit = new TCanvas("cc_Subtraction_fit","cc_Subtraction_fit",800,600);
- cc_Subtraction_fit->cd();
- cc_Subtraction_fit->SetGrid();
+  TCanvas* cc_Subtraction_fit = new TCanvas("cc_Subtraction_fit","cc_Subtraction_fit",800,600);
+  cc_Subtraction_fit->cd();
+  cc_Subtraction_fit->SetGrid();
 
 //  TF1 *crystal_S = new TF1("crystal_S",RightCrystalBall,200,MAX,5);
 //  crystal_S->SetParameters(1,1,mass,h_mWW_3->GetRMS(),h_mWW_3->Integral());
 //  crystal_S->SetParNames("#alpha","n","Mean","#sigma","N");
 
- TF1 *crystal_S = new TF1("crystal_S",crystalBallLowHigh,200,MAX,7);
- crystal_S->SetParameters(h_mWW_3->Integral(),mass,h_mWW_3->GetRMS(),1.,2,1.,2);
- crystal_S->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+  TF1 *crystal_S = new TF1("crystal_S",crystalBallLowHigh,200,MAX,7);
+  crystal_S->SetParameters(h_mWW_3->Integral(),mass,h_mWW_3->GetRMS(),1.,2,1.,2);
+  crystal_S->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
  //                      0    1        2        3     4      5       6
  //                                           juncR        juncL
- crystal_S->SetNpx(2000);
- crystal_S->SetParameter (0, h_mWW_3->GetBinContent (h_mWW_3->GetMaximumBin ())) ;
+  crystal_S->SetNpx(2000);
+  crystal_S->SetParameter (0, h_mWW_3->GetBinContent (h_mWW_3->GetMaximumBin ())) ;
 
- crystal_S->SetParameter (1, mass) ;
- crystal_S->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
+  crystal_S->SetParameter (1, mass) ;
+  crystal_S->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
 
- crystal_S->SetParameter (2, 0.9 * h_mWW_3->GetRMS ()) ;
- crystal_S->SetParLimits (2, 0.1 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+  crystal_S->SetParameter (2, 0.9 * h_mWW_3->GetRMS ()) ;
+  crystal_S->SetParLimits (2, 0.1 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+  if (mass > 700) crystal_S->SetParLimits (2, 0.02 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
 
- crystal_S->SetParameter (3, 1.0) ;
- crystal_S->SetParLimits (3, 0.5, 20.) ;
+  crystal_S->SetParameter (3, 1.0) ;
+  crystal_S->SetParLimits (3, 0.5, 20.) ;
+  if (mass > 700)   crystal_S->SetParLimits (3, 0.3, 20.) ;
 
- crystal_S->SetParameter (4, 1.5) ;
- crystal_S->SetParLimits (4, 1.0, 20) ;
+  crystal_S->SetParameter (4, 1.5) ;
+  crystal_S->SetParLimits (4, 1.0, 50) ;
 
- crystal_S->SetParameter (5, 1.0) ;
- crystal_S->SetParLimits (5, 0.5, 20.) ;
+  crystal_S->SetParameter (5, 1.0) ;
+  crystal_S->SetParLimits (5, 0.5, 20.) ;
+  if (mass > 700)   crystal_S->SetParLimits (5, 0.3, 20.) ;
 
- crystal_S->SetParameter (6, 1.5) ;
- crystal_S->SetParLimits (6, 1.0, 20) ;
+  crystal_S->SetParameter (6, 1.5) ;
+  crystal_S->SetParLimits (6, 1.0, 50) ;
 
- crystal_S->SetLineColor(kCyan);
- h_mWW_3->Fit (crystal_S, "+", "",  mass - 0.5 * h_mWW_3->GetRMS (), mass + 0.5 * h_mWW_3->GetRMS ()) ;
- crystal_S->SetParameters (crystal_S->GetParameters ()) ;
+  crystal_S->SetLineColor(kCyan);
+  h_mWW_3->Fit (crystal_S, "+", "",  mass - 0.5 * h_mWW_3->GetRMS (), mass + 0.5 * h_mWW_3->GetRMS ()) ;
+  crystal_S->SetParameters (crystal_S->GetParameters ()) ;
 
 //  crystal_S->FixParameter (1, crystal_S->GetParameters ()[1]) ; //---- mean
 //  crystal_S->FixParameter (2, crystal_S->GetParameters ()[2]) ; //---- sigma
 
- crystal_S->SetLineColor(kBlue);
- h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ()) ;
-//  h_mWW_3->Fit (crystal_S, "+Lr", ""); //,250, mass + 4 * h_mWW_3->GetRMS ()) ;
+  crystal_S->SetLineColor(kBlue);
+//   h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ()) ;
+//   if (mass > 700) h_mWW_3->Fit (crystal_S, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
+//   else            h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
+  h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
+
+  //  h_mWW_3->Fit (crystal_S, "+Lr", ""); //,250, mass + 4 * h_mWW_3->GetRMS ()) ;
 //  h_mWW_3->Fit(crystal_S,"r");
 
 
 //  std::cout << " ----------------------------------------------- " << std::endl;
 //  std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
 //  std::cout << " ----------------------------------------------- " << std::endl;
-// 
+  // 
 //  TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
 //  800   ok:    crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
 //  800 em ok:  crystal_SI->SetParameters(1,1,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
 //  crystal_SI->SetParameters(0.1,2.,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
 //  crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
 
- TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,200,MAX,7);
- crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
- crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+  TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,200,MAX,7);
+  crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
+  crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
 
- crystal_SI->SetNpx(2000);
- crystal_SI->SetParameter (0, h_Subtraction->GetBinContent (h_Subtraction->GetMaximumBin ())) ;
+  crystal_SI->SetNpx(2000);
+  crystal_SI->SetParameter (0, h_Subtraction->GetBinContent (h_Subtraction->GetMaximumBin ())) ;
 
- crystal_SI->SetParameter (1, mass) ;
- crystal_SI->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
+  crystal_SI->SetParameter (1, mass) ;
+  crystal_SI->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
 
- crystal_SI->SetParameter (2, 1.0 * h_mWW_3->GetRMS ()) ;
- crystal_SI->SetParLimits (2, 0.05 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+  crystal_SI->SetParameter (2, 1.0 * h_mWW_3->GetRMS ()) ;
+  crystal_SI->SetParLimits (2, 0.02 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
 
- crystal_SI->SetParameter (3, 1.0) ;
- crystal_SI->SetParLimits (3, 0.5, 20.) ;
+  crystal_SI->SetParameter (3, 1.0) ;
+  crystal_SI->SetParLimits (3, 0.5, 20.) ;
 
- crystal_SI->SetParameter (4, 1.5) ;
- crystal_SI->SetParLimits (4, 1.0, 10) ;
+  crystal_SI->SetParameter (4, 1.5) ;
+  crystal_SI->SetParLimits (4, 1.0, 50) ;
 
- crystal_SI->SetParameter (5, 1.0) ;
- crystal_SI->SetParLimits (5, 0.5, 20.) ;
+  crystal_SI->SetParameter (5, 1.0) ;
+  crystal_SI->SetParLimits (5, 0.5, 20.) ;
+  if (mass == 650) crystal_SI->SetParLimits (5, 0.2, 20.) ;
 
- crystal_SI->SetParameter (6, 1.5) ;
- crystal_SI->SetParLimits (6, 1.0, 10) ;
+  crystal_SI->SetParameter (6, 1.5) ;
+  crystal_SI->SetParLimits (6, 1.0, 50) ;
 
- crystal_SI->SetLineColor(kMagenta-10);
- h_Subtraction->Fit (crystal_SI, "+", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
- crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
+  crystal_SI->SetLineColor(kMagenta-10);
+  h_Subtraction->Fit (crystal_SI, "+", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
+  crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
 
- crystal_SI->SetLineColor(kRed);
+  crystal_SI->SetLineColor(kRed);
 //  h_Subtraction->Fit (crystal_SI, "+Lr", "");
- h_Subtraction->Fit (crystal_SI, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
+  if (mass > 700) h_Subtraction->Fit (crystal_SI, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
+  else            h_Subtraction->Fit (crystal_SI, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
 
 
 
 
- h_mWW_3 -> Draw();
- h_Subtraction -> Draw("same");
- crystal_S->Draw("same");
- crystal_SI->Draw("same");
- cc_Subtraction_fit->SetGrid();
+  h_mWW_3 -> Draw();
+  h_Subtraction -> Draw("same");
+  crystal_S->Draw("same");
+  crystal_SI->Draw("same");
+  cc_Subtraction_fit->SetGrid();
 
 
  //-----------------------------
  //---- to dump in txt file ----
 
- std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
- std::cout << " ---------------------------------- " << std::endl;
- std::cout << " ---------------------------------- " << std::endl;
- std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
+  std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
+  std::cout << " ---------------------------------- " << std::endl;
+  std::cout << " ---------------------------------- " << std::endl;
+  std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
 
- std::cout << mass << " ";
- for (int i=0; i<7; i++) {
-  std::cout << " " << crystal_S->GetParameter (i);
- }
- std::cout << std::endl;
- std::cout << mass << " "; for (int i=0; i<7; i++) {
-  std::cout << " " << crystal_SI->GetParameter (i);
- }
- std::cout << std::endl;
+  std::cout << mass << " ";
+  for (int i=0; i<7; i++) {
+   std::cout << " " << crystal_S->GetParameter (i);
+  }
+  std::cout << std::endl;
+  std::cout << mass << " "; for (int i=0; i<7; i++) {
+   std::cout << " " << crystal_SI->GetParameter (i);
+  }
+  std::cout << std::endl;
 
- std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
- std::cout << " ---------------------------------- " << std::endl;
- std::cout << " ---------------------------------- " << std::endl;
- std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
+  std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
+  std::cout << " ---------------------------------- " << std::endl;
+  std::cout << " ---------------------------------- " << std::endl;
+  std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
+
+ }
 
 }
 

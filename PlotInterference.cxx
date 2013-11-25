@@ -175,12 +175,12 @@ void PlotInterference(int kind = 0) {
 
  for (int i=0; i<counter; i++) {
   if (i==0) {
-   crystal_S[i]->Draw("PL");
+   crystal_S[i]->DrawClone("PL");
    crystal_S[i]->GetYaxis()->SetRangeUser(0,1000);
   }
-  else crystal_S[i]->Draw("PLsame");
+  else crystal_S[i]->DrawClone("PLsame");
 
-  crystal_SI[i]->Draw("PLsame");
+  crystal_SI[i]->DrawClone("PLsame");
  }
 
 
@@ -217,10 +217,10 @@ void PlotInterference(int kind = 0) {
 
  for (int i=0; i<counter; i++) {
   if (i==0) {
-   crystal_Icorr[i]->Draw("PL");
+   crystal_Icorr[i]->DrawClone("PL");
    crystal_Icorr[i]->GetYaxis()->SetRangeUser(0.001,50);
   }
-  else crystal_Icorr[i]->Draw("PLsame");
+  else crystal_Icorr[i]->DrawClone("PLsame");
  }
 
 
@@ -252,20 +252,45 @@ void PlotInterference(int kind = 0) {
 
  for (int i=0; i<counter; i++) {
   if (i==0) {
-   crystal_IcorrDiff[i]->Draw("PL");
+   crystal_IcorrDiff[i]->DrawClone("PL");
    crystal_IcorrDiff[i]->GetYaxis()->SetRangeUser(-80,30);
   }
-  else crystal_IcorrDiff[i]->Draw("PLsame");
+  else crystal_IcorrDiff[i]->DrawClone("PLsame");
  }
 
 
  //---------------------
  TCanvas* cc_Variables_S = new TCanvas("cc_Variables_S","cc_Variables_S",900,500);
  cc_Variables_S->Divide(4,2);
+ float log_S_N[100];
+ float log_SI_N[100];
+
+ for (int i=0; i<5; i++) {
+  double Hmass = 0;
+  if (i==0) Hmass = 350;
+  if (i==1) Hmass = 500;
+  if (i==2) Hmass = 650;
+  if (i==3) Hmass = 800;
+  if (i==4) Hmass = 1000;
+
+ int NBIN = 350;
+ if (Hmass>400) NBIN = 120;
+ if (Hmass>500) NBIN =  70;
+ if (Hmass>700) NBIN = 120;
+ if (Hmass>900) NBIN =  40;
+ int MAX = 800;
+ if (Hmass>400) MAX =  1500;
+ if (Hmass>500) MAX =  2000;
+ if (Hmass>700) MAX =  4000;
+ if (Hmass>900) MAX =  4000;
+ float scale = 1./ (MAX/NBIN);
+ log_S_N[i]  = log(S_N[i]  * scale);
+ log_SI_N[i] = log(SI_N[i] * scale);
+ }
 
  TGraph* variables_S[10];
  for (int iVar=0; iVar<7; iVar++) {
-  if (iVar == 0) variables_S[iVar] = new TGraph (5,S_mass,S_N);
+  if (iVar == 0) variables_S[iVar] = new TGraph (5,S_mass,log_S_N);
   if (iVar == 1) variables_S[iVar] = new TGraph (5,S_mass,S_Mean);
   if (iVar == 2) variables_S[iVar] = new TGraph (5,S_mass,S_sigma);
   if (iVar == 3) variables_S[iVar] = new TGraph (5,S_mass,S_alphaR);
@@ -276,7 +301,9 @@ void PlotInterference(int kind = 0) {
 
  for (int iVar=0; iVar<7; iVar++) {
   cc_Variables_S->cd (iVar+1);
-  variables_S[iVar]->Draw("APL");
+  variables_S[iVar]->SetMarkerSize(2);
+  variables_S[iVar]->SetMarkerStyle(21);
+  variables_S[iVar]->DrawClone("APL");
  }
 
  TCanvas* cc_Variables_SI = new TCanvas("cc_Variables_SI","cc_Variables_SI",900,500);
@@ -284,7 +311,7 @@ void PlotInterference(int kind = 0) {
 
  TGraph* variables_SI[10];
  for (int iVar=0; iVar<7; iVar++) {
-  if (iVar == 0) variables_SI[iVar] = new TGraph (5,SI_mass,SI_N);
+  if (iVar == 0) variables_SI[iVar] = new TGraph (5,SI_mass,log_SI_N);
   if (iVar == 1) variables_SI[iVar] = new TGraph (5,SI_mass,SI_Mean);
   if (iVar == 2) variables_SI[iVar] = new TGraph (5,SI_mass,SI_sigma);
   if (iVar == 3) variables_SI[iVar] = new TGraph (5,SI_mass,SI_alphaR);
@@ -295,12 +322,125 @@ void PlotInterference(int kind = 0) {
 
  for (int iVar=0; iVar<7; iVar++) {
   cc_Variables_SI->cd (iVar+1);
-  variables_SI[iVar]->Draw("APL");
+  variables_SI[iVar]->SetMarkerSize(2);
+  variables_SI[iVar]->SetMarkerStyle(21);
+  variables_SI[iVar]->DrawClone("APL");
  }
 
  for (int iVar=0; iVar<7; iVar++) {
   std::cout << "variables_SI[" << iVar << "] [H=450] = " << variables_SI[iVar]->Eval(450) << std::endl;
  }
+
+
+
+
+ //---- test interpolation of variables ----
+ //---- S
+ TCanvas* cc_Interpolation_S = new TCanvas("cc_Interpolation_S","cc_Interpolation_S",800,600);
+ TF1* S_crystal_qqH[100];
+ for (int i=0; i<counter; i++) {
+  double Hmass = 0;
+  if (i==0) Hmass = 350;
+  if (i==1) Hmass = 500;
+  if (i==2) Hmass = 650;
+  if (i==3) Hmass = 800;
+  if (i==4) Hmass = 1000;
+
+  int NBIN = 350;
+  if (Hmass>400) NBIN = 120;
+  if (Hmass>500) NBIN =  70;
+  if (Hmass>700) NBIN = 120;
+  if (Hmass>900) NBIN =  40;
+  int MAX = 800;
+  if (Hmass>400) MAX =  1500;
+  if (Hmass>500) MAX =  2000;
+  if (Hmass>700) MAX =  4000;
+  if (Hmass>900) MAX =  4000;
+  float scale = 1./ (MAX/NBIN);
+  crystal_S[i]->SetParameter(0,crystal_S[i]->GetParameter(0) * scale);
+
+  crystal_S[i] -> SetLineColor(kBlue);
+  if (i==0) {
+   crystal_S[i]->DrawClone("PL");
+   crystal_S[i]->GetYaxis()->SetRangeUser(0,1000);
+  }
+  else crystal_S[i]->DrawClone("PLsame");
+ }
+
+ for (int iMass = 0; iMass < 13*2; iMass++) {
+  double Hmass = 350+25*iMass;
+  TString name = Form ("S_crystal_qqH_%d",iMass);
+  S_crystal_qqH[iMass] = new TF1(name.Data(),crystalBallLowHigh,0,3000,7);
+  for (int iVar = 0; iVar<7; iVar++) {
+   if (iVar == 0) {
+    S_crystal_qqH[iMass]->SetParameter(iVar,exp(variables_S[iVar]->Eval(Hmass)));
+   }
+   else {
+    S_crystal_qqH[iMass]->SetParameter(iVar,variables_S[iVar]->Eval(Hmass));
+   }
+  }
+  S_crystal_qqH[iMass] -> SetNpx(2000);
+  S_crystal_qqH[iMass] -> SetLineColor(kRed);
+  S_crystal_qqH[iMass] -> DrawClone("Lsame");
+ }
+ cc_Interpolation_S->SetGrid();
+ for (int i=0; i<counter; i++) {
+  crystal_S[i]->DrawClone("PLsame");
+ }
+
+  //---- SI
+ TCanvas* cc_Interpolation_SI = new TCanvas("cc_Interpolation_SI","cc_Interpolation_SI",800,600);
+ TF1* SI_crystal_qqH[100];
+ for (int i=0; i<counter; i++) {
+  double Hmass = 0;
+  if (i==0) Hmass = 350;
+  if (i==1) Hmass = 500;
+  if (i==2) Hmass = 650;
+  if (i==3) Hmass = 800;
+  if (i==4) Hmass = 1000;
+
+  int NBIN = 350;
+  if (Hmass>400) NBIN = 120;
+  if (Hmass>500) NBIN =  70;
+  if (Hmass>700) NBIN = 120;
+  if (Hmass>900) NBIN =  40;
+  int MAX = 800;
+  if (Hmass>400) MAX =  1500;
+  if (Hmass>500) MAX =  2000;
+  if (Hmass>700) MAX =  4000;
+  if (Hmass>900) MAX =  4000;
+  float scale = 1./ (MAX/NBIN);
+  crystal_SI[i]->SetParameter(0,crystal_SI[i]->GetParameter(0) * scale);
+
+  crystal_SI[i] -> SetLineColor(kBlue);
+  if (i==0) {
+   crystal_SI[i]->DrawClone("PL");
+   crystal_SI[i]->GetYaxis()->SetRangeUser(0,1000);
+  }
+  else crystal_SI[i]->DrawClone("PLsame");
+ }
+
+ for (int iMass = 0; iMass < 13*2; iMass++) {
+  double Hmass = 350+25*iMass;
+  TString name = Form ("SI_crystal_qqH_%d",iMass);
+  SI_crystal_qqH[iMass] = new TF1(name.Data(),crystalBallLowHigh,0,3000,7);
+  for (int iVar = 0; iVar<7; iVar++) {
+   if (iVar == 0) {
+    SI_crystal_qqH[iMass]->SetParameter(iVar,exp(variables_SI[iVar]->Eval(Hmass)));
+   }
+   else {
+    SI_crystal_qqH[iMass]->SetParameter(iVar,variables_SI[iVar]->Eval(Hmass));
+   }
+  }
+  SI_crystal_qqH[iMass] -> SetNpx(2000);
+  SI_crystal_qqH[iMass] -> SetLineColor(kRed);
+  SI_crystal_qqH[iMass] -> DrawClone("Lsame");
+ }
+ cc_Interpolation_SI->SetGrid();
+ for (int i=0; i<counter; i++) {
+  crystal_SI[i]->DrawClone("PLsame");
+ }
+
 
 }
 
