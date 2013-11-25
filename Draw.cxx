@@ -79,16 +79,14 @@ double crystalBallLowHigh (double* x, double* par) {
   return par[0] * A * pow(B + (xx-mean)/sigma, -1.*n);
  }
 
- else if( (xx-mean)/sigma < -1.*fabs(alpha2) )
- {
+ else if( (xx-mean)/sigma < -1.*fabs(alpha2) ) {
   double A = pow(n2/fabs(alpha2), n2) * exp(-0.5 * alpha2*alpha2);
   double B = n2/fabs(alpha2) - fabs(alpha2);
 
   return par[0] * A * pow(B - (xx-mean)/sigma, -1.*n2);
  }
 
- else
- {
+ else {
   return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigma*sigma) );
  }
 
@@ -175,12 +173,13 @@ void Draw(int kind = 0,         int mass = 350) {
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
 
  int NBIN = 350;
+ if (mass>400) NBIN = 120;
  if (mass>500) NBIN =  70;
  if (mass>700) NBIN =  60;
  if (mass>900) NBIN =  40;
 
  int MAX = 800;
- if (mass>400) MAX =  1000;
+ if (mass>400) MAX =  1500;
  if (mass>500) MAX =  2000;
  if (mass>700) MAX =  2000;
  if (mass>900) MAX =  4000;
@@ -353,7 +352,7 @@ void Draw(int kind = 0,         int mass = 350) {
  crystal_S->SetParameter (1, mass) ;
  crystal_S->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
 
- crystal_S->SetParameter (2, h_mWW_3->GetRMS ()) ;
+ crystal_S->SetParameter (2, 0.9 * h_mWW_3->GetRMS ()) ;
  crystal_S->SetParLimits (2, 0.1 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
 
  crystal_S->SetParameter (3, 1.0) ;
@@ -376,7 +375,8 @@ void Draw(int kind = 0,         int mass = 350) {
 //  crystal_S->FixParameter (2, crystal_S->GetParameters ()[2]) ; //---- sigma
 
  crystal_S->SetLineColor(kBlue);
- h_mWW_3->Fit (crystal_S, "+Lr", ""); //,250, mass + 4 * h_mWW_3->GetRMS ()) ;
+ h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ()) ;
+//  h_mWW_3->Fit (crystal_S, "+Lr", ""); //,250, mass + 4 * h_mWW_3->GetRMS ()) ;
 //  h_mWW_3->Fit(crystal_S,"r");
 
 
@@ -407,20 +407,21 @@ void Draw(int kind = 0,         int mass = 350) {
  crystal_SI->SetParLimits (3, 0.5, 20.) ;
 
  crystal_SI->SetParameter (4, 1.5) ;
- crystal_SI->SetParLimits (4, 1.0, 20) ;
+ crystal_SI->SetParLimits (4, 1.0, 10) ;
 
  crystal_SI->SetParameter (5, 1.0) ;
  crystal_SI->SetParLimits (5, 0.5, 20.) ;
 
  crystal_SI->SetParameter (6, 1.5) ;
- crystal_SI->SetParLimits (6, 1.0, 20) ;
+ crystal_SI->SetParLimits (6, 1.0, 10) ;
 
  crystal_SI->SetLineColor(kMagenta-10);
  h_Subtraction->Fit (crystal_SI, "+", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
  crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
 
  crystal_SI->SetLineColor(kRed);
- h_Subtraction->Fit (crystal_SI, "+Lr", "");
+//  h_Subtraction->Fit (crystal_SI, "+Lr", "");
+ h_Subtraction->Fit (crystal_SI, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
 
 
 
@@ -432,8 +433,28 @@ void Draw(int kind = 0,         int mass = 350) {
  cc_Subtraction_fit->SetGrid();
 
 
+ //-----------------------------
+ //---- to dump in txt file ----
 
+ std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
+ std::cout << " ---------------------------------- " << std::endl;
+ std::cout << " ---------------------------------- " << std::endl;
+ std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
 
+ std::cout << mass << " ";
+ for (int i=0; i<7; i++) {
+  std::cout << " " << crystal_S->GetParameter (i);
+ }
+ std::cout << std::endl;
+ std::cout << mass << " "; for (int i=0; i<7; i++) {
+  std::cout << " " << crystal_SI->GetParameter (i);
+ }
+ std::cout << std::endl;
+
+ std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
+ std::cout << " ---------------------------------- " << std::endl;
+ std::cout << " ---------------------------------- " << std::endl;
+ std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
 
 }
 

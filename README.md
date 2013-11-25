@@ -105,6 +105,7 @@ S
 Plot:
 
     root -l Draw.cxx
+
     root -l Draw.cxx\(0,350\)
     root -l Draw.cxx\(1,350\)
 
@@ -135,4 +136,9 @@ To get the cross-sections then hardcoded in Draw.cxx
     done;
 
 
+
+
+To plot the result:
+
+   root -l PlotInterference.cxx
 
