@@ -140,5 +140,5 @@ To get the cross-sections then hardcoded in Draw.cxx
 
 To plot the result:
 
-   root -l PlotInterference.cxx
+    root -l PlotInterference.cxx
 
