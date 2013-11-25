@@ -12,39 +12,87 @@ double doubleGausCrystalBallLowHigh (double* x, double* par) {
   //[6] = n2
 
  double xx = x[0];
+
+//  double mean = par[1] ; // mean
+//  double sigmaP = par[2] ; // sigma of the positive side of the gaussian
+//  double sigmaN = par[3] ; // sigma of the negative side of the gaussian
+//  double alpha = par[4] ; // junction point on the positive side of the gaussian
+//  double n = par[5] ; // power of the power law on the positive side of the gaussian
+//  double alpha2 = par[6] ; // junction point on the negative side of the gaussian
+//  double n2 = par[7] ; // power of the power law on the negative side of the gaussian
+
  double mean = par[1] ; // mean
- double sigmaP = par[2] ; // sigma of the positive side of the gaussian
- double sigmaN = par[3] ; // sigma of the negative side of the gaussian
- double alpha = par[4] ; // junction point on the positive side of the gaussian
- double n = par[5] ; // power of the power law on the positive side of the gaussian
- double alpha2 = par[6] ; // junction point on the negative side of the gaussian
- double n2 = par[7] ; // power of the power law on the negative side of the gaussian
+ double sigmaP = par[2] ; // sigma of the positive side of the gaussian  |  they are the same!!!
+ double sigmaN = par[2] ; // sigma of the negative side of the gaussian  |
+ double alpha = par[3] ; // junction point on the positive side of the gaussian
+ double n = par[4] ; // power of the power law on the positive side of the gaussian
+ double alpha2 = par[5] ; // junction point on the negative side of the gaussian
+ double n2 = par[6] ; // power of the power law on the negative side of the gaussian
 
  if ((xx-mean)/sigmaP > fabs(alpha)) {
   double A = pow(n/fabs(alpha), n) * exp(-0.5 * alpha*alpha);
   double B = n/fabs(alpha) - fabs(alpha);
-    
+
   return par[0] * A * pow(B + (xx-mean)/sigmaP, -1.*n);
  }
-  
+
  else if ((xx-mean)/sigmaN < -1.*fabs(alpha2)) {
   double A = pow(n2/fabs(alpha2), n2) * exp(-0.5 * alpha2*alpha2);
   double B = n2/fabs(alpha2) - fabs(alpha2);
-    
+
   return par[0] * A * pow(B - (xx-mean)/sigmaN, -1.*n2);
  }
-  
+
  else if ((xx-mean) > 0) {
   return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaP*sigmaP) );
  }
-  
+
  else {
   return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaN*sigmaN) );
  }
-  
+
 }
 
 
+
+double crystalBallLowHigh (double* x, double* par) {
+  //[0] = N
+  //[1] = mean
+  //[2] = sigma
+  //[3] = alpha on the right-hand side
+  //[4] = n
+  //[5] = alpha2 on the left-hand side
+  //[6] = n2
+
+ double xx = x[0];
+ double mean = par[1];
+ double sigma = fabs (par[2]);
+ double alpha = par[3];
+ double n = par[4];
+ double alpha2 = par[5];
+ double n2 = par[6];
+
+ if( (xx-mean)/sigma > fabs(alpha) ) {
+  double A = pow(n/fabs(alpha), n) * exp(-0.5 * alpha*alpha);
+  double B = n/fabs(alpha) - fabs(alpha);
+
+  return par[0] * A * pow(B + (xx-mean)/sigma, -1.*n);
+ }
+
+ else if( (xx-mean)/sigma < -1.*fabs(alpha2) )
+ {
+  double A = pow(n2/fabs(alpha2), n2) * exp(-0.5 * alpha2*alpha2);
+  double B = n2/fabs(alpha2) - fabs(alpha2);
+
+  return par[0] * A * pow(B - (xx-mean)/sigma, -1.*n2);
+ }
+
+ else
+ {
+  return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigma*sigma) );
+ }
+
+}
 
 
 //Crystal ball function for signal, parameters are 0:alpha,1:n,2:mean,3:sigma,4:normalization;
@@ -126,12 +174,12 @@ void Draw(int kind = 0,         int mass = 350) {
 //  TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
 
- int NBIN = 150;
+ int NBIN = 350;
  if (mass>500) NBIN =  70;
  if (mass>700) NBIN =  60;
  if (mass>900) NBIN =  40;
 
- int MAX = 500;
+ int MAX = 800;
  if (mass>400) MAX =  1000;
  if (mass>500) MAX =  2000;
  if (mass>700) MAX =  2000;
@@ -294,34 +342,88 @@ void Draw(int kind = 0,         int mass = 350) {
 //  crystal_S->SetParameters(1,1,mass,h_mWW_3->GetRMS(),h_mWW_3->Integral());
 //  crystal_S->SetParNames("#alpha","n","Mean","#sigma","N");
 
- TF1 *crystal_S = new TF1("crystal_S",doubleGausCrystalBallLowHigh,200,MAX,7);
+ TF1 *crystal_S = new TF1("crystal_S",crystalBallLowHigh,200,MAX,7);
  crystal_S->SetParameters(h_mWW_3->Integral(),mass,h_mWW_3->GetRMS(),1.,2,1.,2);
  crystal_S->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+ //                      0    1        2        3     4      5       6
+ //                                           juncR        juncL
+ crystal_S->SetNpx(2000);
+ crystal_S->SetParameter (0, h_mWW_3->GetBinContent (h_mWW_3->GetMaximumBin ())) ;
 
- crystal_S->SetParLimits (2, 0.1 * h_mWW_3->GetRMS (), 20 * h_mWW_3->GetRMS ()) ;
+ crystal_S->SetParameter (1, mass) ;
+ crystal_S->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
+
+ crystal_S->SetParameter (2, h_mWW_3->GetRMS ()) ;
+ crystal_S->SetParLimits (2, 0.1 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+
+ crystal_S->SetParameter (3, 1.0) ;
+ crystal_S->SetParLimits (3, 0.5, 20.) ;
+
+ crystal_S->SetParameter (4, 1.5) ;
+ crystal_S->SetParLimits (4, 1.0, 20) ;
+
+ crystal_S->SetParameter (5, 1.0) ;
+ crystal_S->SetParLimits (5, 0.5, 20.) ;
+
+ crystal_S->SetParameter (6, 1.5) ;
+ crystal_S->SetParLimits (6, 1.0, 20) ;
+
+ crystal_S->SetLineColor(kCyan);
+ h_mWW_3->Fit (crystal_S, "+", "",  mass - 0.5 * h_mWW_3->GetRMS (), mass + 0.5 * h_mWW_3->GetRMS ()) ;
+ crystal_S->SetParameters (crystal_S->GetParameters ()) ;
+
+//  crystal_S->FixParameter (1, crystal_S->GetParameters ()[1]) ; //---- mean
+//  crystal_S->FixParameter (2, crystal_S->GetParameters ()[2]) ; //---- sigma
 
  crystal_S->SetLineColor(kBlue);
- h_mWW_3->Fit(crystal_S,"r");
+ h_mWW_3->Fit (crystal_S, "+Lr", ""); //,250, mass + 4 * h_mWW_3->GetRMS ()) ;
+//  h_mWW_3->Fit(crystal_S,"r");
 
 
- std::cout << " ----------------------------------------------- " << std::endl;
- std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
- std::cout << " ----------------------------------------------- " << std::endl;
-
+//  std::cout << " ----------------------------------------------- " << std::endl;
+//  std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
+//  std::cout << " ----------------------------------------------- " << std::endl;
+// 
 //  TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
 //  800   ok:    crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
 //  800 em ok:  crystal_SI->SetParameters(1,1,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
 //  crystal_SI->SetParameters(0.1,2.,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
 //  crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
 
- TF1 *crystal_SI = new TF1("crystal_SI",doubleGausCrystalBallLowHigh,200,MAX,7);
+ TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,200,MAX,7);
  crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
  crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
 
- crystal_SI->SetParLimits (2, 0.1 * h_Subtraction->GetRMS (), 20 * h_Subtraction->GetRMS ()) ;
+ crystal_SI->SetNpx(2000);
+ crystal_SI->SetParameter (0, h_Subtraction->GetBinContent (h_Subtraction->GetMaximumBin ())) ;
 
- h_Subtraction->Fit(crystal_SI,"r");
+ crystal_SI->SetParameter (1, mass) ;
+ crystal_SI->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
+
+ crystal_SI->SetParameter (2, 1.0 * h_mWW_3->GetRMS ()) ;
+ crystal_SI->SetParLimits (2, 0.05 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+
+ crystal_SI->SetParameter (3, 1.0) ;
+ crystal_SI->SetParLimits (3, 0.5, 20.) ;
+
+ crystal_SI->SetParameter (4, 1.5) ;
+ crystal_SI->SetParLimits (4, 1.0, 20) ;
+
+ crystal_SI->SetParameter (5, 1.0) ;
+ crystal_SI->SetParLimits (5, 0.5, 20.) ;
+
+ crystal_SI->SetParameter (6, 1.5) ;
+ crystal_SI->SetParLimits (6, 1.0, 20) ;
+
+ crystal_SI->SetLineColor(kMagenta-10);
+ h_Subtraction->Fit (crystal_SI, "+", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
+ crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
+
  crystal_SI->SetLineColor(kRed);
+ h_Subtraction->Fit (crystal_SI, "+Lr", "");
+
+
+
 
  h_mWW_3 -> Draw();
  h_Subtraction -> Draw("same");
