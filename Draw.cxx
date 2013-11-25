@@ -290,13 +290,16 @@ void Draw(int kind = 0,         int mass = 350) {
  cc_Subtraction_fit->cd();
  cc_Subtraction_fit->SetGrid();
 
- TF1 *crystal_S = new TF1("crystal_S",RightCrystalBall,200,MAX,5);
- crystal_S->SetParameters(1,1,mass,h_mWW_3->GetRMS(),h_mWW_3->Integral());
- crystal_S->SetParNames("#alpha","n","Mean","#sigma","N");
+//  TF1 *crystal_S = new TF1("crystal_S",RightCrystalBall,200,MAX,5);
+//  crystal_S->SetParameters(1,1,mass,h_mWW_3->GetRMS(),h_mWW_3->Integral());
+//  crystal_S->SetParNames("#alpha","n","Mean","#sigma","N");
 
-//  TF1 *crystal_S = new TF1("crystal_S",doubleGausCrystalBallLowHigh,200,MAX,7);
-//  crystal_S->SetParameters(h_mWW_3->Integral(),mass,h_mWW_3->GetRMS(),1.,2,1.,2);
-//  crystal_S->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+ TF1 *crystal_S = new TF1("crystal_S",doubleGausCrystalBallLowHigh,200,MAX,7);
+ crystal_S->SetParameters(h_mWW_3->Integral(),mass,h_mWW_3->GetRMS(),1.,2,1.,2);
+ crystal_S->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+
+ crystal_S->SetParLimits (2, 0.1 * h_mWW_3->GetRMS (), 20 * h_mWW_3->GetRMS ()) ;
+
  crystal_S->SetLineColor(kBlue);
  h_mWW_3->Fit(crystal_S,"r");
 
@@ -305,15 +308,18 @@ void Draw(int kind = 0,         int mass = 350) {
  std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
  std::cout << " ----------------------------------------------- " << std::endl;
 
- TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
+//  TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
 //  800   ok:    crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
 //  800 em ok:  crystal_SI->SetParameters(1,1,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
- crystal_SI->SetParameters(0.1,2.,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
- crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
+//  crystal_SI->SetParameters(0.1,2.,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
+//  crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
 
-//  TF1 *crystal_SI = new TF1("crystal_SI",doubleGausCrystalBallLowHigh,200,MAX,7);
-//  crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
-//  crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+ TF1 *crystal_SI = new TF1("crystal_SI",doubleGausCrystalBallLowHigh,200,MAX,7);
+ crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
+ crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+
+ crystal_SI->SetParLimits (2, 0.1 * h_Subtraction->GetRMS (), 20 * h_Subtraction->GetRMS ()) ;
+
  h_Subtraction->Fit(crystal_SI,"r");
  crystal_SI->SetLineColor(kRed);
 
