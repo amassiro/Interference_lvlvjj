@@ -212,6 +212,7 @@ void PlotInterference(int kind = 0) {
   crystal_Icorr[i]->SetParameter(13,S_nL[i]);
 
   crystal_Icorr[i]->SetLineColor(kGreen+i);
+  crystal_Icorr[i]->SetNpx(3000);
  }
 
 
@@ -247,6 +248,8 @@ void PlotInterference(int kind = 0) {
   crystal_IcorrDiff[i]->SetParameter(12,S_alphaL[i]);
   crystal_IcorrDiff[i]->SetParameter(13,S_nL[i]);
   crystal_IcorrDiff[i]->SetLineColor(kMagenta+i);
+
+  crystal_IcorrDiff[i]->SetNpx(3000);
  }
 
 
