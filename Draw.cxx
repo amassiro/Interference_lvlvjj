@@ -159,6 +159,19 @@ Double_t Total(Double_t *x, Double_t *par) {
 }
 
 
+//---- division of CBLowHigh with CBLowHigh ----
+Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
+ Double_t num = 0;
+ num = crystalBallLowHigh(x,par);
+
+ Double_t den = 1;
+ den = crystalBallLowHigh(x,&par[7]);
+
+ return num-den;
+}
+
+
+
 
 //-----------------------------------------------------------
 //-----------------------------------------------------------
@@ -214,6 +227,7 @@ void Draw(int kind = 0,         int mass = 350) {
  TH1F* h_mWW_3 = new TH1F("h_mWW_3","h_mWW_3",NBIN,0,MAX);
  TH1F* h_Ratio = new TH1F("h_mWW_ratio","h_mWW_ratio",NBIN,0,MAX);
  TH1F* h_Subtraction = new TH1F("h_Subtraction","h_Subtraction",NBIN,0,MAX);
+ TH1F* h_I = new TH1F("h_I","h_I",NBIN,0,MAX);
 
  // me                        126                  350                      500                      650                      800                      1000
 //  float xsec[100] = {3.59354104959999920E-002, 3.30375324117999983E-002, 3.08369319673999914E-002, 3.04300778839999946E-002, 2.96306891660000002E-002, 2.96035751339999986E-002};
@@ -306,6 +320,9 @@ void Draw(int kind = 0,         int mass = 350) {
 
   h_Subtraction ->  SetBinContent (iBin+1, num - den);
 
+  float S = h_mWW_3->GetBinContent(iBin+1);
+  h_I ->  SetBinContent (iBin+1, num - den - S);
+
  }
 
  TCanvas* cc_Ratio = new TCanvas("cc_Ratio","cc_Ratio",800,600);
@@ -361,6 +378,7 @@ void Draw(int kind = 0,         int mass = 350) {
 
   crystal_S->SetParameter (3, 1.0) ;
   crystal_S->SetParLimits (3, 0.5, 20.) ;
+  if (mass == 500)  crystal_S->SetParLimits (3, 0.3, 20.) ;
   if (mass > 700)   crystal_S->SetParLimits (3, 0.3, 20.) ;
 
   crystal_S->SetParameter (4, 1.5) ;
@@ -444,6 +462,21 @@ void Draw(int kind = 0,         int mass = 350) {
   crystal_SI->Draw("same");
   cc_Subtraction_fit->SetGrid();
 
+  //----------------------
+  //---- closure test ----
+
+  TCanvas* cc_I = new TCanvas("cc_I","cc_I",800,600);
+  cc_I->cd();
+  cc_I->SetGrid();
+  h_I -> SetLineColor(kBlue);
+  h_I -> SetLineWidth(2);
+  h_I -> Draw();
+  TF1 *crystal_I = new TF1("crystal_I",CrystalBallLowHighMinusCrystalBallLowHigh,0,MAX,14);
+  for (int i=0; i<7; i++) {
+   crystal_I->SetParameter(i,crystal_SI->GetParameter(i));
+   crystal_I->SetParameter(i+7,crystal_S->GetParameter(i));
+  }
+  crystal_I->Draw("same");
 
  //-----------------------------
  //---- to dump in txt file ----
