@@ -293,13 +293,13 @@ void PlotInterference(int kind = 0) {
 
  TGraph* variables_S[10];
  for (int iVar=0; iVar<7; iVar++) {
-  if (iVar == 0) variables_S[iVar] = new TGraph (5,S_mass,log_S_N);
-  if (iVar == 1) variables_S[iVar] = new TGraph (5,S_mass,S_Mean);
-  if (iVar == 2) variables_S[iVar] = new TGraph (5,S_mass,S_sigma);
-  if (iVar == 3) variables_S[iVar] = new TGraph (5,S_mass,S_alphaR);
-  if (iVar == 4) variables_S[iVar] = new TGraph (5,S_mass,S_nR);
-  if (iVar == 5) variables_S[iVar] = new TGraph (5,S_mass,S_alphaL);
-  if (iVar == 6) variables_S[iVar] = new TGraph (5,S_mass,S_nL);
+  if (iVar == 0) { variables_S[iVar] = new TGraph (5,S_mass,log_S_N);  variables_S[iVar]->SetTitle("logN");  }
+  if (iVar == 1) { variables_S[iVar] = new TGraph (5,S_mass,S_Mean);   variables_S[iVar]->SetTitle("mean");  }
+  if (iVar == 2) { variables_S[iVar] = new TGraph (5,S_mass,S_sigma);  variables_S[iVar]->SetTitle("sigma");  }
+  if (iVar == 3) { variables_S[iVar] = new TGraph (5,S_mass,S_alphaR); variables_S[iVar]->SetTitle("#alpha R");  }
+  if (iVar == 4) { variables_S[iVar] = new TGraph (5,S_mass,S_nR);     variables_S[iVar]->SetTitle("n R");  }
+  if (iVar == 5) { variables_S[iVar] = new TGraph (5,S_mass,S_alphaL); variables_S[iVar]->SetTitle("#alpha L");  }
+  if (iVar == 6) { variables_S[iVar] = new TGraph (5,S_mass,S_nL);     variables_S[iVar]->SetTitle("n R");  }
  }
 
  for (int iVar=0; iVar<7; iVar++) {
@@ -314,13 +314,13 @@ void PlotInterference(int kind = 0) {
 
  TGraph* variables_SI[10];
  for (int iVar=0; iVar<7; iVar++) {
-  if (iVar == 0) variables_SI[iVar] = new TGraph (5,SI_mass,log_SI_N);
-  if (iVar == 1) variables_SI[iVar] = new TGraph (5,SI_mass,SI_Mean);
-  if (iVar == 2) variables_SI[iVar] = new TGraph (5,SI_mass,SI_sigma);
-  if (iVar == 3) variables_SI[iVar] = new TGraph (5,SI_mass,SI_alphaR);
-  if (iVar == 4) variables_SI[iVar] = new TGraph (5,SI_mass,SI_nR);
-  if (iVar == 5) variables_SI[iVar] = new TGraph (5,SI_mass,SI_alphaL);
-  if (iVar == 6) variables_SI[iVar] = new TGraph (5,SI_mass,SI_nL);
+  if (iVar == 0) { variables_SI[iVar] = new TGraph (5,SI_mass,log_SI_N);     variables_SI[iVar]->SetTitle("logN");  }
+  if (iVar == 1) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_Mean);      variables_SI[iVar]->SetTitle("mean");  }
+  if (iVar == 2) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_sigma);     variables_SI[iVar]->SetTitle("sigma");  }
+  if (iVar == 3) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_alphaR);    variables_SI[iVar]->SetTitle("#alpha R");  }
+  if (iVar == 4) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_nR);        variables_SI[iVar]->SetTitle("n R");  }
+  if (iVar == 5) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_alphaL);    variables_SI[iVar]->SetTitle("#alpha L");  }
+  if (iVar == 6) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_nL);        variables_SI[iVar]->SetTitle("n R");  }
  }
 
  for (int iVar=0; iVar<7; iVar++) {
