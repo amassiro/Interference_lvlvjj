@@ -445,6 +445,52 @@ void PlotInterference(int kind = 0) {
  }
 
 
+
+ //---- weight
+ TCanvas* cc_Interpolation_Weight = new TCanvas("cc_Interpolation_Weight","cc_Interpolation_Weight",800,600);
+ TF1* Weight_crystal_qqH[100];
+ for (int i=0; i<counter; i++) {
+  double Hmass = 0;
+  if (i==0) Hmass = 350;
+  if (i==1) Hmass = 500;
+  if (i==2) Hmass = 650;
+  if (i==3) Hmass = 800;
+  if (i==4) Hmass = 1000;
+
+  int NBIN = 350;
+  if (Hmass>400) NBIN = 120;
+  if (Hmass>500) NBIN =  70;
+  if (Hmass>700) NBIN = 120;
+  if (Hmass>900) NBIN =  40;
+  int MAX = 800;
+  if (Hmass>400) MAX =  1500;
+  if (Hmass>500) MAX =  2000;
+  if (Hmass>700) MAX =  4000;
+  if (Hmass>900) MAX =  4000;
+  float scale = 1./ (MAX/NBIN);
+
+  for (int iMass = 0; iMass < 13*2; iMass++) {
+   double Hmass = 350+25*iMass;
+   TString name = Form ("Weight_crystal_qqH_%d",iMass);
+   Weight_crystal_qqH[iMass] = new TF1(name.Data(),CrystalBallLowHighDivideCrystalBallLowHigh,200,3000,14);
+   for (int iVar = 0; iVar<7; iVar++) {
+    if (iVar == 0) {
+     Weight_crystal_qqH[iMass]->SetParameter(iVar,exp(variables_SI[iVar]->Eval(Hmass)));
+     Weight_crystal_qqH[iMass]->SetParameter(iVar+7,exp(variables_S[iVar]->Eval(Hmass)));
+    }
+    else {
+     Weight_crystal_qqH[iMass]->SetParameter(iVar,variables_SI[iVar]->Eval(Hmass));
+     Weight_crystal_qqH[iMass]->SetParameter(iVar+7,variables_S[iVar]->Eval(Hmass));
+    }
+   }
+   Weight_crystal_qqH[iMass] -> SetNpx(2000);
+   Weight_crystal_qqH[iMass] -> SetLineColor(kMagenta+iMass);
+   if (iMass == 0) Weight_crystal_qqH[iMass] -> DrawClone("L");
+   else Weight_crystal_qqH[iMass] -> DrawClone("Lsame");
+  }
+ }
+ cc_Interpolation_Weight->SetGrid();
+
 }
 
 
