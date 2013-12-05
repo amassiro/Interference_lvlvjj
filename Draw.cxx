@@ -272,14 +272,16 @@ void Draw(int kind = 0,         int mass = 350) {
  if (mass ==  800) xsecToUse_S = xsec_S[4];
  if (mass == 1000) xsecToUse_S = xsec_S[5];
 
+//  TString cut = Form ("mjj>200 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
+ TString cut = Form ("mjj>100 && pt1>20 && pt2>10 && jetpt1>10 && jetpt2>10");
 
 //  TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
 //  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
 
- TString weightWithXsec126 = Form ("%s * %f",weight.Data(),xsec[0]);
- TString weightWithXsec    = Form ("%f",xsecToUse);
+ TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]);
+ TString weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
 
- TString weightWithXsec_S  = Form ("%f",xsecToUse_S);
+ TString weightWithXsec_S  = Form ("(%s) * (%f)",cut.Data(),xsecToUse_S);
 
  std::cout << " weightWithXsec126 = " << weightWithXsec126.Data() << std::endl;
  std::cout << " weightWithXsec    = " << weightWithXsec.Data()    << std::endl;
