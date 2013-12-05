@@ -68,6 +68,8 @@ B and S+B
     eos cp  /eos/cms/store/user/govoni/LHE/phantom/lvlv/gen_650.tgz ./
     eos cp  /eos/cms/store/user/govoni/LHE/phantom/lvlv/gen_500.tgz ./
     eos cp  /eos/cms/store/user/govoni/LHE/phantom/lvlv/gen_350.tgz ./
+    eos cp  /eos/cms/store/user/govoni/LHE/phantom/lvlv/gen_300.tgz ./
+    eos cp  /eos/cms/store/user/govoni/LHE/phantom/lvlv/gen_250.tgz ./
     eos cp  /eos/cms/store/user/govoni/LHE/phantom/lvlv/gen_126.tgz ./
 
     ls *.tgz --color=none  | awk '{print "tar -xzf "$1}'
@@ -80,6 +82,7 @@ B and S+B
     ../../../LHEActions/mergeLHEfiles  `find . -name "phamom.dat"
     cd -
 
+
     ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'
     ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'
     ls -d  gen_*/ --color=none | awk '{print "cd "$1"/gen2jmu-e+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -; cd "$1"/gen2jmu-mu+/; ../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}' | /bin/sh
@@ -91,7 +94,7 @@ B and S+B
     ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}'
     ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}' | /bin/sh
 
-S
+
 
     ls qqHWWuvev/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvev/"$1"_"$2"."$3"  S_"$2"_jjme.root"}'
     ls qqHWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvuv/"$1"_"$2"."$3"  S_"$2"_jjmm.root"}'
@@ -105,6 +108,12 @@ S
 Plot:
 
     root -l Draw.cxx
+
+    root -l Draw.cxx\(0,250\)
+    root -l Draw.cxx\(1,250\)
+
+    root -l Draw.cxx\(0,300\)
+    root -l Draw.cxx\(1,300\)
 
     root -l Draw.cxx\(0,350\)
     root -l Draw.cxx\(1,350\)
@@ -125,7 +134,7 @@ Plot:
 
 
 
-To get the cross-sections then hardcoded in Draw.cxx
+To get the cross-sections then hardcoded in Draw.cxx for phantom
 
     cd gen_350
 

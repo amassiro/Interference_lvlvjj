@@ -185,7 +185,8 @@ void Draw(int kind = 0,         int mass = 350) {
 //  TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
 
- int NBIN = 350;
+//  int NBIN = 350;
+ int NBIN = 300;
  if (mass>400) NBIN = 120;
  if (mass>500) NBIN =  70;
  if (mass>700) NBIN = 120;
@@ -235,14 +236,14 @@ void Draw(int kind = 0,         int mass = 350) {
 //  float xsec[100] = {1.81489087459999997E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};
 
  //---- me
- if (kind == 0) gROOT->ProcessLine ("float xsec[100] = {3.59354104959999920E-002, 3.30375324117999983E-002, 3.08369319673999914E-002, 3.04300778839999946E-002, 2.96306891660000002E-002, 2.96035751339999986E-002};");
+ if (kind == 0) gROOT->ProcessLine ("float xsec[100] = {3.67919577779999979E-002, 3.44869588220000078E-002, 3.59354104959999920E-002, 3.30375324117999983E-002, 3.08369319673999914E-002, 3.04300778839999946E-002, 2.96306891660000002E-002, 2.96035751339999986E-002};");
  //---- mm
- if (kind == 1) gROOT->ProcessLine ("float xsec[100] = {1.81489087459999997E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};");
+ if (kind == 1) gROOT->ProcessLine ("float xsec[100] = {1.38655337210000004E-002, 1.23882828156000029E-002, 1.81489087459999997E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};");
 
  //---- me
- if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {0.23539E-01, 0.16986E-01, 0.65801E-02, 0.35875E-02, 0.20252E-02, 0.91164E-03};");
+ if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {1.0, 1.0, 0.23539E-01, 0.16986E-01, 0.65801E-02, 0.35875E-02, 0.20252E-02, 0.91164E-03};");
  //---- mm
- if (kind == 1) gROOT->ProcessLine ("float xsec_S[100] = {0.11912E-01, 0.99646E-02, 0.38685E-02, 0.20920E-02, 0.11599E-02, 0.50136E-03};");
+ if (kind == 1) gROOT->ProcessLine ("float xsec_S[100] = {1.0, 1.0, 0.11912E-01, 0.99646E-02, 0.38685E-02, 0.20920E-02, 0.11599E-02, 0.50136E-03};");
 
 
  //  350  w1
@@ -250,6 +251,9 @@ void Draw(int kind = 0,         int mass = 350) {
  //  650  w3
  //  800  w4
  // 1000  w5
+ //  250  w6
+ //  300  w7
+
 
  TString weight;
  if (mass ==  350) weight = Form ("w1");
@@ -257,23 +261,29 @@ void Draw(int kind = 0,         int mass = 350) {
  if (mass ==  650) weight = Form ("w3");
  if (mass ==  800) weight = Form ("w4");
  if (mass == 1000) weight = Form ("w5");
+ if (mass ==  250) weight = Form ("w4");
+ if (mass ==  300) weight = Form ("w4");
 
  float xsecToUse;
- if (mass ==  350) xsecToUse = xsec[1];
- if (mass ==  500) xsecToUse = xsec[2];
- if (mass ==  650) xsecToUse = xsec[3];
- if (mass ==  800) xsecToUse = xsec[4];
- if (mass == 1000) xsecToUse = xsec[5];
+ if (mass ==  250) xsecToUse = xsec[1];
+ if (mass ==  300) xsecToUse = xsec[2];
+ if (mass ==  350) xsecToUse = xsec[3];
+ if (mass ==  500) xsecToUse = xsec[4];
+ if (mass ==  650) xsecToUse = xsec[5];
+ if (mass ==  800) xsecToUse = xsec[6];
+ if (mass == 1000) xsecToUse = xsec[7];
 
  float xsecToUse_S;
- if (mass ==  350) xsecToUse_S = xsec_S[1];
- if (mass ==  500) xsecToUse_S = xsec_S[2];
- if (mass ==  650) xsecToUse_S = xsec_S[3];
- if (mass ==  800) xsecToUse_S = xsec_S[4];
- if (mass == 1000) xsecToUse_S = xsec_S[5];
+ if (mass ==  250) xsecToUse_S = xsec_S[1];
+ if (mass ==  300) xsecToUse_S = xsec_S[2];
+ if (mass ==  350) xsecToUse_S = xsec_S[3];
+ if (mass ==  500) xsecToUse_S = xsec_S[4];
+ if (mass ==  650) xsecToUse_S = xsec_S[5];
+ if (mass ==  800) xsecToUse_S = xsec_S[6];
+ if (mass == 1000) xsecToUse_S = xsec_S[7];
 
 //  TString cut = Form ("mjj>200 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
- TString cut = Form ("mjj>100 && pt1>20 && pt2>10 && jetpt1>10 && jetpt2>10");
+ TString cut = Form ("mjj>150 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
 
 //  TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
 //  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
@@ -286,6 +296,10 @@ void Draw(int kind = 0,         int mass = 350) {
  std::cout << " weightWithXsec126 = " << weightWithXsec126.Data() << std::endl;
  std::cout << " weightWithXsec    = " << weightWithXsec.Data()    << std::endl;
  std::cout << " weightWithXsec_S  = " << weightWithXsec_S.Data()  << std::endl;
+
+//  t1->Draw("mjj >> h_mWW_1",weightWithXsec126.Data(),"goff");
+//  t2->Draw("mjj >> h_mWW_2",weightWithXsec.Data(),   "goff");
+//  t3->Draw("mjj >> h_mWW_3",weightWithXsec_S.Data(), "goff");
 
  t1->Draw("mWW >> h_mWW_1",weightWithXsec126.Data(),"goff");
  t2->Draw("mWW >> h_mWW_2",weightWithXsec.Data(),   "goff");
