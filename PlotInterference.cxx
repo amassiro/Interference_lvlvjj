@@ -270,22 +270,30 @@ void PlotInterference(int kind = 0) {
 
  for (int i=0; i<5; i++) {
   double Hmass = 0;
-  if (i==0) Hmass = 350;
-  if (i==1) Hmass = 500;
-  if (i==2) Hmass = 650;
-  if (i==3) Hmass = 800;
-  if (i==4) Hmass = 1000;
+  if (i==0) Hmass = 250;
+  if (i==1) Hmass = 300;
+  if (i==2) Hmass = 350;
+  if (i==3) Hmass = 500;
+  if (i==4) Hmass = 650;
+  if (i==5) Hmass = 800;
+  if (i==6) Hmass = 1000;
 
- int NBIN = 350;
- if (Hmass>400) NBIN = 120;
- if (Hmass>500) NBIN =  70;
- if (Hmass>700) NBIN = 120;
- if (Hmass>900) NBIN =  40;
- int MAX = 800;
- if (Hmass>400) MAX =  1500;
- if (Hmass>500) MAX =  2000;
- if (Hmass>700) MAX =  4000;
- if (Hmass>900) MAX =  4000;
+
+  int NBIN = 300;
+  if (Hmass<350) NBIN = 500;
+  if (Hmass>400) NBIN = 120;
+  if (Hmass>500) NBIN =  70;
+  if (Hmass>700) NBIN = 120;
+  if (Hmass>900) NBIN =  40;
+
+  int MAX = 800;
+  if (Hmass<350) MAX =   500;
+  if (Hmass>400) MAX =  1500;
+  if (Hmass>500) MAX =  2000;
+  if (Hmass>700) MAX =  4000;
+  if (Hmass>900) MAX =  4000;
+
+
  float scale = 1./ (MAX/NBIN);
  log_S_N[i]  = log(S_N[i]  * scale);
  log_SI_N[i] = log(SI_N[i] * scale);
@@ -343,22 +351,30 @@ void PlotInterference(int kind = 0) {
  TF1* S_crystal_qqH[100];
  for (int i=0; i<counter; i++) {
   double Hmass = 0;
-  if (i==0) Hmass = 350;
-  if (i==1) Hmass = 500;
-  if (i==2) Hmass = 650;
-  if (i==3) Hmass = 800;
-  if (i==4) Hmass = 1000;
+  if (i==0) Hmass = 250;
+  if (i==1) Hmass = 300;
+  if (i==2) Hmass = 350;
+  if (i==3) Hmass = 500;
+  if (i==4) Hmass = 650;
+  if (i==5) Hmass = 800;
+  if (i==6) Hmass = 1000;
 
-  int NBIN = 350;
+
+  int NBIN = 300;
+  if (Hmass<350) NBIN = 500;
   if (Hmass>400) NBIN = 120;
   if (Hmass>500) NBIN =  70;
   if (Hmass>700) NBIN = 120;
   if (Hmass>900) NBIN =  40;
+
   int MAX = 800;
+  if (Hmass<350) MAX =   500;
   if (Hmass>400) MAX =  1500;
   if (Hmass>500) MAX =  2000;
   if (Hmass>700) MAX =  4000;
   if (Hmass>900) MAX =  4000;
+
+
   float scale = 1./ (MAX/NBIN);
   crystal_S[i]->SetParameter(0,crystal_S[i]->GetParameter(0) * scale);
 
@@ -396,22 +412,28 @@ void PlotInterference(int kind = 0) {
  TF1* SI_crystal_qqH[100];
  for (int i=0; i<counter; i++) {
   double Hmass = 0;
-  if (i==0) Hmass = 350;
-  if (i==1) Hmass = 500;
-  if (i==2) Hmass = 650;
-  if (i==3) Hmass = 800;
-  if (i==4) Hmass = 1000;
+  if (i==0) Hmass = 250;
+  if (i==1) Hmass = 300;
+  if (i==2) Hmass = 350;
+  if (i==3) Hmass = 500;
+  if (i==4) Hmass = 650;
+  if (i==5) Hmass = 800;
+  if (i==6) Hmass = 1000;
 
-  int NBIN = 350;
+  int NBIN = 300;
+  if (Hmass<350) NBIN = 500;
   if (Hmass>400) NBIN = 120;
   if (Hmass>500) NBIN =  70;
   if (Hmass>700) NBIN = 120;
   if (Hmass>900) NBIN =  40;
+
   int MAX = 800;
+  if (Hmass<350) MAX =   500;
   if (Hmass>400) MAX =  1500;
   if (Hmass>500) MAX =  2000;
   if (Hmass>700) MAX =  4000;
   if (Hmass>900) MAX =  4000;
+
   float scale = 1./ (MAX/NBIN);
   crystal_SI[i]->SetParameter(0,crystal_SI[i]->GetParameter(0) * scale);
 
@@ -451,22 +473,28 @@ void PlotInterference(int kind = 0) {
  TF1* Weight_crystal_qqH[100];
  for (int i=0; i<counter; i++) {
   double Hmass = 0;
-  if (i==0) Hmass = 350;
-  if (i==1) Hmass = 500;
-  if (i==2) Hmass = 650;
-  if (i==3) Hmass = 800;
-  if (i==4) Hmass = 1000;
+  if (i==0) Hmass = 250;
+  if (i==1) Hmass = 300;
+  if (i==2) Hmass = 350;
+  if (i==3) Hmass = 500;
+  if (i==4) Hmass = 650;
+  if (i==5) Hmass = 800;
+  if (i==6) Hmass = 1000;
 
-  int NBIN = 350;
+  int NBIN = 300;
+  if (Hmass<350) NBIN = 500;
   if (Hmass>400) NBIN = 120;
   if (Hmass>500) NBIN =  70;
   if (Hmass>700) NBIN = 120;
   if (Hmass>900) NBIN =  40;
+
   int MAX = 800;
+  if (Hmass<350) MAX =   500;
   if (Hmass>400) MAX =  1500;
   if (Hmass>500) MAX =  2000;
   if (Hmass>700) MAX =  4000;
   if (Hmass>900) MAX =  4000;
+
   float scale = 1./ (MAX/NBIN);
 
   for (int iMass = 0; iMass < 13*2; iMass++) {

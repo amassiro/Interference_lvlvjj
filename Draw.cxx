@@ -187,16 +187,22 @@ void Draw(int kind = 0,         int mass = 350) {
 
 //  int NBIN = 350;
  int NBIN = 300;
+ if (mass<350) NBIN = 500;
  if (mass>400) NBIN = 120;
  if (mass>500) NBIN =  70;
  if (mass>700) NBIN = 120;
  if (mass>900) NBIN =  40;
 
  int MAX = 800;
+ if (mass<350) MAX =   500;
  if (mass>400) MAX =  1500;
  if (mass>500) MAX =  2000;
  if (mass>700) MAX =  4000;
  if (mass>900) MAX =  4000;
+
+
+ int MIN = 200;
+ if (mass<350) MIN = 200;
 
 
  TString name1;
@@ -236,14 +242,20 @@ void Draw(int kind = 0,         int mass = 350) {
 //  float xsec[100] = {1.81489087459999997E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};
 
  //---- me
- if (kind == 0) gROOT->ProcessLine ("float xsec[100] = {3.67919577779999979E-002, 3.44869588220000078E-002, 3.59354104959999920E-002, 3.30375324117999983E-002, 3.08369319673999914E-002, 3.04300778839999946E-002, 2.96306891660000002E-002, 2.96035751339999986E-002};");
+ if (kind == 0) gROOT->ProcessLine ("float xsec[100] = {3.59354104959999920E-002, 3.67919577779999979E-002, 3.44869588220000078E-002, 3.30375324117999983E-002, 3.08369319673999914E-002, 3.04300778839999946E-002, 2.96306891660000002E-002, 2.96035751339999986E-002};");
  //---- mm
- if (kind == 1) gROOT->ProcessLine ("float xsec[100] = {1.38655337210000004E-002, 1.23882828156000029E-002, 1.81489087459999997E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};");
+ if (kind == 1) gROOT->ProcessLine ("float xsec[100] = {1.81489087459999997E-002, 1.38655337210000004E-002, 1.23882828156000029E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};");
 
  //---- me
- if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {1.0, 1.0, 0.23539E-01, 0.16986E-01, 0.65801E-02, 0.35875E-02, 0.20252E-02, 0.91164E-03};");
+//  if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {1.0, 1.0, 0.23539E-01, 0.16986E-01, 0.65801E-02, 0.35875E-02, 0.20252E-02, 0.91164E-03};");
  //---- mm
- if (kind == 1) gROOT->ProcessLine ("float xsec_S[100] = {1.0, 1.0, 0.11912E-01, 0.99646E-02, 0.38685E-02, 0.20920E-02, 0.11599E-02, 0.50136E-03};");
+//  if (kind == 1) gROOT->ProcessLine ("float xsec_S[100] = {1.0, 1.0, 0.11912E-01, 0.99646E-02, 0.38685E-02, 0.20920E-02, 0.11599E-02, 0.50136E-03};");
+
+ //---- me                                                  126          250          300          350              500      650           800        1000
+ if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {0.80433E-02, 0.78312E-02, 0.52913E-02, 0.36612E-02, 0.10750E-02, 0.45337E-03, 0.19850E-03, 0.62934E-04};");
+ //---- mm
+ if (kind == 1) gROOT->ProcessLine ("float xsec_S[100] = {0.40555E-02, 0.45444E-02, 0.30896E-02, 0.21460E-02, 0.63336E-03, 0.26665E-03, 0.11531E-03, 0.35402E-04};");
+
 
 
  //  350  w1
@@ -261,34 +273,36 @@ void Draw(int kind = 0,         int mass = 350) {
  if (mass ==  650) weight = Form ("w3");
  if (mass ==  800) weight = Form ("w4");
  if (mass == 1000) weight = Form ("w5");
- if (mass ==  250) weight = Form ("w4");
- if (mass ==  300) weight = Form ("w4");
+ if (mass ==  250) weight = Form ("w6");
+ if (mass ==  300) weight = Form ("w7");
 
  float xsecToUse;
- if (mass ==  250) xsecToUse = xsec[1];
- if (mass ==  300) xsecToUse = xsec[2];
- if (mass ==  350) xsecToUse = xsec[3];
- if (mass ==  500) xsecToUse = xsec[4];
- if (mass ==  650) xsecToUse = xsec[5];
- if (mass ==  800) xsecToUse = xsec[6];
- if (mass == 1000) xsecToUse = xsec[7];
+ if (mass ==  250) xsecToUse = xsec[1]/2.;
+ if (mass ==  300) xsecToUse = xsec[2]/2.;
+ if (mass ==  350) xsecToUse = xsec[3]/2.;
+ if (mass ==  500) xsecToUse = xsec[4]/2.;
+ if (mass ==  650) xsecToUse = xsec[5]/2.;
+ if (mass ==  800) xsecToUse = xsec[6]/2.;
+ if (mass == 1000) xsecToUse = xsec[7]/2.;
 
  float xsecToUse_S;
- if (mass ==  250) xsecToUse_S = xsec_S[1];
- if (mass ==  300) xsecToUse_S = xsec_S[2];
- if (mass ==  350) xsecToUse_S = xsec_S[3];
- if (mass ==  500) xsecToUse_S = xsec_S[4];
- if (mass ==  650) xsecToUse_S = xsec_S[5];
- if (mass ==  800) xsecToUse_S = xsec_S[6];
- if (mass == 1000) xsecToUse_S = xsec_S[7];
+ if (mass ==  250) xsecToUse_S = xsec_S[1]/0.5;
+ if (mass ==  300) xsecToUse_S = xsec_S[2]/0.5;
+ if (mass ==  350) xsecToUse_S = xsec_S[3]/0.5;
+ if (mass ==  500) xsecToUse_S = xsec_S[4]/0.5;
+ if (mass ==  650) xsecToUse_S = xsec_S[5]/0.5;
+ if (mass ==  800) xsecToUse_S = xsec_S[6]/0.5;
+ if (mass == 1000) xsecToUse_S = xsec_S[7]/0.5;
 
 //  TString cut = Form ("mjj>200 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
- TString cut = Form ("mjj>150 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
+//  TString cut = Form ("mjj>150 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
+ TString cut = Form ("mjj>30 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
+//  TString cut = Form ("1");
 
 //  TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
 //  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
 
- TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]);
+ TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
  TString weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
 
  TString weightWithXsec_S  = Form ("(%s) * (%f)",cut.Data(),xsecToUse_S);
@@ -377,7 +391,7 @@ void Draw(int kind = 0,         int mass = 350) {
 //  crystal_S->SetParameters(1,1,mass,h_mWW_3->GetRMS(),h_mWW_3->Integral());
 //  crystal_S->SetParNames("#alpha","n","Mean","#sigma","N");
 
-  TF1 *crystal_S = new TF1("crystal_S",crystalBallLowHigh,200,MAX,7);
+  TF1 *crystal_S = new TF1("crystal_S",crystalBallLowHigh,MIN,MAX,7);
   crystal_S->SetParameters(h_mWW_3->Integral(),mass,h_mWW_3->GetRMS(),1.,2,1.,2);
   crystal_S->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
  //                      0    1        2        3     4      5       6
@@ -389,12 +403,13 @@ void Draw(int kind = 0,         int mass = 350) {
   crystal_S->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
 
   crystal_S->SetParameter (2, 0.9 * h_mWW_3->GetRMS ()) ;
-  crystal_S->SetParLimits (2, 0.1 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+  crystal_S->SetParLimits (2, 0.0005 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
   if (mass > 700) crystal_S->SetParLimits (2, 0.02 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
 
   crystal_S->SetParameter (3, 1.0) ;
   crystal_S->SetParLimits (3, 0.5, 20.) ;
   if (mass == 500)  crystal_S->SetParLimits (3, 0.3, 20.) ;
+  if (mass == 650)  crystal_S->SetParLimits (3, 0.1, 20.) ;
   if (mass > 700)   crystal_S->SetParLimits (3, 0.3, 20.) ;
 
   crystal_S->SetParameter (4, 1.5) ;
@@ -418,7 +433,7 @@ void Draw(int kind = 0,         int mass = 350) {
 //   h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ()) ;
 //   if (mass > 700) h_mWW_3->Fit (crystal_S, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
 //   else            h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
-  h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
+  h_mWW_3->Fit (crystal_S, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
 
   //  h_mWW_3->Fit (crystal_S, "+Lr", ""); //,250, mass + 4 * h_mWW_3->GetRMS ()) ;
 //  h_mWW_3->Fit(crystal_S,"r");
@@ -434,7 +449,7 @@ void Draw(int kind = 0,         int mass = 350) {
 //  crystal_SI->SetParameters(0.1,2.,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
 //  crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
 
-  TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,200,MAX,7);
+  TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,MIN,MAX,7);
   crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
   crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
 
@@ -445,7 +460,7 @@ void Draw(int kind = 0,         int mass = 350) {
   crystal_SI->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
 
   crystal_SI->SetParameter (2, 1.0 * h_mWW_3->GetRMS ()) ;
-  crystal_SI->SetParLimits (2, 0.02 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+  crystal_SI->SetParLimits (2, 0.01 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
 
   crystal_SI->SetParameter (3, 1.0) ;
   crystal_SI->SetParLimits (3, 0.5, 20.) ;
@@ -467,7 +482,7 @@ void Draw(int kind = 0,         int mass = 350) {
   crystal_SI->SetLineColor(kRed);
 //  h_Subtraction->Fit (crystal_SI, "+Lr", "");
   if (mass > 700) h_Subtraction->Fit (crystal_SI, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
-  else            h_Subtraction->Fit (crystal_SI, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
+  else            h_Subtraction->Fit (crystal_SI, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
 
 
 
@@ -502,12 +517,15 @@ void Draw(int kind = 0,         int mass = 350) {
   std::cout << " ---------------------------------- " << std::endl;
   std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
 
+  std::cout << " S " << std::endl;
   std::cout << mass << " ";
   for (int i=0; i<7; i++) {
    std::cout << " " << crystal_S->GetParameter (i);
   }
   std::cout << std::endl;
-  std::cout << mass << " "; for (int i=0; i<7; i++) {
+  std::cout << " SI " << std::endl;
+  std::cout << mass << " ";
+  for (int i=0; i<7; i++) {
    std::cout << " " << crystal_SI->GetParameter (i);
   }
   std::cout << std::endl;

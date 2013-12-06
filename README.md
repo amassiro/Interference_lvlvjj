@@ -96,14 +96,21 @@ B and S+B
 
 
 
-    ls qqHWWuvev/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvev/"$1"_"$2"."$3"  S_"$2"_jjme.root"}'
+    ls qqHWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWevuv/"$1"_"$2"."$3"  S_"$2"_jjme.root"}'
     ls qqHWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvuv/"$1"_"$2"."$3"  S_"$2"_jjmm.root"}'
 
-    ls qqHWWuvev/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvev/"$1"_"$2"."$3"  S_"$2"_jjme.root"}' | /bin/sh
+    ls qqHWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWevuv/"$1"_"$2"."$3"  S_"$2"_jjme.root"}' | /bin/sh
     ls qqHWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvuv/"$1"_"$2"."$3"  S_"$2"_jjmm.root"}' | /bin/sh
 
+    ls qqHWWevuv/ --color=none  | awk '{print "cat   qqHWWevuv/"$1" | grep Integrated"}' 
     ls qqHWWuvuv/ --color=none  | awk '{print "cat   qqHWWuvuv/"$1" | grep Integrated"}' 
-    ls qqHWWuvev/ --color=none  | awk '{print "cat   qqHWWuvev/"$1" | grep Integrated"}' 
+
+    ls HWWevuv/ --color=none  | awk '{print "cat   HWWevuv/"$1" | grep Integrated"}' 
+    ls HWWuvuv/ --color=none  | awk '{print "cat   HWWuvuv/"$1" | grep Integrated"}' 
+
+    ls HWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWevuv/"$1"_"$2"_"$3".lhe  S_"$2"_jjme.root"}'
+    ls HWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWuvuv/"$1"_"$2"_"$3".lhe  S_"$2"_jjmm.root"}'
+
 
 Plot:
 
