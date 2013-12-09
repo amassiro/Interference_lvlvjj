@@ -167,8 +167,8 @@ void PlotInterference(int kind = 0) {
   std::cout << " " << SI_N[i] << " " << SI_Mean[i] << " " << SI_sigma[i] << " " << SI_alphaR[i] << " " << SI_nR[i] << " " << SI_alphaL[i] << " " << SI_nL[i] << std::endl;
   crystal_SI[i]->SetLineColor(kPink-i);
 
-  crystal_S[i]->SetNpx(2000);
-  crystal_SI[i]->SetNpx(2000);
+  crystal_S[i]->SetNpx(300);
+  crystal_SI[i]->SetNpx(300);
 
  }
 
@@ -212,7 +212,7 @@ void PlotInterference(int kind = 0) {
   crystal_Icorr[i]->SetParameter(13,S_nL[i]);
 
   crystal_Icorr[i]->SetLineColor(kGreen+i);
-  crystal_Icorr[i]->SetNpx(3000);
+  crystal_Icorr[i]->SetNpx(300);
  }
 
 
@@ -249,7 +249,7 @@ void PlotInterference(int kind = 0) {
   crystal_IcorrDiff[i]->SetParameter(13,S_nL[i]);
   crystal_IcorrDiff[i]->SetLineColor(kMagenta+i);
 
-  crystal_IcorrDiff[i]->SetNpx(3000);
+  crystal_IcorrDiff[i]->SetNpx(300);
  }
 
 
@@ -268,18 +268,24 @@ void PlotInterference(int kind = 0) {
  float log_S_N[100];
  float log_SI_N[100];
 
- for (int i=0; i<7; i++) {
+ for (int i=0; i<counter; i++) {
   double Hmass = 0;
-  if (i==0) Hmass = 250;
-  if (i==1) Hmass = 300;
-  if (i==2) Hmass = 350;
-  if (i==3) Hmass = 500;
-  if (i==4) Hmass = 650;
-  if (i==5) Hmass = 800;
-  if (i==6) Hmass = 1000;
+  if (i==0) Hmass = 350;
+  if (i==1) Hmass = 500;
+  if (i==2) Hmass = 650;
+  if (i==3) Hmass = 800;
+  if (i==4) Hmass = 1000;
+
+//   if (i==0) Hmass = 250;
+//   if (i==1) Hmass = 300;
+//   if (i==2) Hmass = 350;
+//   if (i==3) Hmass = 500;
+//   if (i==4) Hmass = 650;
+//   if (i==5) Hmass = 800;
+//   if (i==6) Hmass = 1000;
 
 
-  int NBIN = 300;
+  int NBIN = 500;
   if (Hmass<350) NBIN = 500;
   if (Hmass>400) NBIN = 120;
   if (Hmass>500) NBIN =  70;
@@ -351,16 +357,22 @@ void PlotInterference(int kind = 0) {
  TF1* S_crystal_qqH[100];
  for (int i=0; i<counter; i++) {
   double Hmass = 0;
-  if (i==0) Hmass = 250;
-  if (i==1) Hmass = 300;
-  if (i==2) Hmass = 350;
-  if (i==3) Hmass = 500;
-  if (i==4) Hmass = 650;
-  if (i==5) Hmass = 800;
-  if (i==6) Hmass = 1000;
+  if (i==0) Hmass = 350;
+  if (i==1) Hmass = 500;
+  if (i==2) Hmass = 650;
+  if (i==3) Hmass = 800;
+  if (i==4) Hmass = 1000;
+
+//   if (i==0) Hmass = 250;
+//   if (i==1) Hmass = 300;
+//   if (i==2) Hmass = 350;
+//   if (i==3) Hmass = 500;
+//   if (i==4) Hmass = 650;
+//   if (i==5) Hmass = 800;
+//   if (i==6) Hmass = 1000;
 
 
-  int NBIN = 300;
+  int NBIN = 500;
   if (Hmass<350) NBIN = 500;
   if (Hmass>400) NBIN = 120;
   if (Hmass>500) NBIN =  70;
@@ -398,7 +410,7 @@ void PlotInterference(int kind = 0) {
     S_crystal_qqH[iMass]->SetParameter(iVar,variables_S[iVar]->Eval(Hmass));
    }
   }
-  S_crystal_qqH[iMass] -> SetNpx(2000);
+  S_crystal_qqH[iMass] -> SetNpx(300);
   S_crystal_qqH[iMass] -> SetLineColor(kRed);
   S_crystal_qqH[iMass] -> DrawClone("Lsame");
  }
@@ -412,15 +424,21 @@ void PlotInterference(int kind = 0) {
  TF1* SI_crystal_qqH[100];
  for (int i=0; i<counter; i++) {
   double Hmass = 0;
-  if (i==0) Hmass = 250;
-  if (i==1) Hmass = 300;
-  if (i==2) Hmass = 350;
-  if (i==3) Hmass = 500;
-  if (i==4) Hmass = 650;
-  if (i==5) Hmass = 800;
-  if (i==6) Hmass = 1000;
+  if (i==0) Hmass = 350;
+  if (i==1) Hmass = 500;
+  if (i==2) Hmass = 650;
+  if (i==3) Hmass = 800;
+  if (i==4) Hmass = 1000;
 
-  int NBIN = 300;
+//   if (i==0) Hmass = 250;
+//   if (i==1) Hmass = 300;
+//   if (i==2) Hmass = 350;
+//   if (i==3) Hmass = 500;
+//   if (i==4) Hmass = 650;
+//   if (i==5) Hmass = 800;
+//   if (i==6) Hmass = 1000;
+
+  int NBIN = 500;
   if (Hmass<350) NBIN = 500;
   if (Hmass>400) NBIN = 120;
   if (Hmass>500) NBIN =  70;
@@ -457,7 +475,7 @@ void PlotInterference(int kind = 0) {
     SI_crystal_qqH[iMass]->SetParameter(iVar,variables_SI[iVar]->Eval(Hmass));
    }
   }
-  SI_crystal_qqH[iMass] -> SetNpx(2000);
+  SI_crystal_qqH[iMass] -> SetNpx(300);
   SI_crystal_qqH[iMass] -> SetLineColor(kRed);
   SI_crystal_qqH[iMass] -> DrawClone("Lsame");
  }
@@ -473,15 +491,21 @@ void PlotInterference(int kind = 0) {
  TF1* Weight_crystal_qqH[100];
  for (int i=0; i<counter; i++) {
   double Hmass = 0;
-  if (i==0) Hmass = 250;
-  if (i==1) Hmass = 300;
-  if (i==2) Hmass = 350;
-  if (i==3) Hmass = 500;
-  if (i==4) Hmass = 650;
-  if (i==5) Hmass = 800;
-  if (i==6) Hmass = 1000;
+  if (i==0) Hmass = 350;
+  if (i==1) Hmass = 500;
+  if (i==2) Hmass = 650;
+  if (i==3) Hmass = 800;
+  if (i==4) Hmass = 1000;
 
-  int NBIN = 300;
+//   if (i==0) Hmass = 250;
+//   if (i==1) Hmass = 300;
+//   if (i==2) Hmass = 350;
+//   if (i==3) Hmass = 500;
+//   if (i==4) Hmass = 650;
+//   if (i==5) Hmass = 800;
+//   if (i==6) Hmass = 1000;
+
+  int NBIN = 500;
   if (Hmass<350) NBIN = 500;
   if (Hmass>400) NBIN = 120;
   if (Hmass>500) NBIN =  70;
@@ -511,7 +535,7 @@ void PlotInterference(int kind = 0) {
      Weight_crystal_qqH[iMass]->SetParameter(iVar+7,variables_S[iVar]->Eval(Hmass));
     }
    }
-   Weight_crystal_qqH[iMass] -> SetNpx(2000);
+   Weight_crystal_qqH[iMass] -> SetNpx(300);
    Weight_crystal_qqH[iMass] -> SetLineColor(kMagenta+iMass);
    if (iMass == 0) Weight_crystal_qqH[iMass] -> DrawClone("L");
    else Weight_crystal_qqH[iMass] -> DrawClone("Lsame");

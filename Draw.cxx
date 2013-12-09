@@ -186,7 +186,7 @@ void Draw(int kind = 0,         int mass = 350) {
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
 
 //  int NBIN = 350;
- int NBIN = 300;
+ int NBIN = 500;
  if (mass<350) NBIN = 500;
  if (mass>400) NBIN = 120;
  if (mass>500) NBIN =  70;
@@ -440,9 +440,9 @@ void Draw(int kind = 0,         int mass = 350) {
 //  h_mWW_3->Fit(crystal_S,"r");
 
 
-//  std::cout << " ----------------------------------------------- " << std::endl;
-//  std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
-//  std::cout << " ----------------------------------------------- " << std::endl;
+ std::cout << " ----------------------------------------------- " << std::endl;
+ std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
+ std::cout << " ----------------------------------------------- " << std::endl;
   // 
 //  TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
 //  800   ok:    crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
@@ -471,7 +471,9 @@ void Draw(int kind = 0,         int mass = 350) {
 
   crystal_SI->SetParameter (5, 1.0) ;
   crystal_SI->SetParLimits (5, 0.5, 20.) ;
+  if (mass == 500) crystal_SI->SetParLimits (5, 0.1, 20.) ;
   if (mass == 650) crystal_SI->SetParLimits (5, 0.2, 20.) ;
+  if (mass == 800) crystal_SI->SetParLimits (5, 0.2, 20.) ;
 
   crystal_SI->SetParameter (6, 1.5) ;
   crystal_SI->SetParLimits (6, 1.0, 50) ;
@@ -481,9 +483,10 @@ void Draw(int kind = 0,         int mass = 350) {
   crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
 
   crystal_SI->SetLineColor(kRed);
-//  h_Subtraction->Fit (crystal_SI, "+Lr", "");
-  if (mass > 700) h_Subtraction->Fit (crystal_SI, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
-  else            h_Subtraction->Fit (crystal_SI, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
+//  h_Subtrac  if (mass > 700) h_Subtraction->Fit (crystal_SI, "+Lr", ""tion->Fit (crystal_SI, "+Lr", "");
+  if (mass > 700)       h_Subtraction->Fit (crystal_SI, "+Lr", "",500, mass + 3 * h_mWW_3->GetRMS ());
+  else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
+  else                  h_Subtraction->Fit (crystal_SI, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
 
 
 
