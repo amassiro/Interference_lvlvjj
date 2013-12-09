@@ -179,12 +179,12 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
    }
   }
 
-  float weight[10] =         { 1.,  1.,  1.,  1.,   1.};
-  float referenceScale[10] = {350, 500, 650, 800, 1000};
+  float weight[10] =         { 1.,  1.,  1.,  1.,   1.,   1.,   1.};
+  float referenceScale[10] = {350, 500, 650, 800, 1000,  250,  300};
   float scale = reader.hepeup.SCALUP ;
   if (referenceScale != 0 ) {
 //    std::cout << " scale = " << scale << " :: x[0] = " << x[0] << ", flavour[0] = " << flavour[0] << " x[1] = " << x[1] << ", flavour[1] = " << flavour[1] << std::endl;
-   for (int iMass = 0; iMass < 5; iMass++) {
+   for (int iMass = 0; iMass < 7; iMass++) {
     weight[iMass] = LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0]) * LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
 //     std::cout << " >> weight[" << iMass << "] = " << weight[iMass] << " = " << LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0])  << " * " << LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) << " / " << " ( " << LHAPDF::xfx (x[0], scale, flavour[0]) << " * " << LHAPDF::xfx (x[1], scale, flavour[1]) << " ) " << std::endl;
    }
@@ -194,22 +194,24 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
     mH ,
     dilepton_plus_dineutrinos.M() ,
     dijet.M () ,
-    fabs (v_f_quarks.at (0).Eta() - v_f_quarks.at (1).Eta()),
+//     fabs (v_f_quarks.at (0).Eta() - v_f_quarks.at (1).Eta()),
     v_f_quarks.at (0).Pt (),
     v_f_quarks.at (1).Pt (),
 //     v_f_quarks.at (0).Eta (),
 //     v_f_quarks.at (1).Eta (), 
     v_f_leptons.at (0).Pt (),
     v_f_leptons.at (1).Pt (),
-    diLepton.M (),
+//     diLepton.M (),
 //     diLepton.Pt (),
     isSF,
     weight[0],  //  350  w1
     weight[1],  //  500  w2
     weight[2],  //  650  w3
     weight[3],  //  800  w4
-    weight[4]   // 1000  w5
-   ) ;
+    weight[4],  // 1000  w5
+    weight[5],  //  250  w6
+    weight[6]   //  300  w7
+    ) ;
 
  } // loop over events
 
@@ -235,7 +237,8 @@ int main (int argc, char **argv) {
 
 
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:jeteta1:jeteta2:pt1:pt2:mll:ptll:sameflav:w1:w2:w3:w4:w5");
- TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:pt1:pt2:mll:sameflav:w1:w2:w3:w4:w5");
+//  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:pt1:pt2:mll:sameflav:w1:w2:w3:w4:w5:w6:w7");
+ TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:sameflav:w1:w2:w3:w4:w5:w6:w7");
  fillNtuple (argv[1], ntu) ;
 
  TFile output (argv[2], "recreate") ;
