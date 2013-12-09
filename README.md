@@ -158,3 +158,10 @@ To plot the result:
 
     root -l PlotInterference.cxx
 
+
+
+To be then uploaded to:
+
+    /home/amassiro/Latinos/CMSSW_5_3_13_patch1/src/HWWAnalysis/ShapeAnalysis/ewksinglet/data/InterferenceVBF/
+
+
