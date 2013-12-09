@@ -268,7 +268,7 @@ void PlotInterference(int kind = 0) {
  float log_S_N[100];
  float log_SI_N[100];
 
- for (int i=0; i<5; i++) {
+ for (int i=0; i<7; i++) {
   double Hmass = 0;
   if (i==0) Hmass = 250;
   if (i==1) Hmass = 300;
