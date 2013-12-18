@@ -180,7 +180,7 @@ Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
 
 
 //           0 = em, 1 = mm
-void Draw(int kind = 0,         int mass = 350) {
+void Draw(int kind = 0,         int mass = 350,   bool doFit = 1) {
 
 //  TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
@@ -372,7 +372,7 @@ void Draw(int kind = 0,         int mass = 350) {
  cc_Subtraction->SetGrid();
 
 
- bool doFit = true;
+//  bool doFit = true;
 //  bool doFit = false;
 
  if (doFit) {

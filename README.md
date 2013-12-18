@@ -122,6 +122,7 @@ Plot:
     root -l Draw.cxx\(0,300\)
     root -l Draw.cxx\(1,300\)
 
+    root -l Draw.cxx\(0,350,0\)
     root -l Draw.cxx\(0,350\)
     root -l Draw.cxx\(1,350\)
 
@@ -157,6 +158,7 @@ To get the cross-sections then hardcoded in Draw.cxx for phantom
 To plot the result:
 
     root -l PlotInterference.cxx
+    root -l PlotInterference.cxx\(1\)
 
 
 
