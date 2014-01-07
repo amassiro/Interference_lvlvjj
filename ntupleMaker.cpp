@@ -161,6 +161,9 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
   // the sum pf the two quarks
   TLorentzVector dijet = v_f_quarks.at (0) + v_f_quarks.at (1) ;
 
+  // sum output fermions
+  TLorentzVector dilepton_plus_dineutrinos_dijets = v_f_leptons.at (0) + v_f_leptons.at (1) + v_f_neutrinos.at (0) + v_f_neutrinos.at (1) +  v_f_quarks.at (0) + v_f_quarks.at (1) ;
+
 
   // weights
   // ---- the B (=h126) has been calculated with a scale at 126 GeV
@@ -190,6 +193,9 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
    }
   }
 
+  float sum_vect_pt = dilepton_plus_dineutrinos_dijets.Pt();
+  weight[7] = LHAPDF::xfx (x[0], sum_vect_pt, flavour[0]) * LHAPDF::xfx (x[1], sum_vect_pt, flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
+
   ntuple.Fill (
     mH ,
     dilepton_plus_dineutrinos.M() ,
@@ -203,14 +209,15 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
     v_f_leptons.at (1).Pt (),
 //     diLepton.M (),
 //     diLepton.Pt (),
-    isSF,
+//     isSF,
     weight[0],  //  350  w1
     weight[1],  //  500  w2
     weight[2],  //  650  w3
     weight[3],  //  800  w4
     weight[4],  // 1000  w5
     weight[5],  //  250  w6
-    weight[6]   //  300  w7
+    weight[6],  //  300  w7
+    weight[7]   // dynamic running scale
     ) ;
 
  } // loop over events
@@ -238,7 +245,8 @@ int main (int argc, char **argv) {
 
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:jeteta1:jeteta2:pt1:pt2:mll:ptll:sameflav:w1:w2:w3:w4:w5");
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:pt1:pt2:mll:sameflav:w1:w2:w3:w4:w5:w6:w7");
- TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:sameflav:w1:w2:w3:w4:w5:w6:w7");
+//  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:sameflav:w1:w2:w3:w4:w5:w6:w7");
+ TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:w1:w2:w3:w4:w5:w6:w7");
  fillNtuple (argv[1], ntu) ;
 
  TFile output (argv[2], "recreate") ;
