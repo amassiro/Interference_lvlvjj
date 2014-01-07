@@ -217,7 +217,7 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
     weight[4],  // 1000  w5
     weight[5],  //  250  w6
     weight[6],  //  300  w7
-    weight[7]   // dynamic running scale
+    weight[7]   //       w8 dynamic running scale
     ) ;
 
  } // loop over events
@@ -246,7 +246,7 @@ int main (int argc, char **argv) {
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:jeteta1:jeteta2:pt1:pt2:mll:ptll:sameflav:w1:w2:w3:w4:w5");
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:pt1:pt2:mll:sameflav:w1:w2:w3:w4:w5:w6:w7");
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:sameflav:w1:w2:w3:w4:w5:w6:w7");
- TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:w1:w2:w3:w4:w5:w6:w7");
+ TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:w1:w2:w3:w4:w5:w6:w7:w8");
  fillNtuple (argv[1], ntu) ;
 
  TFile output (argv[2], "recreate") ;
