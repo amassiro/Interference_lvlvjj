@@ -161,6 +161,10 @@ To plot the result:
     root -l PlotInterference.cxx\(1\)
 
 
+Then copy to common repository
+
+    ls output/ | awk '{print "cp output/"$1"/*.root ../Interference_VBF/data/"$1}'
+
 
 To be then uploaded to:
 
