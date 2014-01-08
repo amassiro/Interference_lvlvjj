@@ -196,7 +196,7 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
 //   float sum_vect_pt = dilepton_plus_dineutrinos_dijets.Pt();
 //   weight[7] = LHAPDF::xfx (x[0], sum_vect_pt, flavour[0]) * LHAPDF::xfx (x[1], sum_vect_pt, flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
 
-  float sum_pt = sqrt( v_f_leptons.at(0).Pt()*v_f_leptons.at(0).Pt() + v_f_leptons.at(1).Pt()*v_f_leptons.at(1).Pt() + v_f_neutrinos.at(0).Pt()*v_f_neutrinos.at(0).Pt() + v_f_neutrinos.at(1).Pt()*v_f_neutrinos.at(1).Pt() +  v_f_quarks.at(0).Pt()*v_f_quarks.at(0).Pt() + v_f_quarks.at(1).Pt()*v_f_quarks.at(1).Pt() ) / 6. + 80.385 ;
+  float sum_pt = sqrt( ( v_f_leptons.at(0).Pt()*v_f_leptons.at(0).Pt() + v_f_leptons.at(1).Pt()*v_f_leptons.at(1).Pt() + v_f_neutrinos.at(0).Pt()*v_f_neutrinos.at(0).Pt() + v_f_neutrinos.at(1).Pt()*v_f_neutrinos.at(1).Pt() +  v_f_quarks.at(0).Pt()*v_f_quarks.at(0).Pt() + v_f_quarks.at(1).Pt()*v_f_quarks.at(1).Pt() ) / 6. + 80.385*80.385) ;
 
   weight[7] = LHAPDF::xfx (x[0], sum_pt, flavour[0]) * LHAPDF::xfx (x[1], sum_pt, flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
 
