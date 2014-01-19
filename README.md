@@ -115,15 +115,15 @@ Scale up/down:
 
     rm doScaleVariation.sh
     touch  doScaleVariation.sh
-    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  scaleDown/"$1"_jjme.root   0.5"}' 
-    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  scaleDown/"$1"_jjmm.root   0.5"}
-    ls HWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWevuv/"$1"_"$2"_"$3".lhe  scaleDown/S_"$2"_jjme.root   0.5"}'
-    ls HWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWuvuv/"$1"_"$2"_"$3".lhe  scaleDown/S_"$2"_jjmm.root   0.5"}'
+    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  scaleDown/"$1"_jjme.root   0.5"}' >> doScaleVariation.sh 
+    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  scaleDown/"$1"_jjmm.root   0.5"}'  >> doScaleVariation.sh
+    ls HWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWevuv/"$1"_"$2"_"$3".lhe  scaleDown/S_"$2"_jjme.root   0.5"}' >> doScaleVariation.sh
+    ls HWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWuvuv/"$1"_"$2"_"$3".lhe  scaleDown/S_"$2"_jjmm.root   0.5"}' >> doScaleVariation.sh
 
-    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  scaleUp/"$1"_jjme.root   2.0"}'
-    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  scaleUp/"$1"_jjmm.root   2.0"}
-    ls HWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWevuv/"$1"_"$2"_"$3".lhe  scaleUp/S_"$2"_jjme.root   2.0"}'
-    ls HWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWuvuv/"$1"_"$2"_"$3".lhe  scaleUp/S_"$2"_jjmm.root   2.0"}'
+    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-e+/total.lhe  scaleUp/"$1"_jjme.root   2.0"}' >> doScaleVariation.sh
+    ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  scaleUp/"$1"_jjmm.root   2.0"}' >> doScaleVariation.sh
+    ls HWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWevuv/"$1"_"$2"_"$3".lhe  scaleUp/S_"$2"_jjme.root   2.0"}' >> doScaleVariation.sh
+    ls HWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWuvuv/"$1"_"$2"_"$3".lhe  scaleUp/S_"$2"_jjmm.root   2.0"}' >> doScaleVariation.sh
 
 
 
