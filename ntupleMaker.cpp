@@ -50,7 +50,7 @@ TLorentzVector buildP (const LHEF::HEPEUP & event, int iPart) {
 
 
 
-void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
+void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple, float globalScale) {
  std::ifstream ifs (fileNameLHE.c_str ()) ;
  LHEF::Reader reader (ifs) ;
 
@@ -188,7 +188,7 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple) {
   if (referenceScale != 0 ) {
 //    std::cout << " scale = " << scale << " :: x[0] = " << x[0] << ", flavour[0] = " << flavour[0] << " x[1] = " << x[1] << ", flavour[1] = " << flavour[1] << std::endl;
    for (int iMass = 0; iMass < 7; iMass++) {
-    weight[iMass] = LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0]) * LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
+    weight[iMass] = LHAPDF::xfx (x[0], globalScale * referenceScale[iMass], flavour[0]) * LHAPDF::xfx (x[1], globalScale * referenceScale[iMass], flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
 //     std::cout << " >> weight[" << iMass << "] = " << weight[iMass] << " = " << LHAPDF::xfx (x[0], referenceScale[iMass], flavour[0])  << " * " << LHAPDF::xfx (x[1], referenceScale[iMass], flavour[1]) << " / " << " ( " << LHAPDF::xfx (x[0], scale, flavour[0]) << " * " << LHAPDF::xfx (x[1], scale, flavour[1]) << " ) " << std::endl;
    }
   }
@@ -234,10 +234,15 @@ int main (int argc, char **argv) {
  // Open a stream connected to an event file:
  if (argc < 3) exit (1) ;
 
- std::cout << " Input  LHE  =" << argv[1] << std::endl;
- std::cout << " Output ROOT =" << argv[2] << std::endl;
+ std::cout << " Input  LHE  = " << argv[1] << std::endl;
+ std::cout << " Output ROOT = " << argv[2] << std::endl;
 
- 
+ float globalScale;
+ if (argc >=4) globalScale = atof(argv[3]);
+ else globalScale = 1.;
+
+ std::cout << " globalScale = " << globalScale << std::endl;
+
  const int SUBSET = 0 ;
  const std::string NAME = "cteq6ll" ; //"cteq6l1"
 
@@ -251,7 +256,7 @@ int main (int argc, char **argv) {
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:pt1:pt2:mll:sameflav:w1:w2:w3:w4:w5:w6:w7");
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:sameflav:w1:w2:w3:w4:w5:w6:w7");
  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:w1:w2:w3:w4:w5:w6:w7:w8");
- fillNtuple (argv[1], ntu) ;
+ fillNtuple (argv[1], ntu, globalScale) ;
 
  TFile output (argv[2], "recreate") ;
  output.cd() ;
