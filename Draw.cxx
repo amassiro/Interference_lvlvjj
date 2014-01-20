@@ -180,7 +180,16 @@ Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
 
 
 //           0 = em, 1 = mm
-void Draw(int kind = 0,         int mass = 350,   bool doFit = 1) {
+void Draw(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleVariation = 0) {
+
+//  scaleVariation = 0   nominal
+//                  -1   scale down
+//                   1   scale up
+
+ std::string folder;
+ if (scaleVariation ==  0) folder = "./";
+ if (scaleVariation == -1) folder = "scaleDown/";
+ if (scaleVariation ==  1) folder = "scaleUp/";
 
 //  TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
@@ -206,16 +215,16 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1) {
 
 
  TString name1;
- if (kind == 0) name1 = Form ("gen_126_jjme.root");
- else           name1 = Form ("gen_126_jjmm.root");
+ if (kind == 0) name1 = Form ("%sgen_126_jjme.root",folder.c_str());
+ else           name1 = Form ("%sgen_126_jjmm.root",folder.c_str());
 
  TString name2;
- if (kind == 0) name2 = Form ("gen_%d_jjme.root",mass);
- else           name2 = Form ("gen_%d_jjmm.root",mass);
+ if (kind == 0) name2 = Form ("%sgen_%d_jjme.root",folder.c_str(),mass);
+ else           name2 = Form ("%sgen_%d_jjmm.root",folder.c_str(),mass);
 
  TString name3;
- if (kind == 0) name3 = Form ("S_mH%d_jjme.root",mass);
- else           name3 = Form ("S_mH%d_jjmm.root",mass);
+ if (kind == 0) name3 = Form ("%sS_mH%d_jjme.root",folder.c_str(),mass);
+ else           name3 = Form ("%sS_mH%d_jjmm.root",folder.c_str(),mass);
 
  TFile* f1 = new TFile (name1.Data(),"READ"); // ---- B
  TFile* f2 = new TFile (name2.Data(),"READ"); // ---- S+B
@@ -303,9 +312,13 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1) {
 //  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
 
  TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
- TString weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
+ TString weightWithXsec    ;
+ if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
+ else                     weightWithXsec    = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse);
 
- TString weightWithXsec_S  = Form ("(%s) * (%f)",cut.Data(),xsecToUse_S);
+ TString weightWithXsec_S  ;
+ if (scaleVariation == 0) weightWithXsec_S  = Form ("(%s) * (%f)",cut.Data(),xsecToUse_S);
+ else                     weightWithXsec_S  = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse_S);
 
  std::cout << " weightWithXsec126 = " << weightWithXsec126.Data() << std::endl;
  std::cout << " weightWithXsec    = " << weightWithXsec.Data()    << std::endl;
@@ -403,7 +416,7 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1) {
   crystal_S->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
 
   crystal_S->SetParameter (2, 0.9 * h_mWW_3->GetRMS ()) ;
-  crystal_S->SetParLimits (2, 0.0005 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+  crystal_S->SetParLimits (2, 0.00005 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
   if (mass > 700) crystal_S->SetParLimits (2, 0.02 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
 
   crystal_S->SetParameter (3, 1.0) ;
@@ -417,7 +430,7 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1) {
 
   crystal_S->SetParameter (5, 1.0) ;
   crystal_S->SetParLimits (5, 0.5, 20.) ;
-  if (mass == 650)  crystal_S->SetParLimits (5, 0.4, 20.) ;
+  if (mass == 650)  crystal_S->SetParLimits (5, 0.3, 20.) ;
   if (mass > 700)   crystal_S->SetParLimits (5, 0.3, 20.) ;
 
   crystal_S->SetParameter (6, 1.5) ;
@@ -435,7 +448,9 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1) {
 //   if (mass > 700) h_mWW_3->Fit (crystal_S, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
 //   else            h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
   h_mWW_3->Fit (crystal_S, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
+//   if (mass == 650) h_mWW_3->Fit (crystal_S, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
 
+  
   //  h_mWW_3->Fit (crystal_S, "+Lr", ""); //,250, mass + 4 * h_mWW_3->GetRMS ()) ;
 //  h_mWW_3->Fit(crystal_S,"r");
 
@@ -460,8 +475,8 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1) {
   crystal_SI->SetParameter (1, mass) ;
   crystal_SI->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
 
-  crystal_SI->SetParameter (2, 1.0 * h_mWW_3->GetRMS ()) ;
-  crystal_SI->SetParLimits (2, 0.01 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+  crystal_SI->SetParameter (2, 0.8 * h_mWW_3->GetRMS ()) ;
+  crystal_SI->SetParLimits (2, 0.001 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
 
   crystal_SI->SetParameter (3, 1.0) ;
   crystal_SI->SetParLimits (3, 0.5, 20.) ;

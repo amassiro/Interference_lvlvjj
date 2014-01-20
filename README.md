@@ -128,7 +128,7 @@ Scale up/down:
 
 
 
-Plot:
+Plot: (0 = em, 1 = mm)
 
     root -l Draw.cxx
 
@@ -156,6 +156,41 @@ Plot:
 
 
 
+Scale up: (0 = em, 1 = mm)
+
+    root -l Draw.cxx\(0,350,1,1\)
+    root -l Draw.cxx\(1,350,1,1\)
+
+    root -l Draw.cxx\(0,500,1,1\)
+    root -l Draw.cxx\(1,500,1,1\)
+
+    root -l Draw.cxx\(0,650,1,1\)
+    root -l Draw.cxx\(1,650,1,1\)
+
+    root -l Draw.cxx\(0,800,1,1\)
+    root -l Draw.cxx\(1,800,1,1\)
+
+    root -l Draw.cxx\(0,1000,1,1\)
+    root -l Draw.cxx\(1,1000,1,1\)
+
+
+Scale down: (0 = em, 1 = mm)
+
+    root -l Draw.cxx\(0,350,1,-1\)
+    root -l Draw.cxx\(1,350,1,-1\)
+
+    root -l Draw.cxx\(0,500,1,-1\)
+    root -l Draw.cxx\(1,500,1,-1\)
+
+    root -l Draw.cxx\(0,650,1,-1\)
+    root -l Draw.cxx\(1,650,1,-1\)
+
+    root -l Draw.cxx\(0,800,1,-1\)
+    root -l Draw.cxx\(1,800,1,-1\)
+
+    root -l Draw.cxx\(0,1000,1,-1\)
+    root -l Draw.cxx\(1,1000,1,-1\)
+
 
 
 To get the cross-sections then hardcoded in Draw.cxx for phantom
@@ -175,6 +210,18 @@ To plot the result:
 
     root -l PlotInterference.cxx
     root -l PlotInterference.cxx\(1\)
+
+scale up:
+
+    root -l PlotInterference.cxx\(0,1\)
+    root -l PlotInterference.cxx\(1,1\)
+
+scale down:
+
+    root -l PlotInterference.cxx\(0,-1\)
+    root -l PlotInterference.cxx\(1,-1\)
+
+
 
 
 Then copy to common repository

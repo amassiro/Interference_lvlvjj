@@ -75,7 +75,16 @@ Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
 
 
 //           0 = em, 1 = mm
-void PlotInterference(int kind = 0) {
+void PlotInterference(int kind = 0,     int scaleVariation = 0) {
+
+//  scaleVariation = 0   nominal
+//                  -1   scale down
+//                   1   scale up
+
+ std::string folder;
+ if (scaleVariation ==  0) folder = "./";
+ if (scaleVariation == -1) folder = "results_down/";
+ if (scaleVariation ==  1) folder = "results_up/";
 
  std::string buffer;
  float num;
@@ -100,8 +109,8 @@ void PlotInterference(int kind = 0) {
  float SI_nL[100];
 
  TString nameS;
- if (kind == 0) nameS = Form ("results_em_S.txt");
- if (kind == 1) nameS = Form ("results_mm_S.txt");
+ if (kind == 0) nameS = Form ("%sresults_em_S.txt",folder.c_str());
+ if (kind == 1) nameS = Form ("%sresults_mm_S.txt",folder.c_str());
  std::ifstream file_S (nameS.Data());
  counter = 0;
  while(!file_S.eof()) {
@@ -123,8 +132,8 @@ void PlotInterference(int kind = 0) {
  }
 
  TString nameSI;
- if (kind == 0) nameSI = Form ("results_em_SI.txt");
- if (kind == 1) nameSI = Form ("results_mm_SI.txt");
+ if (kind == 0) nameSI = Form ("%sresults_em_SI.txt",folder.c_str());
+ if (kind == 1) nameSI = Form ("%sresults_mm_SI.txt",folder.c_str());
  std::ifstream file_SI (nameSI.Data());
  counter = 0;
  while(!file_SI.eof()) {
@@ -148,6 +157,7 @@ void PlotInterference(int kind = 0) {
 
  //---- fit with function ----
 
+ TFile* fileOutput[100];
  TF1 *crystal_S[100];
  TF1 *crystal_SI[100];
 
@@ -181,6 +191,16 @@ void PlotInterference(int kind = 0) {
   else crystal_S[i]->DrawClone("PLsame");
 
   crystal_SI[i]->DrawClone("PLsame");
+
+  std::cout << " S_mass[" << i << "] = " << S_mass[i] << std::endl;
+  TString nameFile;
+  if (kind == 0) nameFile = Form ("output/%1.0f/WWlvlv_df.root",S_mass[i]);
+  if (kind == 1) nameFile = Form ("output/%1.0f/WWlvlv_sf.root",S_mass[i]);
+  fileOutput[i] = new TFile (nameFile.Data(),"RECREATE");
+  TGraph gS(crystal_S[i]);
+  gS.Write ("S");
+  TGraph gSI(crystal_SI[i]);
+  gSI.Write ("SI");
  }
 
 
