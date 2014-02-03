@@ -500,6 +500,7 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleV
   crystal_SI->SetLineColor(kRed);
 //  h_Subtrac  if (mass > 700) h_Subtraction->Fit (crystal_SI, "+Lr", ""tion->Fit (crystal_SI, "+Lr", "");
   if (mass > 700)       h_Subtraction->Fit (crystal_SI, "+Lr", "",500, mass + 3 * h_mWW_3->GetRMS ());
+//   else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "+Lr", "",300, mass + 3 * h_mWW_3->GetRMS ());
   else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
   else                  h_Subtraction->Fit (crystal_SI, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
 
