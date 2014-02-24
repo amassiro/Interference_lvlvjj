@@ -94,12 +94,10 @@ B and S+B
     ls -d  gen_*/ --color=none  | tr "/" " " | awk '{print "./ntupleMaker.exe   "$1"/gen2jmu-mu+/total.lhe  "$1"_jjmm.root"}' | /bin/sh
 
 
-
+    # old
     ls qqHWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWevuv/"$1"_"$2"."$3"  S_"$2"_jjme.root"}'
     ls qqHWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvuv/"$1"_"$2"."$3"  S_"$2"_jjmm.root"}'
-
-    ls qqHWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWevuv/"$1"_"$2"."$3"  S_"$2"_jjme.root"}' | /bin/sh
-    ls qqHWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   qqHWWuvuv/"$1"_"$2"."$3"  S_"$2"_jjmm.root"}' | /bin/sh
+    # old (end)
 
     ls qqHWWevuv/ --color=none  | awk '{print "cat   qqHWWevuv/"$1" | grep Integrated"}' 
     ls qqHWWuvuv/ --color=none  | awk '{print "cat   qqHWWuvuv/"$1" | grep Integrated"}' 
@@ -109,6 +107,8 @@ B and S+B
 
     ls HWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWevuv/"$1"_"$2"_"$3".lhe  S_"$2"_jjme.root"}'
     ls HWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWuvuv/"$1"_"$2"_"$3".lhe  S_"$2"_jjmm.root"}'
+    ls HWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWevuv/"$1"_"$2"_"$3".lhe  S_"$2"_jjme.root"}' | /bin/sh
+    ls HWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWuvuv/"$1"_"$2"_"$3".lhe  S_"$2"_jjmm.root"}' | /bin/sh
 
 
 Scale up/down:
@@ -125,6 +125,7 @@ Scale up/down:
     ls HWWevuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWevuv/"$1"_"$2"_"$3".lhe  scaleUp/S_"$2"_jjme.root   2.0"}' >> doScaleVariation.sh
     ls HWWuvuv/ --color=none  | tr "_" " " | tr "." " " | awk '{print "./ntupleMaker.exe   HWWuvuv/"$1"_"$2"_"$3".lhe  scaleUp/S_"$2"_jjmm.root   2.0"}' >> doScaleVariation.sh
 
+    sh doScaleVariation.sh
 
 
 
@@ -243,4 +244,14 @@ Just draw:
 
     r99t DrawDistribution.cxx\(\"gen_126_jjme.root\",\"jetpt1\",200,0,2000,\"jetpt1\ [GeV]\"\)
     r99t DrawDistribution.cxx\(\"gen_126_jjme.root\",\"mjj\",200,10,2000,\"mjj\"\)
+    r99t DrawDistribution.cxx\(\"gen_800_jjme.root\",\"mjj\",200,10,2000,\"mjj\"\)
+    r99t DrawDistribution.cxx\(\"S_mH800_jjme.root\",\"mjj\",400,10,4000,\"mjj\"\)
+
+
+
+Comparison with VBFNLO:
+
+    root -l DrawVBFNLO.cxx\(0,800\)
+    root -l DrawVBFNLO.cxx\(1,800\)
+
 

@@ -180,7 +180,7 @@ Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
 
 
 //           0 = em, 1 = mm
-void Draw(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleVariation = 0) {
+void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleVariation = 0) {
 
 //  scaleVariation = 0   nominal
 //                  -1   scale down
@@ -206,7 +206,7 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleV
  if (mass<350) MAX =   500;
  if (mass>400) MAX =  1500;
  if (mass>500) MAX =  2000;
- if (mass>700) MAX =  4000;
+ if (mass>700) MAX =  2000; //---- 4000
  if (mass>900) MAX =  4000;
 
 
@@ -568,6 +568,54 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleV
   std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
 
  }
+
+ //--------------------------------
+ //---- Comparison with VBFNLO ----
+ //  /home/amassiro/Interference/Interference_VBF/data/800/MCatNLO_Franziska.root
+ //  /home/amassiro/Interference/Interference_VBF/data/800/mWW_SBI_dat.root
+ //  /home/amassiro/Interference/Interference_VBF/data/800/mWW_B_dat.root
+
+ //---- B ----
+ TCanvas* cc_B = new TCanvas("cc_B","Background",800,600);
+ TFile* f_B_VBFNLO = new TFile ("/home/amassiro/Interference/Interference_VBF/data/800/mWW_B_dat.root","READ");
+ TH1F* h_B_VBFNLO = (TH1F*) f_B_VBFNLO->Get("h_mWW_B_dat");
+ h_B_VBFNLO->SetLineColor(kRed);
+ h_B_VBFNLO->SetLineWidth(2);
+ h_B_VBFNLO->SetLineStyle(1);
+
+ h_mWW_1->DrawNormalized();
+ h_B_VBFNLO->DrawNormalized("same");
+
+ TLegend* leg_B = new TLegend (0.5,0.5,0.9,0.9);
+ leg_B -> SetFillColor(0);
+ leg_B -> AddEntry(h_mWW_1,    "Phantom", "L");
+ leg_B -> AddEntry(h_B_VBFNLO, "VBFNLO",  "L");
+ leg_B -> Draw();
+
+ cc_B->SetGrid();
+
+ //---- SBI ----
+ TCanvas* cc_SBI = new TCanvas("cc_SBI","S+I+B",800,600);
+ TFile* f_SBI_VBFNLO = new TFile ("/home/amassiro/Interference/Interference_VBF/data/800/mWW_SBI_dat.root","READ");
+ TH1F* h_SBI_VBFNLO = (TH1F*) f_SBI_VBFNLO->Get("h_mWW_SBI_dat");
+ h_SBI_VBFNLO->SetLineColor(kBlue);
+ h_SBI_VBFNLO->SetLineWidth(2);
+ h_SBI_VBFNLO->SetLineStyle(1);
+
+ h_mWW_2->DrawNormalized();
+ h_SBI_VBFNLO->DrawNormalized("same");
+
+ TLegend* leg_SBI = new TLegend (0.5,0.5,0.9,0.9);
+ leg_SBI -> SetFillColor(0);
+ leg_SBI -> AddEntry(h_mWW_2,      "Phantom", "L");
+ leg_SBI -> AddEntry(h_SBI_VBFNLO, "VBFNLO",  "L");
+ leg_SBI -> Draw();
+
+ cc_SBI->SetGrid();
+
+
+
+
 
 }
 
