@@ -199,7 +199,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  if (mass<350) NBIN = 500;
  if (mass>400) NBIN = 120;
  if (mass>500) NBIN =  70;
- if (mass>700) NBIN = 120;
+ if (mass>700) NBIN = 100; //---- 120
  if (mass>900) NBIN =  80;
 
  int MAX = 800;
@@ -308,7 +308,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 
  //---- to compare with MC@NLO
 //  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10");
- TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<6.5 && abs(eta2)<6.5 && mll>8");
+ TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<2.5 && abs(eta2)<2.5 && mll>8");
 
 
 //    leptons min E   5 GeV
@@ -582,13 +582,17 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  h_B_VBFNLO->SetLineColor(kRed);
  h_B_VBFNLO->SetLineWidth(2);
  h_B_VBFNLO->SetLineStyle(1);
+ h_B_VBFNLO->Scale (40000.);
 
  h_mWW_1->SetLineColor(kBlue);
  h_mWW_1->SetLineWidth(2);
  h_mWW_1->SetLineStyle(2);
 
- h_mWW_1->DrawNormalized();
- h_B_VBFNLO->DrawNormalized("same");
+ h_mWW_1->Draw();
+ h_B_VBFNLO->Draw("same");
+
+//  h_mWW_1->DrawNormalized();
+//  h_B_VBFNLO->DrawNormalized("same");
 
  TLegend* leg_B = new TLegend (0.5,0.5,0.9,0.9);
  leg_B -> SetFillColor(0);
@@ -605,13 +609,17 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  h_SBI_VBFNLO->SetLineColor(kRed);
  h_SBI_VBFNLO->SetLineWidth(2);
  h_SBI_VBFNLO->SetLineStyle(1);
+ h_SBI_VBFNLO->Scale (40000.);
 
  h_mWW_2->SetLineColor(kBlue);
  h_mWW_2->SetLineWidth(2);
  h_mWW_2->SetLineStyle(2);
 
- h_mWW_2->DrawNormalized();
- h_SBI_VBFNLO->DrawNormalized("same");
+ h_mWW_2->Draw();
+ h_SBI_VBFNLO->Draw("same");
+
+//  h_mWW_2->DrawNormalized();
+//  h_SBI_VBFNLO->DrawNormalized("same");
 
  TLegend* leg_SBI = new TLegend (0.5,0.5,0.9,0.9);
  leg_SBI -> SetFillColor(0);
