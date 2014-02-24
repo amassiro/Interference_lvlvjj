@@ -234,3 +234,13 @@ To be then uploaded to:
     /home/amassiro/Latinos/CMSSW_5_3_13_patch1/src/HWWAnalysis/ShapeAnalysis/ewksinglet/data/InterferenceVBF/
 
 
+
+
+Plot
+=======
+
+Just draw:
+
+    r99t DrawDistribution.cxx\(\"gen_126_jjme.root\",\"jetpt1\",200,0,2000,\"jetpt1\ [GeV]\"\)
+    r99t DrawDistribution.cxx\(\"gen_126_jjme.root\",\"mjj\",200,10,2000,\"mjj\"\)
+

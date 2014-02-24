@@ -303,9 +303,22 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleV
  if (mass ==  800) xsecToUse_S = xsec_S[6]/0.5;
  if (mass == 1000) xsecToUse_S = xsec_S[7]/0.5;
 
-//  TString cut = Form ("mjj>200 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
-//  TString cut = Form ("mjj>150 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
- TString cut = Form ("mjj>30 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
+ //---- used:
+//  TString cut = Form ("mjj>30 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
+
+ //---- to compare with MC@NLO
+ TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10");
+
+//  leptons max eta 2.5
+//    leptons min E   5 GeV
+//    jets max eta    6.5
+//  di-lepton min invariant mass    8 GeV
+//    minimum delta R between the fwd and bkw jets    0.4
+//    minimum delta R between jets and leptons        0.4
+//    minimum delta R between two leptons     0.4
+
+
+ 
 //  TString cut = Form ("1");
 
 //  TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
