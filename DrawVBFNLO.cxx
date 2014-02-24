@@ -583,6 +583,10 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  h_B_VBFNLO->SetLineWidth(2);
  h_B_VBFNLO->SetLineStyle(1);
 
+ h_mWW_1->SetLineColor(kBlue);
+ h_mWW_1->SetLineWidth(2);
+ h_mWW_1->SetLineStyle(2);
+
  h_mWW_1->DrawNormalized();
  h_B_VBFNLO->DrawNormalized("same");
 
@@ -598,9 +602,13 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  TCanvas* cc_SBI = new TCanvas("cc_SBI","S+I+B",800,600);
  TFile* f_SBI_VBFNLO = new TFile ("/home/amassiro/Interference/Interference_VBF/data/800/mWW_SBI_dat.root","READ");
  TH1F* h_SBI_VBFNLO = (TH1F*) f_SBI_VBFNLO->Get("h_mWW_SBI_dat");
- h_SBI_VBFNLO->SetLineColor(kBlue);
+ h_SBI_VBFNLO->SetLineColor(kRed);
  h_SBI_VBFNLO->SetLineWidth(2);
  h_SBI_VBFNLO->SetLineStyle(1);
+
+ h_mWW_2->SetLineColor(kBlue);
+ h_mWW_2->SetLineWidth(2);
+ h_mWW_2->SetLineStyle(2);
 
  h_mWW_2->DrawNormalized();
  h_SBI_VBFNLO->DrawNormalized("same");
