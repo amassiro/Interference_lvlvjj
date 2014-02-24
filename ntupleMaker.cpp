@@ -23,7 +23,8 @@
 
 
 
-#include "TNtuple.h"
+// #include "TNtuple.h"
+#include "TTree.h"
 #include "TFile.h"
 #include "TLorentzVector.h"
 #include "Math/Vector3D.h"
@@ -50,13 +51,54 @@ TLorentzVector buildP (const LHEF::HEPEUP & event, int iPart) {
 
 
 
-void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple, float globalScale) {
+void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
  std::ifstream ifs (fileNameLHE.c_str ()) ;
  LHEF::Reader reader (ifs) ;
 
  long ieve = 0 ;
  long selected = 0 ;
  double jetsNum = 0. ;
+
+ float mH;
+ float mWW;
+ float mjj;
+ float detajj;
+ float jetpt1;
+ float jetpt2;
+ float jeteta1;
+ float jeteta2; 
+ float pt1;
+ float pt2;
+ float eta1;
+ float eta2;
+ float mll;
+ float ptll;
+ float sameflav;
+ float w1; float w2; float w3; float w4; float w5; float w6; float w7; float w8;
+
+ ntuple.Branch("mH",&mH,"mH/F");
+ ntuple.Branch("mWW",&mWW,"mWW/F");
+ ntuple.Branch("mjj",&mjj,"mjj/F");
+ ntuple.Branch("detajj",&detajj,"detajj/F");
+ ntuple.Branch("jetpt1",&jetpt1,"jetpt1/F");
+ ntuple.Branch("jetpt2",&jetpt2,"jetpt2/F");
+ ntuple.Branch("jeteta1",&jeteta1,"jeteta1/F");
+ ntuple.Branch("jeteta2",&jeteta2,"jeteta2/F");
+ ntuple.Branch("pt1",&pt1,"pt1/F");
+ ntuple.Branch("pt2",&pt2,"pt2/F");
+ ntuple.Branch("eta1",&eta1,"eta1/F");
+ ntuple.Branch("eta2",&eta2,"eta2/F");
+ ntuple.Branch("mll",&mll,"mll/F");
+ ntuple.Branch("ptll",&ptll,"ptll/F");
+ ntuple.Branch("sameflav",&sameflav,"sameflav/F");
+ ntuple.Branch("w1",&w1,"w1/F");
+ ntuple.Branch("w2",&w2,"w2/F");
+ ntuple.Branch("w3",&w3,"w3/F");
+ ntuple.Branch("w4",&w4,"w4/F");
+ ntuple.Branch("w5",&w5,"w5/F");
+ ntuple.Branch("w6",&w6,"w6/F");
+ ntuple.Branch("w7",&w7,"w7/F");
+ ntuple.Branch("w8",&w8,"w8/F");
 
  std::cout << " reading " << fileNameLHE << std::endl;
 
@@ -67,7 +109,24 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple, float globalScale) 
 
   TLorentzVector Higgs;
   int iPartHiggs = -1;
-  float mH = 0;
+
+  mH = -99;
+  mWW = -99;
+  mjj = -99;
+  detajj = -99;
+  jetpt1 = -99;
+  jetpt2 = -99;
+  jeteta1 = -99;
+  jeteta2 = -99; 
+  pt1 = -99;
+  pt2 = -99;
+  eta1 = -99;
+  eta2 = -99;
+  mll = -99;
+  ptll = -99;
+  sameflav = -99;
+  w1 = -99;  w2 = -99;  w3 = -99;  w4 = -99;  w5 = -99;  w6 = -99;  w7 = -99;  w8 = -99;
+
 
   std::vector<int> finalJets ;
   std::vector<TLorentzVector> v_f_quarks ;
@@ -200,29 +259,25 @@ void fillNtuple (std::string fileNameLHE,  TNtuple & ntuple, float globalScale) 
 
   weight[7] = LHAPDF::xfx (x[0], sum_pt, flavour[0]) * LHAPDF::xfx (x[1], sum_pt, flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
 
-  ntuple.Fill (
-    mH ,
-    dilepton_plus_dineutrinos.M() ,
-    dijet.M () ,
-//     fabs (v_f_quarks.at (0).Eta() - v_f_quarks.at (1).Eta()),
-    v_f_quarks.at (0).Pt (),
-    v_f_quarks.at (1).Pt (),
-//     v_f_quarks.at (0).Eta (),
-//     v_f_quarks.at (1).Eta (), 
-    v_f_leptons.at (0).Pt (),
-    v_f_leptons.at (1).Pt (),
-//     diLepton.M (),
-//     diLepton.Pt (),
-//     isSF,
-    weight[0],  //  350  w1
-    weight[1],  //  500  w2
-    weight[2],  //  650  w3
-    weight[3],  //  800  w4
-    weight[4],  // 1000  w5
-    weight[5],  //  250  w6
-    weight[6],  //  300  w7
-    weight[7]   //       w8 dynamic running scale
-    ) ;
+  //---- variables
+  mWW = dilepton_plus_dineutrinos.M();
+  mjj = dijet.M () ;
+  detajj = fabs (v_f_quarks.at (0).Eta() - v_f_quarks.at (1).Eta());
+  jetpt1 = v_f_quarks.at (0).Pt ();
+  jetpt2 = v_f_quarks.at (1).Pt ();
+  jeteta1 = v_f_quarks.at (0).Eta ();
+  jeteta2 = v_f_quarks.at (1).Eta ();
+  pt1 = v_f_leptons.at (0).Pt ();
+  pt2 = v_f_leptons.at (1).Pt ();
+  eta1 = v_f_leptons.at (0).Eta ();
+  eta2 = v_f_leptons.at (1).Eta ();
+  mll = diLepton.M ();
+  ptll = diLepton.Pt ();
+  sameflav = 1. * isSF;
+  w1 = weight[0];  w2 = weight[1];  w3 = weight[2];  w4 = weight[3];
+  w5 = weight[4];  w6 = weight[5];  w7 = weight[6];  w8 = weight[7];
+
+  ntuple.Fill ();
 
  } // loop over events
 
@@ -255,7 +310,10 @@ int main (int argc, char **argv) {
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:jeteta1:jeteta2:pt1:pt2:mll:ptll:sameflav:w1:w2:w3:w4:w5");
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:detajj:jetpt1:jetpt2:pt1:pt2:mll:sameflav:w1:w2:w3:w4:w5:w6:w7");
 //  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:sameflav:w1:w2:w3:w4:w5:w6:w7");
- TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:w1:w2:w3:w4:w5:w6:w7:w8");
+//  TNtuple ntu ("ntu", "ntu", "mH:mWW:mjj:jetpt1:jetpt2:pt1:pt2:w1:w2:w3:w4:w5:w6:w7:w8");
+//  fillNtuple (argv[1], ntu, globalScale) ;
+
+ TTree ntu("ntu","ntu");
  fillNtuple (argv[1], ntu, globalScale) ;
 
  TFile output (argv[2], "recreate") ;
