@@ -317,16 +317,18 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 //    minimum delta R between two leptons     0.4
 
 
- 
 //  TString cut = Form ("1");
 
 //  TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
 //  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
 
- TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
+//  TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
+ TString weightWithXsec126 = Form ("(%s) * (%s * %f) * (numt == 0)",cut.Data(),weight.Data(),xsec[0]/2.);
  TString weightWithXsec    ;
- if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
- else                     weightWithXsec    = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse);
+//  if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
+//  else                     weightWithXsec    = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse);
+ if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f) * (numt == 0)",cut.Data(),xsecToUse);
+ else                     weightWithXsec    = Form ("(%s) * (%s) * (%f) * (numt == 0)",weight.Data(), cut.Data(),xsecToUse);
 
  TString weightWithXsec_S  ;
  if (scaleVariation == 0) weightWithXsec_S  = Form ("(%s) * (%f)",cut.Data(),xsecToUse_S);
