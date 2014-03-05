@@ -75,6 +75,8 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
  float ptll;
  float sameflav;
  float w1; float w2; float w3; float w4; float w5; float w6; float w7; float w8;
+ int numb;
+ int numt;
 
  ntuple.Branch("mH",&mH,"mH/F");
  ntuple.Branch("mWW",&mWW,"mWW/F");
@@ -99,6 +101,8 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
  ntuple.Branch("w6",&w6,"w6/F");
  ntuple.Branch("w7",&w7,"w7/F");
  ntuple.Branch("w8",&w8,"w8/F");
+ ntuple.Branch("numb",&numb,"numb/I");
+ ntuple.Branch("numt",&numt,"numt/I");
 
  std::cout << " reading " << fileNameLHE << std::endl;
 
@@ -126,7 +130,8 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
   ptll = -99;
   sameflav = -99;
   w1 = -99;  w2 = -99;  w3 = -99;  w4 = -99;  w5 = -99;  w6 = -99;  w7 = -99;  w8 = -99;
-
+  numb = 0;
+  numt = 0;
 
   std::vector<int> finalJets ;
   std::vector<TLorentzVector> v_f_quarks ;
@@ -258,6 +263,33 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
   float sum_pt = sqrt( ( v_f_leptons.at(0).Pt()*v_f_leptons.at(0).Pt() + v_f_leptons.at(1).Pt()*v_f_leptons.at(1).Pt() + v_f_neutrinos.at(0).Pt()*v_f_neutrinos.at(0).Pt() + v_f_neutrinos.at(1).Pt()*v_f_neutrinos.at(1).Pt() +  v_f_quarks.at(0).Pt()*v_f_quarks.at(0).Pt() + v_f_quarks.at(1).Pt()*v_f_quarks.at(1).Pt() ) / 6. + 80.385*80.385) ;
 
   weight[7] = LHAPDF::xfx (x[0], sum_pt, flavour[0]) * LHAPDF::xfx (x[1], sum_pt, flavour[1]) / (LHAPDF::xfx (x[0], scale, flavour[0]) * LHAPDF::xfx (x[1], scale, flavour[1])) ;
+
+  //---- b quarks
+  numb = 0;
+  // loop over particles in the event
+  for (unsigned int  iPart = 0 ; iPart < reader.hepeup.IDUP.size (); iPart++) {
+   // outgoing particles
+   if (reader.hepeup.ISTUP.at (iPart) == 1) {
+    // b quarks
+    if (abs (reader.hepeup.IDUP.at (iPart)) == 5) {
+     numb++;
+    }
+   }
+  }
+
+  //---- top quarks
+  numt = 0;
+  // loop over particles in the event
+  for (unsigned int  iPart = 0 ; iPart < reader.hepeup.IDUP.size (); iPart++) {
+   // intermediate particles
+   if (reader.hepeup.ISTUP.at (iPart) == 2) {
+    // top quarks
+    if (abs (reader.hepeup.IDUP.at (iPart)) == 6) {
+     numt++;
+    }
+   }
+  }
+
 
   //---- variables
   mWW = dilepton_plus_dineutrinos.M();
