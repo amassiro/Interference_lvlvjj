@@ -308,7 +308,9 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 
  //---- to compare with MC@NLO
 //  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10");
- TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<2.5 && abs(eta2)<2.5 && mll>8");
+//  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<2.5 && abs(eta2)<2.5 && mll>8");
+ TString cut = Form ("jetpt1>20 && jetpt2>20 && mjj>400 && detajj>4 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5");
+//  TString cut = Form ("jetpt1>25 && jetpt2>25 && mjj>600 && detajj>3 && abs(jeteta1)<4.9 && abs(jeteta2)<4.9 && pt1>25 && pt2>25"); // && pfmet>25");
 
 
 //    leptons min E   5 GeV
@@ -584,12 +586,14 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  h_B_VBFNLO->SetLineColor(kRed);
  h_B_VBFNLO->SetLineWidth(2);
  h_B_VBFNLO->SetLineStyle(1);
- h_B_VBFNLO->Scale (40000.*2); //---- *2 for e+mu- to mu+e-
+ h_B_VBFNLO->Scale (2000.);
+
 
  h_mWW_1->SetLineColor(kBlue);
  h_mWW_1->SetLineWidth(2);
  h_mWW_1->SetLineStyle(2);
 
+ h_mWW_1->GetYaxis()->SetTitle("#sigma [ab]");
  h_mWW_1->Draw();
  h_B_VBFNLO->Draw("same");
 
@@ -611,12 +615,13 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  h_SBI_VBFNLO->SetLineColor(kRed);
  h_SBI_VBFNLO->SetLineWidth(2);
  h_SBI_VBFNLO->SetLineStyle(1);
- h_SBI_VBFNLO->Scale (40000.*2); //---- *2 for e+mu- to mu+e-
+ h_SBI_VBFNLO->Scale (2000.);
 
  h_mWW_2->SetLineColor(kBlue);
  h_mWW_2->SetLineWidth(2);
  h_mWW_2->SetLineStyle(2);
 
+ h_mWW_2->GetYaxis()->SetTitle("#sigma [ab]");
  h_mWW_2->Draw();
  h_SBI_VBFNLO->Draw("same");
 
@@ -632,6 +637,28 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  cc_SBI->SetGrid();
 
 
+
+
+
+
+ //---- Normalized ----
+
+
+  //---- B ----
+ TCanvas* cc_Norm_B = new TCanvas("cc_Norm_B","Background",800,600);
+ h_mWW_1->GetYaxis()->SetTitle("");
+ h_mWW_1->DrawNormalized();
+ h_B_VBFNLO->DrawNormalized("same");
+ leg_B -> Draw();
+ cc_Norm_B->SetGrid();
+
+ //---- SBI ----
+ TCanvas* cc_Norm_SBI = new TCanvas("cc_Norm_SBI","S+I+B",800,600);
+ h_mWW_2->GetYaxis()->SetTitle("");
+ h_mWW_2->DrawNormalized();
+ h_SBI_VBFNLO->DrawNormalized("same");
+ leg_SBI -> Draw();
+ cc_Norm_SBI->SetGrid();
 
 
 
