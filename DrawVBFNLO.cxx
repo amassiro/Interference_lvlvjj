@@ -646,7 +646,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 
   //---- B ----
  TCanvas* cc_Norm_B = new TCanvas("cc_Norm_B","Background",800,600);
- h_mWW_1->GetYaxis()->SetTitle("");
+//  h_mWW_1->GetYaxis()->SetTitle("");
  h_mWW_1->DrawNormalized();
  h_B_VBFNLO->DrawNormalized("same");
  leg_B -> Draw();
@@ -654,7 +654,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 
  //---- SBI ----
  TCanvas* cc_Norm_SBI = new TCanvas("cc_Norm_SBI","S+I+B",800,600);
- h_mWW_2->GetYaxis()->SetTitle("");
+//  h_mWW_2->GetYaxis()->SetTitle("");
  h_mWW_2->DrawNormalized();
  h_SBI_VBFNLO->DrawNormalized("same");
  leg_SBI -> Draw();
