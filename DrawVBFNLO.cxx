@@ -586,7 +586,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  h_B_VBFNLO->SetLineColor(kRed);
  h_B_VBFNLO->SetLineWidth(2);
  h_B_VBFNLO->SetLineStyle(1);
- h_B_VBFNLO->Scale (2000.);
+ h_B_VBFNLO->Scale (2000.*20.);
 
 
  h_mWW_1->SetLineColor(kBlue);
@@ -615,7 +615,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  h_SBI_VBFNLO->SetLineColor(kRed);
  h_SBI_VBFNLO->SetLineWidth(2);
  h_SBI_VBFNLO->SetLineStyle(1);
- h_SBI_VBFNLO->Scale (2000.);
+ h_SBI_VBFNLO->Scale (2000.*20.);
 
  h_mWW_2->SetLineColor(kBlue);
  h_mWW_2->SetLineWidth(2);
