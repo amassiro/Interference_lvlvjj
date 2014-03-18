@@ -328,7 +328,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 //  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
 
 //  TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
- TString weightWithXsec126 = Form ("(%s) * (%s * %f) * (numt == 0)",cut.Data(),weight.Data(),xsec[0]/2.);
+ TString weightWithXsec126 = Form ("(%s) * (%s * %f) * (numt == 0) * (numb == 0)",cut.Data(),weight.Data(),xsec[0]/2.);
  TString weightWithXsec    ;
 //  if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
 //  else                     weightWithXsec    = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse);
