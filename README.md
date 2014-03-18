@@ -252,7 +252,7 @@ Just draw:
 Comparison with VBFNLO: (0 = em, 1 = mm)
 
     root -l DrawVBFNLO.cxx\(0,800\)
-    root -l DrawVBFNLO.cxx\(1,800\)
+(*     root -l DrawVBFNLO.cxx\(1,800\)  --- *)
 
 
 

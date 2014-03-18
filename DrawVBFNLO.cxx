@@ -309,8 +309,10 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  //---- to compare with MC@NLO
 //  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10");
 //  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<2.5 && abs(eta2)<2.5 && mll>8");
- TString cut = Form ("jetpt1>20 && jetpt2>20 && mjj>400 && detajj>4 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5");
+//  TString cut = Form ("jetpt1>20 && jetpt2>20 && mjj>400 && detajj>4 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5");
 //  TString cut = Form ("jetpt1>25 && jetpt2>25 && mjj>600 && detajj>3 && abs(jeteta1)<4.9 && abs(jeteta2)<4.9 && pt1>25 && pt2>25"); // && pfmet>25");
+
+ TString cut = Form ("jetpt1>10 && jetpt2>10 && mjj>200  && abs(jeteta1)<6.5 && abs(jeteta2)<6.5 && mll>8 && pt1>8 && abs(eta1)<2.5 && abs(eta2)<2.5");
 
 
 //    leptons min E   5 GeV
