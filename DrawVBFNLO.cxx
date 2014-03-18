@@ -312,7 +312,8 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 //  TString cut = Form ("jetpt1>20 && jetpt2>20 && mjj>400 && detajj>4 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5");
 //  TString cut = Form ("jetpt1>25 && jetpt2>25 && mjj>600 && detajj>3 && abs(jeteta1)<4.9 && abs(jeteta2)<4.9 && pt1>25 && pt2>25"); // && pfmet>25");
 
- TString cut = Form ("jetpt1>10 && jetpt2>10 && mjj>200  && abs(jeteta1)<6.5 && abs(jeteta2)<6.5 && mll>8 && pt1>8 && abs(eta1)<2.5 && abs(eta2)<2.5");
+//  TString cut = Form ("jetpt1>10 && jetpt2>10 && mjj>200  && abs(jeteta1)<6.5 && abs(jeteta2)<6.5 && mll>8 && pt1>8 && abs(eta1)<2.5 && abs(eta2)<2.5");
+ TString cut = Form ("mjj>200");
 
 
 //    leptons min E   5 GeV
@@ -582,7 +583,10 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  //  /home/amassiro/Interference/Interference_VBF/data/800/mWW_B_dat.root
 
  //---- B ----
- TCanvas* cc_B = new TCanvas("cc_B","Background",800,600);
+ TCanvas* cc_B = new TCanvas("cc_B","Background",800,900);
+ cc_B->Divide(0,2);
+ cc_B->cd(1);
+
  TFile* f_B_VBFNLO = new TFile ("/home/amassiro/Interference/Interference_VBF/data/800/mWW_B_dat.root","READ");
  TH1F* h_B_VBFNLO = (TH1F*) f_B_VBFNLO->Get("h_mWW_B_dat");
  h_B_VBFNLO->SetLineColor(kRed);
@@ -608,10 +612,51 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  leg_B -> AddEntry(h_B_VBFNLO, "VBFNLO",  "L");
  leg_B -> Draw();
 
- cc_B->SetGrid();
+ gPad->SetGrid();
 
+ TGraphAsymmErrors *gr_B_ratio = new TGraphAsymmErrors();
+ gr_B_ratio->SetFillColor (kRed);
+ gr_B_ratio->SetLineColor (kRed);
+ gr_B_ratio->SetMarkerColor (kRed);
+ gr_B_ratio->SetMarkerSize (1);
+ gr_B_ratio->SetLineWidth (2);
+ gr_B_ratio->SetLineStyle (1);
+ gr_B_ratio->SetFillStyle (3001);
+ gr_B_ratio->SetMarkerStyle (20);
+ 
+ for (int iMass = 0; iMass < h_B_VBFNLO->GetNbinsX(); iMass++) {
+  double errYhi = 0;
+  double errYlo = 0;
+  double X = h_B_VBFNLO->GetXaxis()->GetBinCenter(iMass+1);
+  double Y = h_B_VBFNLO->GetBinContent(iMass+1);
+  if (h_mWW_1->GetBinContent(iMass+1) != 0) {
+   Y /= h_mWW_1->GetBinContent(iMass+1);
+  }
+  else {
+   Y = 1.;
+  }
+  double errXhi = 0;
+  double errXlo = 0;  
+  gr_B_ratio -> SetPoint      (iMass, X, Y);
+  gr_B_ratio -> SetPointError (iMass, errXlo, errXhi, errYlo, errYhi);
+ }
+
+ cc_B->cd(2);
+ gr_B_ratio->Draw("APL");
+ gr_B_ratio->GetYaxis()->SetTitle("ratio vbfnlo/phantom");
+ gr_B_ratio->GetXaxis()->SetTitle("m_{WW} [GeV]");
+ gr_B_ratio->GetXaxis()->SetRangeUser(0,2000);
+ gPad->SetGrid();
+
+
+
+ 
+ 
+ 
  //---- SBI ----
- TCanvas* cc_SBI = new TCanvas("cc_SBI","S+I+B",800,600);
+ TCanvas* cc_SBI = new TCanvas("cc_SBI","S+I+B",800,900);
+ cc_SBI->Divide(0,2);
+ cc_SBI->cd(1);
  TFile* f_SBI_VBFNLO = new TFile ("/home/amassiro/Interference/Interference_VBF/data/800/mWW_SBI_dat.root","READ");
  TH1F* h_SBI_VBFNLO = (TH1F*) f_SBI_VBFNLO->Get("h_mWW_SBI_dat");
  h_SBI_VBFNLO->SetLineColor(kRed);
@@ -636,8 +681,41 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  leg_SBI -> AddEntry(h_SBI_VBFNLO, "VBFNLO",  "L");
  leg_SBI -> Draw();
 
- cc_SBI->SetGrid();
+ gPad->SetGrid();
 
+ TGraphAsymmErrors *gr_SBI_ratio = new TGraphAsymmErrors();
+ gr_SBI_ratio->SetFillColor (kRed);
+ gr_SBI_ratio->SetLineColor (kRed);
+ gr_SBI_ratio->SetMarkerColor (kRed);
+ gr_SBI_ratio->SetMarkerSize (1);
+ gr_SBI_ratio->SetLineWidth (2);
+ gr_SBI_ratio->SetLineStyle (1);
+ gr_SBI_ratio->SetFillStyle (3001);
+ gr_SBI_ratio->SetMarkerStyle (20);
+
+ for (int iMass = 0; iMass < h_SBI_VBFNLO->GetNbinsX(); iMass++) {
+  double errYhi = 0;
+  double errYlo = 0;
+  double X = h_SBI_VBFNLO->GetXaxis()->GetBinCenter(iMass+1);
+  double Y = h_SBI_VBFNLO->GetBinContent(iMass+1);
+  if (h_mWW_2->GetBinContent(iMass+1) != 0) {
+   Y /= h_mWW_2->GetBinContent(iMass+1);
+  }
+  else {
+   Y = 1.;
+  }
+  double errXhi = 0;
+  double errXlo = 0;  
+  gr_SBI_ratio -> SetPoint      (iMass, X, Y);
+  gr_SBI_ratio -> SetPointError (iMass, errXlo, errXhi, errYlo, errYhi);
+ }
+
+ cc_SBI->cd(2);
+ gr_SBI_ratio->Draw("APL");
+ gr_SBI_ratio->GetYaxis()->SetTitle("ratio vbfnlo/phantom");
+ gr_SBI_ratio->GetXaxis()->SetTitle("m_{WW} [GeV]");
+ gr_SBI_ratio->GetXaxis()->SetRangeUser(0,2000);
+ gPad->SetGrid();
 
 
 
