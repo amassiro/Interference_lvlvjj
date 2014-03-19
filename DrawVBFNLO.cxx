@@ -527,6 +527,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 
 
   h_mWW_3 -> Draw();
+  h_mWW_3->GetXaxis()->SetTitle("m_{WW} [GeV]");
   h_Subtraction -> Draw("same");
   crystal_S->Draw("same");
   crystal_SI->Draw("same");
