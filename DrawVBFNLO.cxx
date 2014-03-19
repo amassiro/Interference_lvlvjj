@@ -395,7 +395,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 
  TCanvas* cc_Subtraction = new TCanvas("cc_Subtraction","cc_Subtraction",800,600);
 //  h_Subtraction->GetYaxis()->SetRangeUser(-10,5000);
- h_Subtraction->GetYaxis()->SetRangeUser(0.001,h_Subtraction->GetMaximum()*2.5);
+ h_Subtraction->GetYaxis()->SetRangeUser(0.001,h_Subtraction->GetMaximum()*1.1);
  h_Subtraction->SetLineColor(kMagenta);
  h_Subtraction->SetLineStyle(1);
  h_Subtraction->SetLineWidth(2);
@@ -723,23 +723,32 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 
  TCanvas* cc_Subtraction_vbfnlo = new TCanvas("cc_Subtraction_vbfnlo","cc_Subtraction_vbfnlo",800,600);
 //  h_Subtraction->GetYaxis()->SetRangeUser(-10,5000);
- h_Subtraction->GetYaxis()->SetRangeUser(0.001,h_Subtraction->GetMaximum()*2.5);
+ h_Subtraction->GetXaxis()->SetTitle("m_{WW} [GeV]");
+ h_Subtraction->GetYaxis()->SetRangeUser(0.001,h_Subtraction->GetMaximum()*1.1);
  h_Subtraction->SetLineColor(kMagenta);
  h_Subtraction->SetLineStyle(1);
  h_Subtraction->SetLineWidth(2);
  h_Subtraction -> Draw();
  h_mWW_3 -> Draw("same");
- cc_Subtraction_vbfnlo->SetGrid();
 
  TH1F* h_SI_VBFNLO = h_SBI_VBFNLO->Clone("h_mWW_SI_dat");
  for (int iBin = 0; iBin < h_SI_VBFNLO->GetNbinsX(); iBin++) {
   h_SI_VBFNLO ->SetBinContent(iBin+1, h_SBI_VBFNLO->GetBinContent(iBin+1) - h_B_VBFNLO->GetBinContent(iBin+1));
+//   std::cout << " h_SBI_VBFNLO->GetBinContent(" << iBin+1 << ") - h_B_VBFNLO->GetBinContent(" << iBin+1 << ") = " << h_SBI_VBFNLO->GetBinContent(iBin+1) - h_B_VBFNLO->GetBinContent(iBin+1) << std::endl;
  }
  h_SI_VBFNLO->SetLineColor(kRed);
  h_SI_VBFNLO->SetLineStyle(3);
- h_SI_VBFNLO->SetLineWidth(2);
+ h_SI_VBFNLO->SetLineWidth(4);
  h_SI_VBFNLO->Draw("same");
 
+ TLegend* leg_SI = new TLegend (0.5,0.5,0.9,0.9);
+ leg_SI -> SetFillColor(0);
+ leg_SI -> AddEntry(h_mWW_3,       "Madgraph H = 800 GeV", "L");
+ leg_SI -> AddEntry(h_Subtraction, "Phantom S+I",  "L");
+ leg_SI -> AddEntry(h_B_VBFNLO,    "VBFNLO S+I",  "L");
+ leg_SI -> Draw();
+
+ cc_Subtraction_vbfnlo->SetGrid();
 
 
  //---- Normalized ----

@@ -134,6 +134,7 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
   numt = 0;
 
   std::vector<int> finalJets ;
+  std::vector<TLorentzVector> v_f_jets ;
   std::vector<TLorentzVector> v_f_quarks ;
   std::vector<TLorentzVector> v_f_leptons ;
   std::vector<TLorentzVector> v_f_neutrinos ;
@@ -159,8 +160,8 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
 
    // outgoing particles
    if (reader.hepeup.ISTUP.at (iPart) == 1) {
-    // quarks
-    if (abs (reader.hepeup.IDUP.at (iPart)) < 7) {
+    // quarks  or gluons
+    if (abs (reader.hepeup.IDUP.at (iPart)) < 7 || abs (reader.hepeup.IDUP.at (iPart)) == 21) {
      finalJets.push_back (iPart) ;
      TLorentzVector dummy (
        reader.hepeup.PUP.at (iPart).at (0), // px
@@ -168,8 +169,11 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
        reader.hepeup.PUP.at (iPart).at (2), // pz
        reader.hepeup.PUP.at (iPart).at (3) // E
        ) ;
-     v_f_quarks.push_back (dummy) ;
-    } // quarks
+     if (abs (reader.hepeup.IDUP.at (iPart)) < 7) {
+      v_f_quarks.push_back (dummy) ;
+     }
+     v_f_jets.push_back (dummy) ;
+    }
     else if (abs (reader.hepeup.IDUP.at (iPart)) == 11 || abs (reader.hepeup.IDUP.at (iPart)) == 13) {  // e = 11,   mu = 13
      TLorentzVector dummy (
        reader.hepeup.PUP.at (iPart).at (0), // px
@@ -194,7 +198,7 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
    } // outgoing particles
   } // loop over particles in the event
 
-  if (v_f_quarks.size () < 2) {
+  if (v_f_jets.size () < 2) {
    std::cout << " what !?!?!?! Not 2 jets? Are you kidding?" << std::endl;
    continue;
   }
@@ -214,6 +218,7 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
   else                              std::cerr << "warning strange things happen\n" ;
 
   // sorting in pt
+  sort (v_f_jets.rbegin (), v_f_jets.rend (), ptsort ()) ;
   sort (v_f_quarks.rbegin (), v_f_quarks.rend (), ptsort ()) ;
   sort (v_f_leptons.rbegin (), v_f_leptons.rend (), ptsort ()) ;
 
@@ -222,11 +227,13 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
 
   TLorentzVector dilepton_plus_dineutrinos = v_f_leptons.at (0) + v_f_leptons.at (1) + v_f_neutrinos.at (0) + v_f_neutrinos.at (1) ;
 
-  // the sum pf the two quarks
-  TLorentzVector dijet = v_f_quarks.at (0) + v_f_quarks.at (1) ;
+  // the sum pf the two jets
+//   TLorentzVector dijet = v_f_quarks.at (0) + v_f_quarks.at (1) ;
+  TLorentzVector dijet = v_f_jets.at (0) + v_f_jets.at (1) ;
 
   // sum output fermions
-  TLorentzVector dilepton_plus_dineutrinos_dijets = v_f_leptons.at (0) + v_f_leptons.at (1) + v_f_neutrinos.at (0) + v_f_neutrinos.at (1) +  v_f_quarks.at (0) + v_f_quarks.at (1) ;
+//   TLorentzVector dilepton_plus_dineutrinos_dijets = v_f_leptons.at (0) + v_f_leptons.at (1) + v_f_neutrinos.at (0) + v_f_neutrinos.at (1) +  v_f_quarks.at (0) + v_f_quarks.at (1) ;
+  TLorentzVector dilepton_plus_dineutrinos_dijets = v_f_leptons.at (0) + v_f_leptons.at (1) + v_f_neutrinos.at (0) + v_f_neutrinos.at (1) +  v_f_jets.at (0) + v_f_jets.at (1) ;
 
 
   // weights
@@ -294,7 +301,7 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
   //---- variables
   mWW = dilepton_plus_dineutrinos.M();
   mjj = dijet.M () ;
-  detajj = fabs (v_f_quarks.at (0).Eta() - v_f_quarks.at (1).Eta());
+  detajj = fabs (v_f_jets.at (0).Eta() - v_f_jets.at (1).Eta());
   jetpt1 = v_f_quarks.at (0).Pt ();
   jetpt2 = v_f_quarks.at (1).Pt ();
   jeteta1 = v_f_quarks.at (0).Eta ();
