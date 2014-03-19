@@ -456,7 +456,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
   crystal_S->SetParLimits (6, 1.0, 50) ;
 
   crystal_S->SetLineColor(kCyan);
-  h_mWW_3->Fit (crystal_S, "+", "",  mass - 0.5 * h_mWW_3->GetRMS (), mass + 0.5 * h_mWW_3->GetRMS ()) ;
+  h_mWW_3->Fit (crystal_S, "N", "",  mass - 0.5 * h_mWW_3->GetRMS (), mass + 0.5 * h_mWW_3->GetRMS ()) ;
   crystal_S->SetParameters (crystal_S->GetParameters ()) ;
 
 //  crystal_S->FixParameter (1, crystal_S->GetParameters ()[1]) ; //---- mean
@@ -466,7 +466,7 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 //   h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ()) ;
 //   if (mass > 700) h_mWW_3->Fit (crystal_S, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
 //   else            h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
-  h_mWW_3->Fit (crystal_S, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
+  h_mWW_3->Fit (crystal_S, "NLr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
 //   if (mass == 650) h_mWW_3->Fit (crystal_S, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
 
   
@@ -513,15 +513,15 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
   crystal_SI->SetParLimits (6, 1.0, 50) ;
 
   crystal_SI->SetLineColor(kMagenta-10);
-  h_Subtraction->Fit (crystal_SI, "+", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
+  h_Subtraction->Fit (crystal_SI, "N", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
   crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
 
   crystal_SI->SetLineColor(kRed);
 //  h_Subtrac  if (mass > 700) h_Subtraction->Fit (crystal_SI, "+Lr", ""tion->Fit (crystal_SI, "+Lr", "");
-  if (mass > 700)       h_Subtraction->Fit (crystal_SI, "+Lr", "",500, mass + 3 * h_mWW_3->GetRMS ());
+  if (mass > 700)       h_Subtraction->Fit (crystal_SI, "NLr", "",500, mass + 3 * h_mWW_3->GetRMS ());
 //   else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "+Lr", "",300, mass + 3 * h_mWW_3->GetRMS ());
-  else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
-  else                  h_Subtraction->Fit (crystal_SI, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
+  else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "NLr", "",400, mass + 3 * h_mWW_3->GetRMS ());
+  else                  h_Subtraction->Fit (crystal_SI, "NLr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
 
 
 
@@ -719,6 +719,26 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  gPad->SetGrid();
 
 
+ //---- plot difference ----
+
+ TCanvas* cc_Subtraction_vbfnlo = new TCanvas("cc_Subtraction_vbfnlo","cc_Subtraction_vbfnlo",800,600);
+//  h_Subtraction->GetYaxis()->SetRangeUser(-10,5000);
+ h_Subtraction->GetYaxis()->SetRangeUser(0.001,h_Subtraction->GetMaximum()*2.5);
+ h_Subtraction->SetLineColor(kMagenta);
+ h_Subtraction->SetLineStyle(1);
+ h_Subtraction->SetLineWidth(2);
+ h_Subtraction -> Draw();
+ h_mWW_3 -> Draw("same");
+ cc_Subtraction_vbfnlo->SetGrid();
+
+ TH1F* h_SI_VBFNLO = h_SBI_VBFNLO->Clone("h_mWW_SI_dat");
+ for (int iBin = 0; iBin < h_SI_VBFNLO->GetNbinsX(); iBin++) {
+  h_SI_VBFNLO ->SetBinContent(iBin+1, h_SBI_VBFNLO->GetBinContent(iBin+1) - h_B_VBFNLO->GetBinContent(iBin+1));
+ }
+ h_SI_VBFNLO->SetLineColor(kRed);
+ h_SI_VBFNLO->SetLineStyle(3);
+ h_SI_VBFNLO->SetLineWidth(2);
+ h_SI_VBFNLO->Draw("same");
 
 
 
