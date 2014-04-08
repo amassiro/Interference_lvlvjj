@@ -255,6 +255,9 @@ Comparison with VBFNLO: (0 = em, 1 = mm)
 
 
 
+Comparison of the correction function for different selections: (0 = em, 1 = mm)
+
+    root -l DrawVBFNLOcutsDependence.cxx\(0,800\)
 
 
 
