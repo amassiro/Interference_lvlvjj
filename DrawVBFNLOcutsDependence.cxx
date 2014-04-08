@@ -136,11 +136,17 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
  vcut[0] = Form ("mjj>200 && pt2>8");
  vcut[1] = Form ("mjj>300 && pt2>8");
  vcut[2] = Form ("mjj>500 && pt2>8");
- vcut[3] = Form ("mjj>200 && detajj>3.5 && pt2>8");
- vcut[4] = Form ("mjj>200 && detajj>2.1 && pt2>8");
+ vcut[3] = Form ("mjj>1000 && pt2>8");
+ vcut[4] = Form ("mjj>200 && detajj>3.5 && pt2>8");
+ vcut[5] = Form ("mjj>500 && detajj>3.5 && pt2>8");
+ vcut[6] = Form ("mjj>1000 && detajj>3.5 && pt2>8");
 
+ int maxVector = 7;
 
- for (int i=0; i<5; i++) {
+ TLegend* leg_B = new TLegend (0.5,0.5,0.9,0.9);
+ leg_B -> SetFillColor(0);
+
+ for (int i=0; i<maxVector; i++) {
   TString cut = vcut[i];
 
 //  TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
@@ -188,15 +194,22 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
    float den = h_mWW_1->GetBinContent(iBin+1);
    float S = h_mWW_3->GetBinContent(iBin+1);
 
-   if (S != 0) h_Ratio[i] -> SetBinContent (iBin+1, (num - den) / S);
+   if (S != 0) h_Ratio[i] -> SetBinContent (iBin+1, num - den);
    else  h_Ratio[i] -> SetBinContent (iBin+1, 0);
+//    if (S != 0) h_Ratio[i] -> SetBinContent (iBin+1, (num - den) / S);
+//    else  h_Ratio[i] -> SetBinContent (iBin+1, 0);
   }
+
+//   h_Ratio[i]->SetLineColor(kMagenta+i);
+  h_Ratio[i]->SetLineColor(kViolet+i);
+
+  leg_B -> AddEntry(h_Ratio[i],    cut.Data(), "L");
 
  }
 
 
  TCanvas* cc_Correction = new TCanvas("cc_Correction","cc_Correction",800,600);
- for (int i=0; i<5; i++) {
+ for (int i=0; i<maxVector; i++) {
   h_Ratio[i]->GetYaxis()->SetRangeUser(0.001,h_Ratio[i]->GetMaximum()*1.1);
   h_Ratio[i]->SetLineColor(kMagenta+i);
   h_Ratio[i]->SetLineStyle(1);
@@ -204,6 +217,7 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
   if (i==0) h_Ratio[i] -> Draw();
   else  h_Ratio[i] -> Draw("same");
  }
+ leg_B -> Draw();
  cc_Correction->SetGrid();
 
 
