@@ -194,14 +194,15 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
    float den = h_mWW_1->GetBinContent(iBin+1);
    float S = h_mWW_3->GetBinContent(iBin+1);
 
-   if (S != 0) h_Ratio[i] -> SetBinContent (iBin+1, num - den);
-   else  h_Ratio[i] -> SetBinContent (iBin+1, 0);
-//    if (S != 0) h_Ratio[i] -> SetBinContent (iBin+1, (num - den) / S);
+//    if (S != 0) h_Ratio[i] -> SetBinContent (iBin+1, num - den);
 //    else  h_Ratio[i] -> SetBinContent (iBin+1, 0);
+   if (S != 0) h_Ratio[i] -> SetBinContent (iBin+1, (num - den) / S);
+   else  h_Ratio[i] -> SetBinContent (iBin+1, 0);
   }
 
 //   h_Ratio[i]->SetLineColor(kMagenta+i);
-  h_Ratio[i]->SetLineColor(kViolet+i);
+  if (i<4) h_Ratio[i]->SetLineColor(kViolet+i);
+  else h_Ratio[i]->SetLineColor(kGreen+i-4);
 
   leg_B -> AddEntry(h_Ratio[i],    cut.Data(), "L");
 
@@ -211,7 +212,6 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
  TCanvas* cc_Correction = new TCanvas("cc_Correction","cc_Correction",800,600);
  for (int i=0; i<maxVector; i++) {
   h_Ratio[i]->GetYaxis()->SetRangeUser(0.001,h_Ratio[i]->GetMaximum()*1.1);
-  h_Ratio[i]->SetLineColor(kMagenta+i);
   h_Ratio[i]->SetLineStyle(1);
   h_Ratio[i]->SetLineWidth(2);
   if (i==0) h_Ratio[i] -> Draw();
