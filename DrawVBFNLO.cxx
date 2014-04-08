@@ -313,7 +313,8 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
 //  TString cut = Form ("jetpt1>25 && jetpt2>25 && mjj>600 && detajj>3 && abs(jeteta1)<4.9 && abs(jeteta2)<4.9 && pt1>25 && pt2>25"); // && pfmet>25");
 
 //  TString cut = Form ("jetpt1>10 && jetpt2>10 && mjj>200  && abs(jeteta1)<6.5 && abs(jeteta2)<6.5 && mll>8 && pt1>8 && abs(eta1)<2.5 && abs(eta2)<2.5");
- TString cut = Form ("mjj>200");
+//  TString cut = Form ("mjj>200");
+ TString cut = Form ("mjj>200 && pt2>8");
 
 
 //    leptons min E   5 GeV
@@ -332,8 +333,8 @@ void DrawVBFNLO(int kind = 0,         int mass = 350,   bool doFit = 1,     int 
  TString weightWithXsec    ;
 //  if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
 //  else                     weightWithXsec    = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse);
- if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f) * (numt == 0)",cut.Data(),xsecToUse);
- else                     weightWithXsec    = Form ("(%s) * (%s) * (%f) * (numt == 0)",weight.Data(), cut.Data(),xsecToUse);
+ if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f) * (numb == 0) * (numt == 0)",cut.Data(),xsecToUse);
+ else                     weightWithXsec    = Form ("(%s) * (%s) * (%f) * (numb == 0) * (numt == 0)",weight.Data(), cut.Data(),xsecToUse);
 
  TString weightWithXsec_S  ;
  if (scaleVariation == 0) weightWithXsec_S  = Form ("(%s) * (%f)",cut.Data(),xsecToUse_S);
