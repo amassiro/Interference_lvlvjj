@@ -17,8 +17,8 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
 //  TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
 
-//  int NBIN = 350;
- int NBIN = 500;
+ int NBIN = 100;
+//  int NBIN = 500;
  if (mass<350) NBIN = 500;
  if (mass>400) NBIN = 120;
  if (mass>500) NBIN =  70;
