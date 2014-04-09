@@ -141,6 +141,7 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
  vcut[5] = Form ("mjj>500 && detajj>3.5 && pt2>8");
  vcut[6] = Form ("mjj>1000 && detajj>3.5 && pt2>8");
  vcut[7] = Form ("mjj>100 && pt2>8");
+
 //  vcut[8] = Form ("mjj>50 && pt2>8");
 
  int maxVector = 7+1;
