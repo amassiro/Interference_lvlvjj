@@ -139,7 +139,7 @@ Plot: (0 = em, 1 = mm)
     root -l Draw.cxx\(0,300\)
     root -l Draw.cxx\(1,300\)
 
-    root -l Draw.cxx\(0,350,0\)
+    root -l Draw.cxx\(0,350,0\)  --> no fit
     root -l Draw.cxx\(0,350\)
     root -l Draw.cxx\(1,350\)
 
@@ -258,6 +258,7 @@ Comparison with VBFNLO: (0 = em, 1 = mm)
 Comparison of the correction function for different selections: (0 = em, 1 = mm)
 
     root -l DrawVBFNLOcutsDependence.cxx\(0,800\)
+    root -l DrawVBFNLOcutsDependence.cxx\(0,350\)
 
 
 
