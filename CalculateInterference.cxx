@@ -552,9 +552,9 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
  std::cout << " ----------------------------------------------- " << std::endl;
 
-  TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,MIN,MAX,7);
-  crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
-  crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+//   TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,MIN,MAX,7);
+//   crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
+//   crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
 
   TF1 *crystal_SI = new TF1("crystal_SI",doubleGausCrystalBallLowHighPlusExp,MIN,MAX,7+2);
   crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
