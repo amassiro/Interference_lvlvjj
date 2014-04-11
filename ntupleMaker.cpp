@@ -71,6 +71,10 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
  float pt2;
  float eta1;
  float eta2;
+ float ptnu1;
+ float ptnu2;
+ float etanu1;
+ float etanu2;
  float mll;
  float ptll;
  float sameflav;
@@ -90,6 +94,10 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
  ntuple.Branch("pt2",&pt2,"pt2/F");
  ntuple.Branch("eta1",&eta1,"eta1/F");
  ntuple.Branch("eta2",&eta2,"eta2/F");
+ ntuple.Branch("ptnu1",&ptnu1,"ptnu1/F");
+ ntuple.Branch("ptnu2",&ptnu2,"ptnu2/F");
+ ntuple.Branch("etanu1",&etanu1,"etanu1/F");
+ ntuple.Branch("etanu2",&etanu2,"etanu2/F");
  ntuple.Branch("mll",&mll,"mll/F");
  ntuple.Branch("ptll",&ptll,"ptll/F");
  ntuple.Branch("sameflav",&sameflav,"sameflav/F");
@@ -126,6 +134,10 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
   pt2 = -99;
   eta1 = -99;
   eta2 = -99;
+  ptnu1 = -99;
+  ptnu2 = -99;
+  etanu1 = -99;
+  etanu2 = -99;
   mll = -99;
   ptll = -99;
   sameflav = -99;
@@ -221,6 +233,7 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
   sort (v_f_jets.rbegin (), v_f_jets.rend (), ptsort ()) ;
   sort (v_f_quarks.rbegin (), v_f_quarks.rend (), ptsort ()) ;
   sort (v_f_leptons.rbegin (), v_f_leptons.rend (), ptsort ()) ;
+  sort (v_f_neutrinos.rbegin (), v_f_neutrinos.rend (), ptsort ()) ;
 
   TLorentzVector diLepton = v_f_leptons.at (0) + v_f_leptons.at (1) ;
   TLorentzVector missingEnergy = v_f_neutrinos.at (0) + v_f_neutrinos.at (1) ;
@@ -310,6 +323,13 @@ void fillNtuple (std::string fileNameLHE,  TTree & ntuple, float globalScale) {
   pt2 = v_f_leptons.at (1).Pt ();
   eta1 = v_f_leptons.at (0).Eta ();
   eta2 = v_f_leptons.at (1).Eta ();
+
+  ptnu1 = v_f_neutrinos.at (0).Pt ();
+  ptnu2 = v_f_neutrinos.at (1).Pt ();
+  etanu1 = v_f_neutrinos.at (0).Eta ();
+  etanu2 = v_f_neutrinos.at (1).Eta ();
+  
+
   mll = diLepton.M ();
   ptll = diLepton.Pt ();
   sameflav = 1. * isSF;
