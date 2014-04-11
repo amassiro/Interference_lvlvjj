@@ -2,6 +2,68 @@
 
 
 
+double doubleGausCrystalBallLowHighPlusExp (double* x, double* par) {
+  //[0] = N
+  //[1] = mean
+  //[2] = sigma
+  //[3] = alpha
+  //[4] = n
+  //[5] = alpha2
+  //[6] = n2
+
+  //[7] = R = ratio between exponential and CB
+  //[8] = tau = tau falling of exponential
+
+ double xx = x[0];
+
+//  double mean = par[1] ; // mean
+//  double sigmaP = par[2] ; // sigma of the positive side of the gaussian
+//  double sigmaN = par[3] ; // sigma of the negative side of the gaussian
+//  double alpha = par[4] ; // junction point on the positive side of the gaussian
+//  double n = par[5] ; // power of the power law on the positive side of the gaussian
+//  double alpha2 = par[6] ; // junction point on the negative side of the gaussian
+//  double n2 = par[7] ; // power of the power law on the negative side of the gaussian
+
+ double mean = par[1] ; // mean
+ double sigmaP = par[2] ; // sigma of the positive side of the gaussian  |  they are the same!!!
+ double sigmaN = par[2] ; // sigma of the negative side of the gaussian  |
+ double alpha = par[3] ; // junction point on the positive side of the gaussian
+ double n = par[4] ; // power of the power law on the positive side of the gaussian
+ double alpha2 = par[5] ; // junction point on the negative side of the gaussian
+ double n2 = par[6] ; // power of the power law on the negative side of the gaussian
+
+ double R = par[7] ;
+ double tau = par[8] ;
+
+
+ if ((xx-mean)/sigmaP > fabs(alpha)) {
+  double A = pow(n/fabs(alpha), n) * exp(-0.5 * alpha*alpha);
+  double B = n/fabs(alpha) - fabs(alpha);
+
+  return par[0] * ( A * pow(B + (xx-mean)/sigmaP, -1.*n) + R * exp(-xx/tau));
+ }
+
+ else if ((xx-mean)/sigmaN < -1.*fabs(alpha2)) {
+  double A = pow(n2/fabs(alpha2), n2) * exp(-0.5 * alpha2*alpha2);
+  double B = n2/fabs(alpha2) - fabs(alpha2);
+
+  return par[0] * ( A * pow(B - (xx-mean)/sigmaN, -1.*n2) + R * exp(-xx/tau));
+ }
+
+ else if ((xx-mean) > 0) {
+  return par[0] * ( exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaP*sigmaP) ) + R * exp(-xx/tau));
+ }
+
+ else {
+  return par[0] * ( exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaN*sigmaN) ) + R * exp(-xx/tau));
+ }
+
+}
+
+
+
+
+
 double doubleGausCrystalBallLowHigh (double* x, double* par) {
   //[0] = N
   //[1] = mean
@@ -202,12 +264,11 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  if (mass==1000) NBIN =  80;
 
  int MAX = 800;
- if (mass<350) MAX =   500;
- if (mass>400) MAX =  1500;
- if (mass>500) MAX =  2000;
- if (mass>700) MAX =  4000;
- if (mass>900) MAX =  4000;
-
+ if (mass==350)  MAX =   500;
+ if (mass==500)  MAX =  1500;
+ if (mass==650)  MAX =  2000;
+ if (mass==800)  MAX =  4000;
+ if (mass==900)  MAX =  4000;
 
  int MIN = 200;
  if (mass<350) MIN = 200;
@@ -244,20 +305,12 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  TH1F* h_Subtraction = new TH1F("h_Subtraction","h_Subtraction",NBIN,0,MAX);
  TH1F* h_I = new TH1F("h_I","h_I",NBIN,0,MAX);
 
- // me                        126                  350                      500                      650                      800                      1000
-//  float xsec[100] = {3.59354104959999920E-002, 3.30375324117999983E-002, 3.08369319673999914E-002, 3.04300778839999946E-002, 2.96306891660000002E-002, 2.96035751339999986E-002};
- // mm                        126                  350                      500                      650                      800                      1000
-//  float xsec[100] = {1.81489087459999997E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};
 
  //---- me
  if (kind == 0) gROOT->ProcessLine ("float xsec[100] = {3.59354104959999920E-002, 3.67919577779999979E-002, 3.44869588220000078E-002, 3.30375324117999983E-002, 3.08369319673999914E-002, 3.04300778839999946E-002, 2.96306891660000002E-002, 2.96035751339999986E-002};");
  //---- mm                                                  126                           250                             300                   350                        500                     650               800        1000
  if (kind == 1) gROOT->ProcessLine ("float xsec[100] = {1.81489087459999997E-002, 1.38655337210000004E-002, 1.23882828156000029E-002, 1.69895616909999971E-002, 1.56710346175999993E-002, 1.54292870582000020E-002, 1.50044308354000018E-002, 1.49635804075999978E-002};");
 
- //---- me
-//  if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {1.0, 1.0, 0.23539E-01, 0.16986E-01, 0.65801E-02, 0.35875E-02, 0.20252E-02, 0.91164E-03};");
- //---- mm
-//  if (kind == 1) gROOT->ProcessLine ("float xsec_S[100] = {1.0, 1.0, 0.11912E-01, 0.99646E-02, 0.38685E-02, 0.20920E-02, 0.11599E-02, 0.50136E-03};");
 
  //---- me                                                  126          250          300          350              500      650           800        1000
  if (kind == 0) gROOT->ProcessLine ("float xsec_S[100] = {0.80433E-02, 0.78312E-02, 0.52913E-02, 0.36612E-02, 0.10750E-02, 0.45337E-03, 0.19850E-03, 0.62934E-04};");
@@ -305,23 +358,8 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  //---- used:
 //  TString cut = Form ("mjj>30 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
  TString cut = Form ("mjj>200 && pt2>8");
- 
- //---- to compare with MC@NLO
-//  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10");
-//  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<6.5 && abs(eta2)<6.5 && mll>8");
 
 
-//    leptons min E   5 GeV
-//    minimum delta R between the fwd and bkw jets    0.4
-//    minimum delta R between jets and leptons        0.4
-//    minimum delta R between two leptons     0.4
-
-
- 
-//  TString cut = Form ("1");
-
-//  TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
-//  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
 
  TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
  TString weightWithXsec    ;
@@ -470,16 +508,14 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  std::cout << " ----------------------------------------------- " << std::endl;
  std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
  std::cout << " ----------------------------------------------- " << std::endl;
-  // 
-//  TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
-//  800   ok:    crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
-//  800 em ok:  crystal_SI->SetParameters(1,1,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
-//  crystal_SI->SetParameters(0.1,2.,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
-//  crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
 
   TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,MIN,MAX,7);
   crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
   crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
+
+  TF1 *crystal_SI = new TF1("crystal_SI",doubleGausCrystalBallLowHighPlusExp,MIN,MAX,7+2);
+  crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
+  crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2","R","tau");
 
   crystal_SI->SetNpx(2000);
   crystal_SI->SetParameter (0, h_Subtraction->GetBinContent (h_Subtraction->GetMaximumBin ())) ;
@@ -505,16 +541,15 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   crystal_SI->SetParameter (6, 1.5) ;
   crystal_SI->SetParLimits (6, 1.0, 50) ;
 
-  crystal_SI->SetLineColor(kMagenta-10);
-  h_Subtraction->Fit (crystal_SI, "+", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
-  crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
+  crystal_SI->SetParLimits (7, 0,  10) ;
+  crystal_SI->SetParLimits (8, 10, 1000) ;
 
+
+//   crystal_SI->SetLineColor(kMagenta-10);
+//   h_Subtraction->Fit (crystal_SI, "+", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
+  h_Subtraction->Fit (crystal_SI, "+", "",  200., mass*2.) ;
+  crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
   crystal_SI->SetLineColor(kRed);
-//  h_Subtrac  if (mass > 700) h_Subtraction->Fit (crystal_SI, "+Lr", ""tion->Fit (crystal_SI, "+Lr", "");
-  if (mass > 700)       h_Subtraction->Fit (crystal_SI, "+Lr", "",500, mass + 3 * h_mWW_3->GetRMS ());
-//   else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "+Lr", "",300, mass + 3 * h_mWW_3->GetRMS ());
-  else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
-  else                  h_Subtraction->Fit (crystal_SI, "+Lr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
 
 
 
@@ -557,7 +592,7 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   std::cout << std::endl;
   std::cout << " SI " << std::endl;
   std::cout << mass << " ";
-  for (int i=0; i<7; i++) {
+  for (int i=0; i<7+2; i++) {
    std::cout << " " << crystal_SI->GetParameter (i);
   }
   std::cout << std::endl;
