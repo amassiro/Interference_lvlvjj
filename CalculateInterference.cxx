@@ -221,7 +221,7 @@ Double_t Total(Double_t *x, Double_t *par) {
 }
 
 
-//---- division of CBLowHigh with CBLowHigh ----
+//---- subtraction of CBLowHigh with CBLowHigh ----
 Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
  Double_t num = 0;
  num = crystalBallLowHigh(x,par);
@@ -233,7 +233,7 @@ Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
 }
 
 
-//---- division of CBLowHighPlusExp with CBLowHigh ----
+//---- subtraction of CBLowHighPlusExp with CBLowHigh ----
 Double_t CrystalBallLowHighPlusExpMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
  Double_t num = 0;
  num = doubleGausCrystalBallLowHighPlusExp(x,par);
@@ -242,6 +242,20 @@ Double_t CrystalBallLowHighPlusExpMinusCrystalBallLowHigh(Double_t *x,Double_t *
  den = crystalBallLowHigh(x,&par[7+2]);
 
  return num-den;
+}
+
+
+//---- division of CBLowHighPlusExp with CBLowHigh ----
+Double_t CrystalBallLowHighPlusExpDividedByCrystalBallLowHigh(Double_t *x,Double_t *par) {
+ Double_t num = 0;
+ num = doubleGausCrystalBallLowHighPlusExp(x,par);
+
+ Double_t den = 1;
+ den = crystalBallLowHigh(x,&par[7+2]);
+
+ if (den != 0) return num/den;
+ else return 1.;
+
 }
 
 
@@ -271,15 +285,15 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  if (mass==350)  NBIN = 500;
  if (mass==500)  NBIN = 120;
  if (mass==650)  NBIN =  70;
- if (mass==800)  NBIN = 120;
- if (mass==1000) NBIN =  80;
+ if (mass==800)  NBIN = 120*3/4;
+ if (mass==1000) NBIN =  80*3/4;
 
  int MAX = 800;
  if (mass==350)   MAX =   500;
  if (mass==500)   MAX =  1500;
  if (mass==650)   MAX =  2000;
- if (mass==800)   MAX =  4000;
- if (mass==1000)  MAX =  4000;
+ if (mass==800)   MAX =  3000;
+ if (mass==1000)  MAX =  3000;
 
  int MIN = 200;
  if (mass<350) MIN = 200;
@@ -315,6 +329,8 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  TH1F* h_Ratio = new TH1F("h_mWW_ratio","h_mWW_ratio",NBIN,0,MAX);
  TH1F* h_Subtraction = new TH1F("h_Subtraction","h_Subtraction",NBIN,0,MAX);
  TH1F* h_I = new TH1F("h_I","h_I",NBIN,0,MAX);
+ TH1F* h_Weight = new TH1F("h_Weight","h_Weight",NBIN,0,MAX);
+
 
 
  //---- me
@@ -417,15 +433,31 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
 
 
  for (int iBin = 0; iBin < h_mWW_1->GetNbinsX(); iBin++) {
-  float num = h_mWW_2->GetBinContent(iBin+1);
-  float den = h_mWW_1->GetBinContent(iBin+1);
+  float num = h_mWW_2->GetBinContent(iBin+1);  //----  SBI
+  float den = h_mWW_1->GetBinContent(iBin+1);  //----  B
   if (den != 0) h_Ratio -> SetBinContent (iBin+1, num / den);
   else  h_Ratio -> SetBinContent (iBin+1, 0);
 
   h_Subtraction ->  SetBinContent (iBin+1, num - den);
 
-  float S = h_mWW_3->GetBinContent(iBin+1);
-  h_I ->  SetBinContent (iBin+1, num - den - S);
+  float S = h_mWW_3->GetBinContent(iBin+1);  //----  S
+  h_I ->  SetBinContent (iBin+1, num - den - S); //---- I = SBI - B - S
+
+//   if (S != 0) std::cout << " (num - den) / S = " << (num - den) / S;
+//   else  std::cout << " (num - den) / S = 1" ;
+//   std::cout << " = (" << num << " - " << den;
+//   std::cout << " ) / " << S;
+
+  float weightSIS;
+  if (S != 0) weightSIS = (num - den) / S;
+  else        weightSIS = 1.;
+
+//   std::cout << " weightSIS = " << weightSIS << std::endl;
+//   if (S =! 0) h_Weight ->  SetBinContent (iBin+1, (num - den) / S ); //---- SI/S = (SBI-B) / S
+//   else        h_Weight ->  SetBinContent (iBin+1, 1);
+  h_Weight ->  SetBinContent (iBin+1, weightSIS); //---- SI/S = (SBI-B) / S
+
+//   std::cout << " h_Weight [ " << iBin << " ] = " << h_Weight->GetBinContent(iBin+1) << std::endl;
 
  }
 
@@ -580,6 +612,27 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   //----------------------
   //---- closure test ----
 
+  TCanvas* cc_Weight= new TCanvas("cc_Weight","cc_Weight",800,600);
+  cc_Weight -> cd();
+  h_Weight -> SetLineColor(kGreen+2);
+  h_Weight -> SetLineWidth(2);
+  h_Weight -> GetYaxis() -> SetRangeUser( 0.001, 4000.);
+  h_Weight -> Draw();
+  TF1 *crystal_Weight = new TF1("crystal_Weight",CrystalBallLowHighPlusExpDividedByCrystalBallLowHigh,0,MAX,14+2);
+  for (int i=0; i<7+2; i++) {
+   crystal_Weight->SetParameter(i,crystal_SI->GetParameter(i));
+   if (i<7) crystal_Weight->SetParameter(i+7+2,crystal_S->GetParameter(i)); //---- only 7 parameters in CB
+  }
+  crystal_Weight->Draw("same");
+  cc_Weight -> SetLogy();
+  cc_Weight -> SetGrid();
+
+
+//   for (int iBin = 0; iBin < h_Weight->GetNbinsX(); iBin++) {
+//    std::cout << " h_Weight [ " << iBin << " ] = " << h_Weight->GetBinContent(iBin+1) << std::endl;
+//   }
+
+
   TCanvas* cc_I = new TCanvas("cc_I","cc_I",800,600);
   cc_I->cd();
   cc_I->SetGrid();
@@ -592,6 +645,9 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
    if (i<7) crystal_I->SetParameter(i+7+2,crystal_S->GetParameter(i)); //---- only 7 parameters in CB
   }
   crystal_I->Draw("same");
+
+
+ 
 
  //-----------------------------
  //---- to dump in txt file ----
