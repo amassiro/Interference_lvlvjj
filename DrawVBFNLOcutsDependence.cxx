@@ -133,18 +133,25 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
 
  //---- used:
  TString vcut[10];
- vcut[0] = Form ("mjj>200 && pt2>8");
- vcut[1] = Form ("mjj>300 && pt2>8");
- vcut[2] = Form ("mjj>500 && pt2>8");
- vcut[3] = Form ("mjj>1000 && pt2>8");
- vcut[4] = Form ("mjj>200 && detajj>3.5 && pt2>8");
- vcut[5] = Form ("mjj>500 && detajj>3.5 && pt2>8");
- vcut[6] = Form ("mjj>1000 && detajj>3.5 && pt2>8");
- vcut[7] = Form ("mjj>100 && pt2>8");
+//  vcut[0] = Form ("mjj>200 && pt2>8");
+//  vcut[1] = Form ("mjj>300 && pt2>8");
+//  vcut[2] = Form ("mjj>500 && pt2>8");
+//  vcut[3] = Form ("mjj>1000 && pt2>8");
+//  vcut[4] = Form ("mjj>200 && detajj>3.5 && pt2>8");
+//  vcut[5] = Form ("mjj>500 && detajj>3.5 && pt2>8");
+//  vcut[6] = Form ("mjj>1000 && detajj>3.5 && pt2>8");
+//  vcut[7] = Form ("mjj>100 && pt2>8");
+//  int maxVector = 7+1;
+ 
+ 
+ vcut[0] = Form ("mjj>200 && pt2>20");
+ vcut[1] = Form ("mjj>200 && pt2>20 && pt1>20 && ptnu2>20 && ptnu1>20");
+ 
+ int maxVector = 2;
 
 //  vcut[8] = Form ("mjj>50 && pt2>8");
 
- int maxVector = 7+1;
+
 
  TLegend* leg_B = new TLegend (0.5,0.5,0.9,0.9);
  leg_B -> SetFillColor(0);
@@ -215,6 +222,7 @@ void DrawVBFNLOcutsDependence(int kind = 0,         int mass = 350,   bool doFit
  TCanvas* cc_Correction = new TCanvas("cc_Correction","cc_Correction",800,600);
  for (int i=0; i<maxVector; i++) {
   h_Ratio[i]->GetYaxis()->SetRangeUser(0.001,h_Ratio[i]->GetMaximum()*1.1);
+  h_Ratio[i]->GetYaxis()->SetTitle("weight (S+I) / I");
   h_Ratio[i]->SetLineStyle(1);
   h_Ratio[i]->SetLineWidth(2);
   if (i==0) h_Ratio[i] -> Draw();
