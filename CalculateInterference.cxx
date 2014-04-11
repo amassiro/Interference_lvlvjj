@@ -233,6 +233,17 @@ Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
 }
 
 
+//---- division of CBLowHighPlusExp with CBLowHigh ----
+Double_t CrystalBallLowHighPlusExpMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
+ Double_t num = 0;
+ num = doubleGausCrystalBallLowHighPlusExp(x,par);
+
+ Double_t den = 1;
+ den = crystalBallLowHigh(x,&par[7+2]);
+
+ return num-den;
+}
+
 
 
 //-----------------------------------------------------------
@@ -264,11 +275,11 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  if (mass==1000) NBIN =  80;
 
  int MAX = 800;
- if (mass==350)  MAX =   500;
- if (mass==500)  MAX =  1500;
- if (mass==650)  MAX =  2000;
- if (mass==800)  MAX =  4000;
- if (mass==900)  MAX =  4000;
+ if (mass==350)   MAX =   500;
+ if (mass==500)   MAX =  1500;
+ if (mass==650)   MAX =  2000;
+ if (mass==800)   MAX =  4000;
+ if (mass==1000)  MAX =  4000;
 
  int MIN = 200;
  if (mass<350) MIN = 200;
@@ -524,7 +535,8 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   crystal_SI->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
 
   crystal_SI->SetParameter (2, 0.8 * h_mWW_3->GetRMS ()) ;
-  crystal_SI->SetParLimits (2, 0.001 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
+  crystal_SI->SetParLimits (2, 0.001 * h_mWW_3->GetRMS (), 20 * h_mWW_3->GetRMS ()) ;
+  if (mass != 1000) crystal_SI->SetParLimits (2, 0.001 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
 
   crystal_SI->SetParameter (3, 1.0) ;
   crystal_SI->SetParLimits (3, 0.5, 20.) ;
@@ -541,8 +553,13 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   crystal_SI->SetParameter (6, 1.5) ;
   crystal_SI->SetParLimits (6, 1.0, 50) ;
 
-  crystal_SI->SetParLimits (7, 0,  10) ;
-  crystal_SI->SetParLimits (8, 10, 1000) ;
+  crystal_SI->SetParLimits (7, 0,  50) ; //---- R
+  crystal_SI->SetParLimits (8, 10, 2000) ;  //---- tau
+
+  if (mass != 1000) {
+   crystal_SI->SetParLimits (7, 0,  10) ; //---- R
+   crystal_SI->SetParLimits (8, 10, 1000) ;  //---- tau
+  }
 
 
 //   crystal_SI->SetLineColor(kMagenta-10);
@@ -569,10 +586,10 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   h_I -> SetLineColor(kBlue);
   h_I -> SetLineWidth(2);
   h_I -> Draw();
-  TF1 *crystal_I = new TF1("crystal_I",CrystalBallLowHighMinusCrystalBallLowHigh,0,MAX,14);
-  for (int i=0; i<7; i++) {
+  TF1 *crystal_I = new TF1("crystal_I",CrystalBallLowHighPlusExpMinusCrystalBallLowHigh,0,MAX,14+2);
+  for (int i=0; i<7+2; i++) {
    crystal_I->SetParameter(i,crystal_SI->GetParameter(i));
-   crystal_I->SetParameter(i+7,crystal_S->GetParameter(i));
+   if (i<7) crystal_I->SetParameter(i+7+2,crystal_S->GetParameter(i)); //---- only 7 parameters in CB
   }
   crystal_I->Draw("same");
 

@@ -146,9 +146,11 @@ Plot: (0 = em, 1 = mm)
 
     root -l Draw.cxx\(0,500\)
     root -l Draw.cxx\(1,500\)
+    root -l CalculateInterference.cxx\(0,500\)
 
     root -l Draw.cxx\(0,650\)
     root -l Draw.cxx\(1,650\)
+    root -l CalculateInterference.cxx\(0,650\)
 
     root -l Draw.cxx\(0,800\)
     root -l Draw.cxx\(1,800\)
@@ -156,6 +158,7 @@ Plot: (0 = em, 1 = mm)
 
     root -l Draw.cxx\(0,1000\)
     root -l Draw.cxx\(1,1000\)
+    root -l CalculateInterference.cxx\(0,1000\)
 
 
 
