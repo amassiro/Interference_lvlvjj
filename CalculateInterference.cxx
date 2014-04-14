@@ -388,10 +388,10 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
 
 
 
- TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
+ TString weightWithXsec126 = Form ("(%s) * (%s * %f) * (numb == 0) * (numt == 0)",cut.Data(),weight.Data(),xsec[0]/2.);
  TString weightWithXsec    ;
- if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
- else                     weightWithXsec    = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse);
+ if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f) * (numb == 0) * (numt == 0)",cut.Data(),xsecToUse);
+ else                     weightWithXsec    = Form ("(%s) * (%s) * (numb == 0) * (numt == 0) * (%f)",weight.Data(), cut.Data(),xsecToUse);
 
  TString weightWithXsec_S  ;
  if (scaleVariation == 0) weightWithXsec_S  = Form ("(%s) * (%f)",cut.Data(),xsecToUse_S);

@@ -166,36 +166,46 @@ Scale up: (0 = em, 1 = mm)
 
     root -l Draw.cxx\(0,350,1,1\)
     root -l Draw.cxx\(1,350,1,1\)
+    root -l CalculateInterference.cxx\(0,350,1,1\)
 
     root -l Draw.cxx\(0,500,1,1\)
     root -l Draw.cxx\(1,500,1,1\)
+    root -l CalculateInterference.cxx\(0,500,1,1\)
 
     root -l Draw.cxx\(0,650,1,1\)
     root -l Draw.cxx\(1,650,1,1\)
+    root -l CalculateInterference.cxx\(0,650,1,1\)
 
     root -l Draw.cxx\(0,800,1,1\)
     root -l Draw.cxx\(1,800,1,1\)
+    root -l CalculateInterference.cxx\(0,800,1,1\)
 
     root -l Draw.cxx\(0,1000,1,1\)
     root -l Draw.cxx\(1,1000,1,1\)
+    root -l CalculateInterference.cxx\(0,1000,1,1\)
 
 
 Scale down: (0 = em, 1 = mm)
 
     root -l Draw.cxx\(0,350,1,-1\)
     root -l Draw.cxx\(1,350,1,-1\)
+    root -l CalculateInterference.cxx\(0,350,1,-1\)
 
     root -l Draw.cxx\(0,500,1,-1\)
     root -l Draw.cxx\(1,500,1,-1\)
+    root -l CalculateInterference.cxx\(0,500,1,-1\)
 
     root -l Draw.cxx\(0,650,1,-1\)
     root -l Draw.cxx\(1,650,1,-1\)
+    root -l CalculateInterference.cxx\(0,650,1,-1\)
 
     root -l Draw.cxx\(0,800,1,-1\)
     root -l Draw.cxx\(1,800,1,-1\)
+    root -l CalculateInterference.cxx\(0,800,1,-1\)
 
     root -l Draw.cxx\(0,1000,1,-1\)
     root -l Draw.cxx\(1,1000,1,-1\)
+    root -l CalculateInterference.cxx\(0,1000,1,-1\)
 
 
 
