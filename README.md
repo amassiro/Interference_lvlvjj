@@ -212,9 +212,10 @@ To get the cross-sections then hardcoded in Draw.cxx for phantom
 
 
 
-To plot the result:
+To plot the result: (0 = em, 1 = mm)
 
     root -l PlotInterference.cxx
+    root -l PlotInterference.cxx\(0\)
     root -l PlotInterference.cxx\(1\)
 
 scale up:
