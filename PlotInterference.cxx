@@ -1,6 +1,65 @@
 #include "TString.h"
 
 
+double doubleGausCrystalBallLowHighPlusExp (double* x, double* par) {
+  //[0] = N
+  //[1] = mean
+  //[2] = sigma
+  //[3] = alpha
+  //[4] = n
+  //[5] = alpha2
+  //[6] = n2
+
+  //[7] = R = ratio between exponential and CB
+  //[8] = tau = tau falling of exponential
+
+ double xx = x[0];
+
+//  double mean = par[1] ; // mean
+//  double sigmaP = par[2] ; // sigma of the positive side of the gaussian
+//  double sigmaN = par[3] ; // sigma of the negative side of the gaussian
+//  double alpha = par[4] ; // junction point on the positive side of the gaussian
+//  double n = par[5] ; // power of the power law on the positive side of the gaussian
+//  double alpha2 = par[6] ; // junction point on the negative side of the gaussian
+//  double n2 = par[7] ; // power of the power law on the negative side of the gaussian
+
+ double mean = par[1] ; // mean
+ double sigmaP = par[2] ; // sigma of the positive side of the gaussian  |  they are the same!!!
+ double sigmaN = par[2] ; // sigma of the negative side of the gaussian  |
+ double alpha = par[3] ; // junction point on the positive side of the gaussian
+ double n = par[4] ; // power of the power law on the positive side of the gaussian
+ double alpha2 = par[5] ; // junction point on the negative side of the gaussian
+ double n2 = par[6] ; // power of the power law on the negative side of the gaussian
+
+ double R = par[7] ;
+ double tau = par[8] ;
+
+
+ if ((xx-mean)/sigmaP > fabs(alpha)) {
+  double A = pow(n/fabs(alpha), n) * exp(-0.5 * alpha*alpha);
+  double B = n/fabs(alpha) - fabs(alpha);
+
+  return par[0] * ( A * pow(B + (xx-mean)/sigmaP, -1.*n) + R * exp(-xx/tau));
+ }
+
+ else if ((xx-mean)/sigmaN < -1.*fabs(alpha2)) {
+  double A = pow(n2/fabs(alpha2), n2) * exp(-0.5 * alpha2*alpha2);
+  double B = n2/fabs(alpha2) - fabs(alpha2);
+
+  return par[0] * ( A * pow(B - (xx-mean)/sigmaN, -1.*n2) + R * exp(-xx/tau));
+ }
+
+ else if ((xx-mean) > 0) {
+  return par[0] * ( exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaP*sigmaP) ) + R * exp(-xx/tau));
+ }
+
+ else {
+  return par[0] * ( exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaN*sigmaN) ) + R * exp(-xx/tau));
+ }
+
+}
+
+
 double crystalBallLowHigh (double* x, double* par) {
   //[0] = N
   //[1] = mean
@@ -54,7 +113,7 @@ Double_t CrystalBallLowHighDivideCrystalBallLowHigh(Double_t *x,Double_t *par) {
 }
 
 
-//---- division of CBLowHigh with CBLowHigh ----
+//---- subtraction of CBLowHigh with CBLowHigh ----
 Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
  Double_t num = 0;
  num = crystalBallLowHigh(x,par);
@@ -66,6 +125,30 @@ Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
 }
 
 
+//---- subtraction of CBLowHighPlusExp with CBLowHigh ----
+Double_t CrystalBallLowHighPlusExpMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
+ Double_t num = 0;
+ num = doubleGausCrystalBallLowHighPlusExp(x,par);
+
+ Double_t den = 1;
+ den = crystalBallLowHigh(x,&par[7+2]);
+
+ return num-den;
+}
+
+
+//---- division of CBLowHighPlusExp with CBLowHigh ----
+Double_t CrystalBallLowHighPlusExpDividedByCrystalBallLowHigh(Double_t *x,Double_t *par) {
+ Double_t num = 0;
+ num = doubleGausCrystalBallLowHighPlusExp(x,par);
+
+ Double_t den = 1;
+ den = crystalBallLowHigh(x,&par[7+2]);
+
+ if (den != 0) return num/den;
+ else return 1.;
+
+}
 
 
 //-----------------------------------------------------------
@@ -107,6 +190,8 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
  float SI_nR[100];
  float SI_alphaL[100];
  float SI_nL[100];
+ float SI_R[100];
+ float SI_tau[100];
 
  TString nameS;
  if (kind == 0) nameS = Form ("%sresults_em_S.txt",folder.c_str());
@@ -149,6 +234,8 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
    line >> SI_nR[counter];
    line >> SI_alphaL[counter];
    line >> SI_nL[counter];
+   line >> SI_R[counter];
+   line >> SI_tau[counter];
    counter++;
    std::cout << std::endl;
   }
@@ -172,9 +259,9 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
 
   crystal_S[i]->SetLineColor(kAzure+i);
 
-  crystal_SI[i] = new TF1("cryStal_SI",crystalBallLowHigh,200,2000,7);
-  crystal_SI[i]->SetParameters(SI_N[i],SI_Mean[i],SI_sigma[i],SI_alphaR[i],SI_nR[i],SI_alphaL[i],SI_nL[i]);
-  std::cout << " " << SI_N[i] << " " << SI_Mean[i] << " " << SI_sigma[i] << " " << SI_alphaR[i] << " " << SI_nR[i] << " " << SI_alphaL[i] << " " << SI_nL[i] << std::endl;
+  crystal_SI[i] = new TF1("cryStal_SI",doubleGausCrystalBallLowHighPlusExp,200,2000,7+2);
+  crystal_SI[i]->SetParameters(SI_N[i],SI_Mean[i],SI_sigma[i],SI_alphaR[i],SI_nR[i],SI_alphaL[i],SI_nL[i],SI_R[i],SI_tau[i]);
+  std::cout << " " << SI_N[i] << " " << SI_Mean[i] << " " << SI_sigma[i] << " " << SI_alphaR[i] << " " << SI_nR[i] << " " << SI_alphaL[i] << " " << SI_nL[i] << " " << SI_R[i] << " " << SI_tau[i] << std::endl;
   crystal_SI[i]->SetLineColor(kPink-i);
 
   crystal_S[i]->SetNpx(300);
@@ -214,7 +301,7 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
 
  TF1 *crystal_Icorr[100];
  for (int i=0; i<counter; i++) {
-  crystal_Icorr[i] = new TF1("Icorr",CrystalBallLowHighDivideCrystalBallLowHigh,0,3000,14);
+  crystal_Icorr[i] = new TF1("Icorr",CrystalBallLowHighPlusExpDividedByCrystalBallLowHigh,0,3000,14);
 
   crystal_Icorr[i]->SetParameter(0,SI_N[i]);
   crystal_Icorr[i]->SetParameter(1,SI_Mean[i]);
@@ -223,13 +310,15 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   crystal_Icorr[i]->SetParameter(4,SI_nR[i]);
   crystal_Icorr[i]->SetParameter(5,SI_alphaL[i]);
   crystal_Icorr[i]->SetParameter(6,SI_nL[i]);
-  crystal_Icorr[i]->SetParameter(7,S_N[i]);
-  crystal_Icorr[i]->SetParameter(8,S_Mean[i]);
-  crystal_Icorr[i]->SetParameter(9,S_sigma[i]);
-  crystal_Icorr[i]->SetParameter(10,S_alphaR[i]);
-  crystal_Icorr[i]->SetParameter(11,S_nR[i]);
-  crystal_Icorr[i]->SetParameter(12,S_alphaL[i]);
-  crystal_Icorr[i]->SetParameter(13,S_nL[i]);
+  crystal_Icorr[i]->SetParameter(7,SI_R[i]);
+  crystal_Icorr[i]->SetParameter(8,SI_tau[i]);
+  crystal_Icorr[i]->SetParameter(9,S_N[i]);
+  crystal_Icorr[i]->SetParameter(10,S_Mean[i]);
+  crystal_Icorr[i]->SetParameter(11,S_sigma[i]);
+  crystal_Icorr[i]->SetParameter(12,S_alphaR[i]);
+  crystal_Icorr[i]->SetParameter(13,S_nR[i]);
+  crystal_Icorr[i]->SetParameter(14,S_alphaL[i]);
+  crystal_Icorr[i]->SetParameter(15,S_nL[i]);
 
   crystal_Icorr[i]->SetLineColor(kGreen+i);
   crystal_Icorr[i]->SetNpx(300);
@@ -252,7 +341,7 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
 
  TF1 *crystal_IcorrDiff[100];
  for (int i=0; i<counter; i++) {
-  crystal_IcorrDiff[i] = new TF1("Icorr",CrystalBallLowHighMinusCrystalBallLowHigh,0,3000,14);
+  crystal_IcorrDiff[i] = new TF1("Icorr",CrystalBallLowHighPlusExpMinusCrystalBallLowHigh,0,3000,14);
   crystal_IcorrDiff[i]->SetParameter(0,SI_N[i]);
   crystal_IcorrDiff[i]->SetParameter(1,SI_Mean[i]);
   crystal_IcorrDiff[i]->SetParameter(2,SI_sigma[i]);
@@ -260,13 +349,16 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   crystal_IcorrDiff[i]->SetParameter(4,SI_nR[i]);
   crystal_IcorrDiff[i]->SetParameter(5,SI_alphaL[i]);
   crystal_IcorrDiff[i]->SetParameter(6,SI_nL[i]);
-  crystal_IcorrDiff[i]->SetParameter(7,S_N[i]);
-  crystal_IcorrDiff[i]->SetParameter(8,S_Mean[i]);
-  crystal_IcorrDiff[i]->SetParameter(9,S_sigma[i]);
-  crystal_IcorrDiff[i]->SetParameter(10,S_alphaR[i]);
-  crystal_IcorrDiff[i]->SetParameter(11,S_nR[i]);
-  crystal_IcorrDiff[i]->SetParameter(12,S_alphaL[i]);
-  crystal_IcorrDiff[i]->SetParameter(13,S_nL[i]);
+  crystal_IcorrDiff[i]->SetParameter(7,SI_R[i]);
+  crystal_IcorrDiff[i]->SetParameter(8,SI_tau[i]);
+  crystal_IcorrDiff[i]->SetParameter(9,S_N[i]);
+  crystal_IcorrDiff[i]->SetParameter(10,S_Mean[i]);
+  crystal_IcorrDiff[i]->SetParameter(11,S_sigma[i]);
+  crystal_IcorrDiff[i]->SetParameter(12,S_alphaR[i]);
+  crystal_IcorrDiff[i]->SetParameter(13,S_nR[i]);
+  crystal_IcorrDiff[i]->SetParameter(14,S_alphaL[i]);
+  crystal_IcorrDiff[i]->SetParameter(15,S_nL[i]);
+
   crystal_IcorrDiff[i]->SetLineColor(kMagenta+i);
 
   crystal_IcorrDiff[i]->SetNpx(300);
@@ -296,28 +388,22 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (i==3) Hmass = 800;
   if (i==4) Hmass = 1000;
 
-//   if (i==0) Hmass = 250;
-//   if (i==1) Hmass = 300;
-//   if (i==2) Hmass = 350;
-//   if (i==3) Hmass = 500;
-//   if (i==4) Hmass = 650;
-//   if (i==5) Hmass = 800;
-//   if (i==6) Hmass = 1000;
-
-
   int NBIN = 500;
-  if (Hmass<350) NBIN = 500;
-  if (Hmass>400) NBIN = 120;
-  if (Hmass>500) NBIN =  70;
-  if (Hmass>700) NBIN = 120;
-  if (Hmass>900) NBIN =  40;
+  if (Hmass==350)  NBIN = 500;
+  if (Hmass==500)  NBIN = 120;
+  if (Hmass==650)  NBIN =  70;
+  if (Hmass==800)  NBIN = 120*3/4;
+  if (Hmass==1000) NBIN =  80*3/4;
 
   int MAX = 800;
-  if (Hmass<350) MAX =   500;
-  if (Hmass>400) MAX =  1500;
-  if (Hmass>500) MAX =  2000;
-  if (Hmass>700) MAX =  4000;
-  if (Hmass>900) MAX =  4000;
+  if (Hmass==350)   MAX =   500;
+  if (Hmass==500)   MAX =  1500;
+  if (Hmass==650)   MAX =  2000;
+  if (Hmass==800)   MAX =  3000;
+  if (Hmass==1000)  MAX =  3000;
+
+  int MIN = 200;
+  if (Hmass<350) MIN = 200;
 
 
  float scale = 1./ (MAX/NBIN);
@@ -343,11 +429,11 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   variables_S[iVar]->DrawClone("APL");
  }
 
- TCanvas* cc_Variables_SI = new TCanvas("cc_Variables_SI","cc_Variables_SI",900,500);
- cc_Variables_SI->Divide(4,2);
+ TCanvas* cc_Variables_SI = new TCanvas("cc_Variables_SI","cc_Variables_SI",900+200,500);
+ cc_Variables_SI->Divide(5,2);
 
  TGraph* variables_SI[10];
- for (int iVar=0; iVar<7; iVar++) {
+ for (int iVar=0; iVar<7+2; iVar++) {
   if (iVar == 0) { variables_SI[iVar] = new TGraph (5,SI_mass,log_SI_N);     variables_SI[iVar]->SetTitle("logN");  }
   if (iVar == 1) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_Mean);      variables_SI[iVar]->SetTitle("mean");  }
   if (iVar == 2) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_sigma);     variables_SI[iVar]->SetTitle("sigma");  }
@@ -355,16 +441,18 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (iVar == 4) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_nR);        variables_SI[iVar]->SetTitle("n R");  }
   if (iVar == 5) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_alphaL);    variables_SI[iVar]->SetTitle("#alpha L");  }
   if (iVar == 6) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_nL);        variables_SI[iVar]->SetTitle("n R");  }
+  if (iVar == 7) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_R);         variables_SI[iVar]->SetTitle("R");  }
+  if (iVar == 8) { variables_SI[iVar] = new TGraph (5,SI_mass,SI_tau);       variables_SI[iVar]->SetTitle("tau");  }
  }
 
- for (int iVar=0; iVar<7; iVar++) {
+ for (int iVar=0; iVar<7+2; iVar++) {
   cc_Variables_SI->cd (iVar+1);
   variables_SI[iVar]->SetMarkerSize(2);
   variables_SI[iVar]->SetMarkerStyle(21);
   variables_SI[iVar]->DrawClone("APL");
  }
 
- for (int iVar=0; iVar<7; iVar++) {
+ for (int iVar=0; iVar<7+2; iVar++) {
   std::cout << "variables_SI[" << iVar << "] [H=450] = " << variables_SI[iVar]->Eval(450) << std::endl;
  }
 
@@ -383,28 +471,23 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (i==3) Hmass = 800;
   if (i==4) Hmass = 1000;
 
-//   if (i==0) Hmass = 250;
-//   if (i==1) Hmass = 300;
-//   if (i==2) Hmass = 350;
-//   if (i==3) Hmass = 500;
-//   if (i==4) Hmass = 650;
-//   if (i==5) Hmass = 800;
-//   if (i==6) Hmass = 1000;
-
 
   int NBIN = 500;
-  if (Hmass<350) NBIN = 500;
-  if (Hmass>400) NBIN = 120;
-  if (Hmass>500) NBIN =  70;
-  if (Hmass>700) NBIN = 120;
-  if (Hmass>900) NBIN =  40;
+  if (Hmass==350)  NBIN = 500;
+  if (Hmass==500)  NBIN = 120;
+  if (Hmass==650)  NBIN =  70;
+  if (Hmass==800)  NBIN = 120*3/4;
+  if (Hmass==1000) NBIN =  80*3/4;
 
   int MAX = 800;
-  if (Hmass<350) MAX =   500;
-  if (Hmass>400) MAX =  1500;
-  if (Hmass>500) MAX =  2000;
-  if (Hmass>700) MAX =  4000;
-  if (Hmass>900) MAX =  4000;
+  if (Hmass==350)   MAX =   500;
+  if (Hmass==500)   MAX =  1500;
+  if (Hmass==650)   MAX =  2000;
+  if (Hmass==800)   MAX =  3000;
+  if (Hmass==1000)  MAX =  3000;
+
+  int MIN = 200;
+  if (Hmass<350) MIN = 200;
 
 
   float scale = 1./ (MAX/NBIN);
@@ -450,27 +533,23 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (i==3) Hmass = 800;
   if (i==4) Hmass = 1000;
 
-//   if (i==0) Hmass = 250;
-//   if (i==1) Hmass = 300;
-//   if (i==2) Hmass = 350;
-//   if (i==3) Hmass = 500;
-//   if (i==4) Hmass = 650;
-//   if (i==5) Hmass = 800;
-//   if (i==6) Hmass = 1000;
-
   int NBIN = 500;
-  if (Hmass<350) NBIN = 500;
-  if (Hmass>400) NBIN = 120;
-  if (Hmass>500) NBIN =  70;
-  if (Hmass>700) NBIN = 120;
-  if (Hmass>900) NBIN =  40;
+  if (Hmass==350)  NBIN = 500;
+  if (Hmass==500)  NBIN = 120;
+  if (Hmass==650)  NBIN =  70;
+  if (Hmass==800)  NBIN = 120*3/4;
+  if (Hmass==1000) NBIN =  80*3/4;
 
   int MAX = 800;
-  if (Hmass<350) MAX =   500;
-  if (Hmass>400) MAX =  1500;
-  if (Hmass>500) MAX =  2000;
-  if (Hmass>700) MAX =  4000;
-  if (Hmass>900) MAX =  4000;
+  if (Hmass==350)   MAX =   500;
+  if (Hmass==500)   MAX =  1500;
+  if (Hmass==650)   MAX =  2000;
+  if (Hmass==800)   MAX =  3000;
+  if (Hmass==1000)  MAX =  3000;
+
+  int MIN = 200;
+  if (Hmass<350) MIN = 200;
+
 
   float scale = 1./ (MAX/NBIN);
   crystal_SI[i]->SetParameter(0,crystal_SI[i]->GetParameter(0) * scale);
@@ -486,8 +565,8 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
  for (int iMass = 0; iMass < 13*2; iMass++) {
   double Hmass = 350+25*iMass;
   TString name = Form ("SI_crystal_qqH_%d",iMass);
-  SI_crystal_qqH[iMass] = new TF1(name.Data(),crystalBallLowHigh,0,3000,7);
-  for (int iVar = 0; iVar<7; iVar++) {
+  SI_crystal_qqH[iMass] = new TF1(name.Data(),doubleGausCrystalBallLowHighPlusExp,0,3000,7+2);
+  for (int iVar = 0; iVar<7+2; iVar++) {
    if (iVar == 0) {
     SI_crystal_qqH[iMass]->SetParameter(iVar,exp(variables_SI[iVar]->Eval(Hmass)));
    }
@@ -517,42 +596,41 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (i==3) Hmass = 800;
   if (i==4) Hmass = 1000;
 
-//   if (i==0) Hmass = 250;
-//   if (i==1) Hmass = 300;
-//   if (i==2) Hmass = 350;
-//   if (i==3) Hmass = 500;
-//   if (i==4) Hmass = 650;
-//   if (i==5) Hmass = 800;
-//   if (i==6) Hmass = 1000;
 
   int NBIN = 500;
-  if (Hmass<350) NBIN = 500;
-  if (Hmass>400) NBIN = 120;
-  if (Hmass>500) NBIN =  70;
-  if (Hmass>700) NBIN = 120;
-  if (Hmass>900) NBIN =  40;
+  if (Hmass==350)  NBIN = 500;
+  if (Hmass==500)  NBIN = 120;
+  if (Hmass==650)  NBIN =  70;
+  if (Hmass==800)  NBIN = 120*3/4;
+  if (Hmass==1000) NBIN =  80*3/4;
 
   int MAX = 800;
-  if (Hmass<350) MAX =   500;
-  if (Hmass>400) MAX =  1500;
-  if (Hmass>500) MAX =  2000;
-  if (Hmass>700) MAX =  4000;
-  if (Hmass>900) MAX =  4000;
+  if (Hmass==350)   MAX =   500;
+  if (Hmass==500)   MAX =  1500;
+  if (Hmass==650)   MAX =  2000;
+  if (Hmass==800)   MAX =  3000;
+  if (Hmass==1000)  MAX =  3000;
+
+  int MIN = 200;
+  if (Hmass<350) MIN = 200;
+
 
   float scale = 1./ (MAX/NBIN);
 
   for (int iMass = 0; iMass < 13*2; iMass++) {
    double Hmass = 350+25*iMass;
    TString name = Form ("Weight_crystal_qqH_%d",iMass);
-   Weight_crystal_qqH[iMass] = new TF1(name.Data(),CrystalBallLowHighDivideCrystalBallLowHigh,200,3000,14);
-   for (int iVar = 0; iVar<7; iVar++) {
+   Weight_crystal_qqH[iMass] = new TF1(name.Data(),CrystalBallLowHighPlusExpDividedByCrystalBallLowHigh,200,3000,14);
+   for (int iVar = 0; iVar<7+2; iVar++) {
     if (iVar == 0) {
      Weight_crystal_qqH[iMass]->SetParameter(iVar,exp(variables_SI[iVar]->Eval(Hmass)));
      Weight_crystal_qqH[iMass]->SetParameter(iVar+7,exp(variables_S[iVar]->Eval(Hmass)));
     }
     else {
+     if (iVar<7) {
+      Weight_crystal_qqH[iMass]->SetParameter(iVar+7,variables_S[iVar]->Eval(Hmass));
+     }
      Weight_crystal_qqH[iMass]->SetParameter(iVar,variables_SI[iVar]->Eval(Hmass));
-     Weight_crystal_qqH[iMass]->SetParameter(iVar+7,variables_S[iVar]->Eval(Hmass));
     }
    }
    Weight_crystal_qqH[iMass] -> SetNpx(300);
