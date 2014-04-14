@@ -305,10 +305,11 @@ void Draw(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleV
 
  //---- used:
 //  TString cut = Form ("mjj>30 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
-
+ TString cut = Form ("mjj>200 && pt2>8");
+ 
  //---- to compare with MC@NLO
 //  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10");
- TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<6.5 && abs(eta2)<6.5 && mll>8");
+//  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<6.5 && abs(eta2)<6.5 && mll>8");
 
 
 //    leptons min E   5 GeV
