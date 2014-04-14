@@ -400,7 +400,7 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (Hmass==500)   MAX =  1500;
   if (Hmass==650)   MAX =  2000;
   if (Hmass==800)   MAX =  3000;
-  if (Hmass==1000)  MAX =  3000;
+  if (Hmass==1000)  MAX =  3500;
 
   int MIN = 200;
   if (Hmass<350) MIN = 200;
@@ -484,7 +484,7 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (Hmass==500)   MAX =  1500;
   if (Hmass==650)   MAX =  2000;
   if (Hmass==800)   MAX =  3000;
-  if (Hmass==1000)  MAX =  3000;
+  if (Hmass==1000)  MAX =  3500;
 
   int MIN = 200;
   if (Hmass<350) MIN = 200;
@@ -545,7 +545,7 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (Hmass==500)   MAX =  1500;
   if (Hmass==650)   MAX =  2000;
   if (Hmass==800)   MAX =  3000;
-  if (Hmass==1000)  MAX =  3000;
+  if (Hmass==1000)  MAX =  3500;
 
   int MIN = 200;
   if (Hmass<350) MIN = 200;
@@ -609,7 +609,7 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (Hmass==500)   MAX =  1500;
   if (Hmass==650)   MAX =  2000;
   if (Hmass==800)   MAX =  3000;
-  if (Hmass==1000)  MAX =  3000;
+  if (Hmass==1000)  MAX =  3500;
 
   int MIN = 200;
   if (Hmass<350) MIN = 200;

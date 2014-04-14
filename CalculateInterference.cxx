@@ -293,7 +293,7 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
  if (mass==500)   MAX =  1500;
  if (mass==650)   MAX =  2000;
  if (mass==800)   MAX =  3000;
- if (mass==1000)  MAX =  3000;
+ if (mass==1000)  MAX =  3500;
 
  int MIN = 200;
  if (mass<350) MIN = 200;
@@ -588,22 +588,42 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   crystal_SI->SetParLimits (7, -0.0001,  50) ; //---- R
   crystal_SI->SetParLimits (8, 10, 5000) ;  //---- tau
 
+  if (mass == 500) {
+   crystal_SI->SetParLimits (1, 0.5 * mass, 1.50 * mass ) ;   //---- Mean
+   crystal_SI->SetParLimits (2, 0.001 * mass , 20 * h_mWW_3->GetRMS ()) ; //---- #sigma
+   crystal_SI->SetParLimits (3, 0.1, 20.) ; //---- alpha
+   crystal_SI->SetParLimits (4, 0.5, 100) ; //---- n
+   crystal_SI->SetParLimits (5, 0.1, 200.) ; //---- #alpha-2
+   crystal_SI->SetParLimits (6, 0.5, 100) ; //---- n2
+   crystal_SI->SetParLimits (7, 0.0001,  100) ; //---- R
+   crystal_SI->SetParLimits (8, 1, 3000) ;  //---- tau
+  }
+
   if (mass == 650) {
-   crystal_SI->SetParLimits (1, 0.6 * mass, 1.10 * mass ) ;
-   crystal_SI->SetParLimits (5, 0.1, 20.) ;
-   crystal_SI->SetParLimits (3, 0.2, 20.) ;
-   crystal_SI->SetParLimits (4, 0.5, 50) ;
+   crystal_SI->SetParLimits (1, 0.5 * mass, 1.50 * mass ) ;   //---- Mean
+   crystal_SI->SetParLimits (2, 0.001 * mass , 20 * h_mWW_3->GetRMS ()) ; //---- #sigma
+   crystal_SI->SetParLimits (3, 0.1, 20.) ; //---- alpha
+   crystal_SI->SetParLimits (4, 0.5, 100) ; //---- n
+   crystal_SI->SetParLimits (5, 0.1, 200.) ; //---- #alpha-2
+   crystal_SI->SetParLimits (6, 0.5, 100) ; //---- n2
+   crystal_SI->SetParLimits (7, 0.0001,  100) ; //---- R
+   crystal_SI->SetParLimits (8, 1, 3000) ;  //---- tau
   }
 
   if (mass != 1000) {
+   crystal_SI->SetParLimits (2, 0.001 * mass , 20 * mass) ; //---- #sigma
    crystal_SI->SetParLimits (7, -0.0001,  10) ; //---- R
-   crystal_SI->SetParLimits (8, 10, 1000) ;  //---- tau
+   crystal_SI->SetParLimits (8, 10, 2000) ;  //---- tau
   }
 
 
 //   crystal_SI->SetLineColor(kMagenta-10);
 //   h_Subtraction->Fit (crystal_SI, "+", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
+
   h_Subtraction->Fit (crystal_SI, "+", "",  200., mass*2.) ;
+  if (mass == 650) {
+   h_Subtraction->Fit (crystal_SI, "+", "",  200., 850.) ;
+  }
   crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
   crystal_SI->SetLineColor(kRed);
 
