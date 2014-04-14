@@ -389,14 +389,14 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (i==4) Hmass = 1000;
 
   int NBIN = 500;
-  if (Hmass==350)  NBIN = 500;
+  if (Hmass==350)  NBIN = 1000;
   if (Hmass==500)  NBIN = 120;
   if (Hmass==650)  NBIN =  70;
   if (Hmass==800)  NBIN = 120*3/4;
   if (Hmass==1000) NBIN =  80*3/4;
 
   int MAX = 800;
-  if (Hmass==350)   MAX =   500;
+  if (Hmass==350)   MAX =  1000;
   if (Hmass==500)   MAX =  1500;
   if (Hmass==650)   MAX =  2000;
   if (Hmass==800)   MAX =  3000;
@@ -473,14 +473,14 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
 
 
   int NBIN = 500;
-  if (Hmass==350)  NBIN = 500;
+  if (Hmass==350)  NBIN = 1000;
   if (Hmass==500)  NBIN = 120;
   if (Hmass==650)  NBIN =  70;
   if (Hmass==800)  NBIN = 120*3/4;
   if (Hmass==1000) NBIN =  80*3/4;
 
   int MAX = 800;
-  if (Hmass==350)   MAX =   500;
+  if (Hmass==350)   MAX =  1000;
   if (Hmass==500)   MAX =  1500;
   if (Hmass==650)   MAX =  2000;
   if (Hmass==800)   MAX =  3000;
@@ -534,14 +534,14 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
   if (i==4) Hmass = 1000;
 
   int NBIN = 500;
-  if (Hmass==350)  NBIN = 500;
+  if (Hmass==350)  NBIN = 1000;
   if (Hmass==500)  NBIN = 120;
   if (Hmass==650)  NBIN =  70;
   if (Hmass==800)  NBIN = 120*3/4;
   if (Hmass==1000) NBIN =  80*3/4;
 
   int MAX = 800;
-  if (Hmass==350)   MAX =   500;
+  if (Hmass==350)   MAX =  1000;
   if (Hmass==500)   MAX =  1500;
   if (Hmass==650)   MAX =  2000;
   if (Hmass==800)   MAX =  3000;
@@ -598,14 +598,14 @@ void PlotInterference(int kind = 0,     int scaleVariation = 0) {
 
 
   int NBIN = 500;
-  if (Hmass==350)  NBIN = 500;
+  if (Hmass==350)  NBIN = 1000;
   if (Hmass==500)  NBIN = 120;
   if (Hmass==650)  NBIN =  70;
   if (Hmass==800)  NBIN = 120*3/4;
   if (Hmass==1000) NBIN =  80*3/4;
 
   int MAX = 800;
-  if (Hmass==350)   MAX =   500;
+  if (Hmass==350)   MAX =  1000;
   if (Hmass==500)   MAX =  1500;
   if (Hmass==650)   MAX =  2000;
   if (Hmass==800)   MAX =  3000;
