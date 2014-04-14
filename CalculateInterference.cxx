@@ -585,11 +585,18 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   crystal_SI->SetParameter (6, 1.5) ;
   crystal_SI->SetParLimits (6, 1.0, 50) ;
 
-  crystal_SI->SetParLimits (7, 0,  50) ; //---- R
-  crystal_SI->SetParLimits (8, 10, 2000) ;  //---- tau
+  crystal_SI->SetParLimits (7, -0.0001,  50) ; //---- R
+  crystal_SI->SetParLimits (8, 10, 5000) ;  //---- tau
+
+  if (mass == 650) {
+   crystal_SI->SetParLimits (1, 0.6 * mass, 1.10 * mass ) ;
+   crystal_SI->SetParLimits (5, 0.1, 20.) ;
+   crystal_SI->SetParLimits (3, 0.2, 20.) ;
+   crystal_SI->SetParLimits (4, 0.5, 50) ;
+  }
 
   if (mass != 1000) {
-   crystal_SI->SetParLimits (7, 0,  10) ; //---- R
+   crystal_SI->SetParLimits (7, -0.0001,  10) ; //---- R
    crystal_SI->SetParLimits (8, 10, 1000) ;  //---- tau
   }
 
