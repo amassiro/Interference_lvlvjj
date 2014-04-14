@@ -282,14 +282,14 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
 //  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
 
  int NBIN = 500;
- if (mass==350)  NBIN = 500;
+ if (mass==350)  NBIN = 1000;
  if (mass==500)  NBIN = 120;
  if (mass==650)  NBIN =  70;
  if (mass==800)  NBIN = 120*3/4;
  if (mass==1000) NBIN =  80*3/4;
 
  int MAX = 800;
- if (mass==350)   MAX =   500;
+ if (mass==350)   MAX =  1000;
  if (mass==500)   MAX =  1500;
  if (mass==650)   MAX =  2000;
  if (mass==800)   MAX =  3000;
@@ -388,10 +388,17 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
 
 
 
+//  TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
+//  TString weightWithXsec    ;
+//  if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
+//  else                     weightWithXsec    = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse);
+
  TString weightWithXsec126 = Form ("(%s) * (%s * %f) * (numb == 0) * (numt == 0)",cut.Data(),weight.Data(),xsec[0]/2.);
  TString weightWithXsec    ;
  if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f) * (numb == 0) * (numt == 0)",cut.Data(),xsecToUse);
  else                     weightWithXsec    = Form ("(%s) * (%s) * (numb == 0) * (numt == 0) * (%f)",weight.Data(), cut.Data(),xsecToUse);
+
+
 
  TString weightWithXsec_S  ;
  if (scaleVariation == 0) weightWithXsec_S  = Form ("(%s) * (%f)",cut.Data(),xsecToUse_S);
@@ -585,7 +592,7 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
   crystal_SI->SetParameter (6, 1.5) ;
   crystal_SI->SetParLimits (6, 1.0, 50) ;
 
-  crystal_SI->SetParLimits (7, -0.0001,  50) ; //---- R
+  crystal_SI->SetParLimits (7, 0.0001,  50) ; //---- R
   crystal_SI->SetParLimits (8, 10, 5000) ;  //---- tau
 
   if (mass == 500) {
@@ -610,11 +617,11 @@ void CalculateInterference(int kind = 0,         int mass = 350,   bool doFit = 
    crystal_SI->SetParLimits (8, 1, 3000) ;  //---- tau
   }
 
-  if (mass != 1000) {
-   crystal_SI->SetParLimits (2, 0.001 * mass , 20 * mass) ; //---- #sigma
-   crystal_SI->SetParLimits (7, -0.0001,  10) ; //---- R
-   crystal_SI->SetParLimits (8, 10, 2000) ;  //---- tau
-  }
+//   if (mass != 1000) {
+//    crystal_SI->SetParLimits (2, 0.001 * mass , 20 * mass) ; //---- #sigma
+//    crystal_SI->SetParLimits (7, -0.0001,  10) ; //---- R
+//    crystal_SI->SetParLimits (8, 10, 2000) ;  //---- tau
+//   }
 
 
 //   crystal_SI->SetLineColor(kMagenta-10);
