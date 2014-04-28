@@ -292,3 +292,7 @@ but first join the samples:
     ls -d  gen*/ --color=none  | tr "/" " " | awk '{print "../../ntupleMaker.exe   "$1"/total.lhe  "$1".root"}'  | /bin/sh
 
 
+    for fol in `ls --color=none | grep -v gen` ; do \
+      echo $fol ; \
+      tail -n 1 $fol/results ; \
+    done;
