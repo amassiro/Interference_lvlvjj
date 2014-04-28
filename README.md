@@ -278,3 +278,17 @@ Comparison of the correction function for different selections: (0 = em, 1 = mm)
 
 
 
+Comparison with VBFNLO and CPS in Phantom: (0 = em, 1 = mm)
+
+    root -l DrawVBFNLOPhantom.cxx\(0,800\)
+
+but first join the samples:
+
+    ls -d  gen*/ --color=none | awk '{print "cd "$1"/ ; ../../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'
+    ls -d  gen*/ --color=none  | tr "/" " " | awk '{print "../../ntupleMaker.exe   "$1"/total.lhe  "$1".root"}'
+
+
+    ls -d  gen*/ --color=none | awk '{print "cd "$1"/ ; ../../../../LHEActions/mergeLHEfiles  `find . -name \"phamom.dat\"`;  cd -;"}'  | /bin/sh
+    ls -d  gen*/ --color=none  | tr "/" " " | awk '{print "../../ntupleMaker.exe   "$1"/total.lhe  "$1".root"}'  | /bin/sh
+
+
