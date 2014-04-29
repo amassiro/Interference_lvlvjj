@@ -290,6 +290,12 @@ void DrawVBFNLOPhantom() {
  h_weight_bw -> Draw();
  h_weight_cp -> Draw("same");
 
+ TLegend* leg_weight = new TLegend (0.5,0.5,0.9,0.9);
+ leg_weight -> SetFillColor(0);
+ leg_weight -> AddEntry(h_weight_cp,  "cp", "L");
+ leg_weight -> AddEntry(h_weight_bw,  "bw", "L");
+ leg_weight -> Draw();
+
  cc_weight->cd(2);
  gr_weight_ratio->Draw("APL");
  gPad->SetGrid();
