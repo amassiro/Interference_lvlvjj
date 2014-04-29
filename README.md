@@ -278,9 +278,9 @@ Comparison of the correction function for different selections: (0 = em, 1 = mm)
 
 
 
-Comparison with VBFNLO and CPS in Phantom: (0 = em, 1 = mm)
+Comparison with VBFNLO and CPS in Phantom:
 
-    root -l DrawVBFNLOPhantom.cxx\(0,800\)
+    root -l DrawVBFNLOPhantom.cxx
 
 but first join the samples:
 

@@ -1,178 +1,5 @@
 #include "TString.h"
 
-
-
-double doubleGausCrystalBallLowHigh (double* x, double* par) {
-  //[0] = N
-  //[1] = mean
-  //[2] = sigma
-  //[3] = alpha
-  //[4] = n
-  //[5] = alpha2
-  //[6] = n2
-
- double xx = x[0];
-
-//  double mean = par[1] ; // mean
-//  double sigmaP = par[2] ; // sigma of the positive side of the gaussian
-//  double sigmaN = par[3] ; // sigma of the negative side of the gaussian
-//  double alpha = par[4] ; // junction point on the positive side of the gaussian
-//  double n = par[5] ; // power of the power law on the positive side of the gaussian
-//  double alpha2 = par[6] ; // junction point on the negative side of the gaussian
-//  double n2 = par[7] ; // power of the power law on the negative side of the gaussian
-
- double mean = par[1] ; // mean
- double sigmaP = par[2] ; // sigma of the positive side of the gaussian  |  they are the same!!!
- double sigmaN = par[2] ; // sigma of the negative side of the gaussian  |
- double alpha = par[3] ; // junction point on the positive side of the gaussian
- double n = par[4] ; // power of the power law on the positive side of the gaussian
- double alpha2 = par[5] ; // junction point on the negative side of the gaussian
- double n2 = par[6] ; // power of the power law on the negative side of the gaussian
-
- if ((xx-mean)/sigmaP > fabs(alpha)) {
-  double A = pow(n/fabs(alpha), n) * exp(-0.5 * alpha*alpha);
-  double B = n/fabs(alpha) - fabs(alpha);
-
-  return par[0] * A * pow(B + (xx-mean)/sigmaP, -1.*n);
- }
-
- else if ((xx-mean)/sigmaN < -1.*fabs(alpha2)) {
-  double A = pow(n2/fabs(alpha2), n2) * exp(-0.5 * alpha2*alpha2);
-  double B = n2/fabs(alpha2) - fabs(alpha2);
-
-  return par[0] * A * pow(B - (xx-mean)/sigmaN, -1.*n2);
- }
-
- else if ((xx-mean) > 0) {
-  return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaP*sigmaP) );
- }
-
- else {
-  return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaN*sigmaN) );
- }
-
-}
-
-
-
-double crystalBallLowHigh (double* x, double* par) {
-  //[0] = N
-  //[1] = mean
-  //[2] = sigma
-  //[3] = alpha on the right-hand side
-  //[4] = n
-  //[5] = alpha2 on the left-hand side
-  //[6] = n2
-
- double xx = x[0];
- double mean = par[1];
- double sigma = fabs (par[2]);
- double alpha = par[3];
- double n = par[4];
- double alpha2 = par[5];
- double n2 = par[6];
-
- if( (xx-mean)/sigma > fabs(alpha) ) {
-  double A = pow(n/fabs(alpha), n) * exp(-0.5 * alpha*alpha);
-  double B = n/fabs(alpha) - fabs(alpha);
-
-  return par[0] * A * pow(B + (xx-mean)/sigma, -1.*n);
- }
-
- else if( (xx-mean)/sigma < -1.*fabs(alpha2) ) {
-  double A = pow(n2/fabs(alpha2), n2) * exp(-0.5 * alpha2*alpha2);
-  double B = n2/fabs(alpha2) - fabs(alpha2);
-
-  return par[0] * A * pow(B - (xx-mean)/sigma, -1.*n2);
- }
-
- else {
-  return par[0] * exp(-1. * (xx-mean)*(xx-mean) / (2*sigma*sigma) );
- }
-
-}
-
-
-//Crystal ball function for signal, parameters are 0:alpha,1:n,2:mean,3:sigma,4:normalization;
-
-Double_t CrystalBall(Double_t *x,Double_t *par) {
-
- Double_t t = (x[0]-par[2])/par[3];
- if (par[0] < 0) t = -t;
-
- Double_t absAlpha = fabs((Double_t)par[0]);
-
- if (t >= -absAlpha) {
-  return par[4]*exp(-0.5*t*t);
- }
- else {
-  Double_t a =  TMath::Power(par[1]/absAlpha,par[1])*exp(-0.5*absAlpha*absAlpha);
-  Double_t b= par[1]/absAlpha - absAlpha;
-
-  return par[4]*(a/TMath::Power(b - t, par[1]));
- }
-}
-
-
-Double_t RightCrystalBall(Double_t *x,Double_t *par) {
-
- Double_t t = (x[0]-par[2])/par[3];
- if (par[0] > 0) t = -t;
-
- Double_t absAlpha = fabs((Double_t)par[0]);
-
- if (t >= -absAlpha) {
-  return par[4]*exp(-0.5*t*t);
- }
- else {
-  Double_t a =  TMath::Power(par[1]/absAlpha,par[1])*exp(-0.5*absAlpha*absAlpha);
-  Double_t b= par[1]/absAlpha - absAlpha;
-
-  return par[4]*(a/TMath::Power(b - t, par[1]));
- }
-}
-
-
-//Superposition of 2 gaussians
-
-Double_t G1(Double_t *x, Double_t *par) {
- Double_t arg = 0;
- if (par[2]) arg = (x[0] - par[1])/par[2];
-
- Double_t sig = par[0]*TMath::Exp(-0.5*arg*arg);
- return sig;
-}
-
-
-Double_t G2(Double_t *x, Double_t *par) {
- Double_t arg = 0;
- if (par[2]) arg = (x[0] - par[1])/par[2];
-
- Double_t sig = par[0]*TMath::Exp(-0.5*arg*arg);
- return sig;
-}
-
-
-Double_t Total(Double_t *x, Double_t *par) {
- Double_t tot = G1(x,par) + G2(x,&par[3]);
- return tot;
-}
-
-
-//---- division of CBLowHigh with CBLowHigh ----
-Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
- Double_t num = 0;
- num = crystalBallLowHigh(x,par);
-
- Double_t den = 1;
- den = crystalBallLowHigh(x,&par[7]);
-
- return num-den;
-}
-
-
-
-
 //-----------------------------------------------------------
 //-----------------------------------------------------------
 //-----------------------------------------------------------
@@ -180,77 +7,69 @@ Double_t CrystalBallLowHighMinusCrystalBallLowHigh(Double_t *x,Double_t *par) {
 
 
 //           0 = em, 1 = mm
-void DrawVBFNLOPhantom(int kind = 0,         int mass = 350,   bool doFit = 1,     int scaleVariation = 0) {
+void DrawVBFNLOPhantom() {
 
-//  scaleVariation = 0   nominal
-//                  -1   scale down
-//                   1   scale up
+ int mass = 800;
 
- std::string folder;
- if (scaleVariation ==  0) folder = "./";
- if (scaleVariation == -1) folder = "scaleDown/";
- if (scaleVariation ==  1) folder = "scaleUp/";
 
-//  TFile* f1 = new TFile ("gen_126_jjmm.root","READ"); // ---- B
-//  TFile* f2 = new TFile ("gen_500_jjmm.root","READ"); // ---- S+B
-
-//  int NBIN = 350;
- int NBIN = 500;
- if (mass<350) NBIN = 500;
- if (mass>400) NBIN = 120;
- if (mass>500) NBIN =  70;
- if (mass>700) NBIN = 100; //---- 120
- if (mass>900) NBIN =  80;
-
- int MAX = 800;
- if (mass<350) MAX =   500;
- if (mass>400) MAX =  1500;
- if (mass>500) MAX =  2000;
- if (mass>700) MAX =  2000; //---- 4000
- if (mass>900) MAX =  4000;
-
+ int NBIN = 100; //---- 120
 
  int MIN = 200;
- if (mass<350) MIN = 200;
+ int MAX =  2000; //---- 4000
 
 
- TString name1;
- name1 = Form ("%sgen_126_jjme.root",folder.c_str());
+ TString name_B;
+ name_B = Form ("gen_126_jjme.root");
 
- TString name2;
- name2 = Form ("%sCPS/2jemuvv_800/genh800_cp.root",folder.c_str());
+ TString name_SBI_cp;
+ name_SBI_cp = Form ("CPS/2jemuvv_800/genh800_cp.root");
 
- TString name3;
- name3 = Form ("%sCPS/2jemuvv_800/genh800_cp_sig.root",folder.c_str());
+ TString name_S_cp;
+ name_S_cp = Form ("CPS/2jemuvv_800/genh800_cp_sig.root");
 
+ TString name_SBI_bw;
+ name_SBI_bw = Form ("CPS/2jemuvv_800/genh800.root");
 
- TFile* f1 = new TFile (name1.Data(),"READ"); // ---- B
- TFile* f2 = new TFile (name2.Data(),"READ"); // ---- S+B
- TFile* f3 = new TFile (name3.Data(),"READ"); // ---- S
+ TString name_S_bw;
+ name_S_bw = Form ("CPS/2jemuvv_800/genh800_sig.root");
 
- std::cout << " nameB  = " << name1.Data() << std::endl;
- std::cout << " nameSB = " << name2.Data() << std::endl;
- std::cout << " nameS  = " << name3.Data() << std::endl;
+ TFile* f_B      = new TFile (name_B.Data(),"READ");
+ TFile* f_SBI_cp = new TFile (name_SBI_cp.Data(),"READ");
+ TFile* f_S_cp   = new TFile (name_S_cp.Data(),"READ");
+ TFile* f_SBI_bw = new TFile (name_SBI_bw.Data(),"READ");
+ TFile* f_S_bw   = new TFile (name_S_bw.Data(),"READ");
 
- TNtuple* t1 = (TNtuple*) f1->Get ("ntu");
- TNtuple* t2 = (TNtuple*) f2->Get ("ntu");
- TNtuple* t3 = (TNtuple*) f3->Get ("ntu");
+ TNtuple* t_B = (TNtuple*) f_B->Get ("ntu");
+ TNtuple* t_SBI_cp = (TNtuple*) f_SBI_cp->Get ("ntu");
+ TNtuple* t_S_cp   = (TNtuple*) f_S_cp->Get ("ntu");
+ TNtuple* t_SBI_bw = (TNtuple*) f_SBI_bw->Get ("ntu");
+ TNtuple* t_S_bw   = (TNtuple*) f_S_bw->Get ("ntu");
 
- TH1F* h_mWW_1 = new TH1F("h_mWW_1","h_mWW_1",NBIN,0,MAX);
- TH1F* h_mWW_2 = new TH1F("h_mWW_2","h_mWW_2",NBIN,0,MAX);
- TH1F* h_mWW_3 = new TH1F("h_mWW_3","h_mWW_3",NBIN,0,MAX);
- TH1F* h_Ratio = new TH1F("h_mWW_ratio","h_mWW_ratio",NBIN,0,MAX);
- TH1F* h_Subtraction = new TH1F("h_Subtraction","h_Subtraction",NBIN,0,MAX);
- TH1F* h_I = new TH1F("h_I","h_I",NBIN,0,MAX);
+ TH1F* h_mWW_B = new TH1F("h_mWW_B","h_mWW_B",NBIN,0,MAX);
+ TH1F* h_mWW_SBI_cp = new TH1F("h_mWW_SBI_cp","h_mWW_SBI_cp",NBIN,0,MAX);
+ TH1F* h_mWW_S_cp   = new TH1F("h_mWW_S_cp","h_mWW_S_cp",NBIN,0,MAX);
+ TH1F* h_mWW_SBI_bw = new TH1F("h_mWW_SBI_bw","h_mWW_SBI_bw",NBIN,0,MAX);
+ TH1F* h_mWW_S_bw   = new TH1F("h_mWW_S_bw","h_mWW_S_bw",NBIN,0,MAX);
 
- float xsec[100];
+ TH1F* h_weight_cp = new TH1F("h_weight_cp","h_weight_cp",NBIN,0,MAX);
+ TH1F* h_weight_bw = new TH1F("h_weight_bw","h_weight_bw",NBIN,0,MAX);
+
+ float xsec_B;
+ float xsec_SBI_cp;
+ float xsec_S_cp;
+ float xsec_SBI_bw;
+ float xsec_S_bw;
+
+ xsec_B = 3.59354104959999920E-002; //---- B (126)
 
  //---- cp
- xsec[6] = 3.735387534799999E-003; //---- SBI (800)
- xsec[0] = 3.59354104959999920E-002; //---- B (126)
+ xsec_SBI_cp = 3.735387534799999E-003;
+ xsec_S_cp = 2.608006521936799E-004;
 
- float xsec_S[100];
- xsec_S[6] = 2.608006521936799E-004; //---- S (800)
+ //---- bw
+ xsec_SBI_bw = 3.663679731200000E-003;
+ xsec_S_bw = 1.929557442245400E-004;
+
 
 
  //  350  w1
@@ -271,492 +90,109 @@ void DrawVBFNLOPhantom(int kind = 0,         int mass = 350,   bool doFit = 1,  
  if (mass ==  250) weight = Form ("w6");
  if (mass ==  300) weight = Form ("w7");
 
- float xsecToUse;
- if (mass ==  250) xsecToUse = xsec[1]/2.;
- if (mass ==  300) xsecToUse = xsec[2]/2.;
- if (mass ==  350) xsecToUse = xsec[3]/2.;
- if (mass ==  500) xsecToUse = xsec[4]/2.;
- if (mass ==  650) xsecToUse = xsec[5]/2.;
- if (mass ==  800) xsecToUse = xsec[6]/2.;
- if (mass == 1000) xsecToUse = xsec[7]/2.;
+//  float xsecToUse;
+//  if (mass ==  250) xsecToUse = xsec[1]/2.;
+//  if (mass ==  300) xsecToUse = xsec[2]/2.;
+//  if (mass ==  350) xsecToUse = xsec[3]/2.;
+//  if (mass ==  500) xsecToUse = xsec[4]/2.;
+//  if (mass ==  650) xsecToUse = xsec[5]/2.;
+//  if (mass ==  800) xsecToUse = xsec[6]/2.;
+//  if (mass == 1000) xsecToUse = xsec[7]/2.;
+// 
+//  float xsecToUse_S;
+//  if (mass ==  250) xsecToUse_S = xsec_S[1]/0.5;
+//  if (mass ==  300) xsecToUse_S = xsec_S[2]/0.5;
+//  if (mass ==  350) xsecToUse_S = xsec_S[3]/0.5;
+//  if (mass ==  500) xsecToUse_S = xsec_S[4]/0.5;
+//  if (mass ==  650) xsecToUse_S = xsec_S[5]/0.5;
+//  if (mass ==  800) xsecToUse_S = xsec_S[6]/0.5;
+//  if (mass == 1000) xsecToUse_S = xsec_S[7]/0.5;
 
- float xsecToUse_S;
- if (mass ==  250) xsecToUse_S = xsec_S[1]/0.5;
- if (mass ==  300) xsecToUse_S = xsec_S[2]/0.5;
- if (mass ==  350) xsecToUse_S = xsec_S[3]/0.5;
- if (mass ==  500) xsecToUse_S = xsec_S[4]/0.5;
- if (mass ==  650) xsecToUse_S = xsec_S[5]/0.5;
- if (mass ==  800) xsecToUse_S = xsec_S[6]/0.5;
- if (mass == 1000) xsecToUse_S = xsec_S[7]/0.5;
 
  //---- used:
 //  TString cut = Form ("mjj>30 && pt1>5 && pt2>5 && jetpt1>10 && jetpt2>10");
 
  //---- to compare with MC@NLO
-//  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10");
-//  TString cut = Form ("mjj>100 && pt1>8 && pt2>8 && jetpt1>10 && jetpt2>10 && abs(jeteta1)<6.5 && abs(jeteta2)<6.5  && abs(eta1)<2.5 && abs(eta2)<2.5 && mll>8");
-//  TString cut = Form ("jetpt1>20 && jetpt2>20 && mjj>400 && detajj>4 && abs(jeteta1)<4.5 && abs(jeteta2)<4.5");
-//  TString cut = Form ("jetpt1>25 && jetpt2>25 && mjj>600 && detajj>3 && abs(jeteta1)<4.9 && abs(jeteta2)<4.9 && pt1>25 && pt2>25"); // && pfmet>25");
-
-//  TString cut = Form ("jetpt1>10 && jetpt2>10 && mjj>200  && abs(jeteta1)<6.5 && abs(jeteta2)<6.5 && mll>8 && pt1>8 && abs(eta1)<2.5 && abs(eta2)<2.5");
-//  TString cut = Form ("mjj>200");
  TString cut = Form ("mjj>200 && pt2>8");
 
 
-//    leptons min E   5 GeV
-//    minimum delta R between the fwd and bkw jets    0.4
-//    minimum delta R between jets and leptons        0.4
-//    minimum delta R between two leptons     0.4
+ TString weight_B = Form ("(%s) * (%s * %f) * (numt == 0) * (numb == 0)",cut.Data(),weight.Data(),xsec_B);
+ TString weight_SBI_cp = Form ("(%s) * (%s * %f) * (numt == 0) * (numb == 0)",cut.Data(),weight.Data(),xsec_SBI_cp);
+ TString weight_S_cp   = Form ("(%s) * (%s * %f) * (numt == 0) * (numb == 0)",cut.Data(),weight.Data(),xsec_S_cp);
+ TString weight_SBI_bw = Form ("(%s) * (%s * %f) * (numt == 0) * (numb == 0)",cut.Data(),weight.Data(),xsec_SBI_bw);
+ TString weight_S_bw   = Form ("(%s) * (%s * %f) * (numt == 0) * (numb == 0)",cut.Data(),weight.Data(),xsec_S_bw);
 
+ t_B -> Draw("mWW >> h_mWW_B",weight_B.Data(),"goff");
+ t_SBI_cp -> Draw("mWW >> h_mWW_SBI_cp",weight_SBI_cp.Data(),"goff");
+ t_B_cp   -> Draw("mWW >> h_mWW_B_cp",weight_B_cp.Data(),"goff");
+ t_SBI_bw -> Draw("mWW >> h_mWW_SBI_bw",weight_SBI_bw.Data(),"goff");
+ t_B_bw   -> Draw("mWW >> h_mWW_B_bw",weight_B_bw.Data(),"goff");
 
-//  TString cut = Form ("1");
+ h_mWW_B->SetLineColor(kGreen);
 
-//  TString weightWithXsec126 = Form ("(mll>80 && mll<100 ) * %s * %f",weight.Data(),xsec[0]);
-//  TString weightWithXsec    = Form ("(mll>80 && mll<100 ) * %f",xsecToUse);
+ h_mWW_SBI_cp->SetLineColor(kBlue);
+ h_mWW_B_cp->SetLineColor(kRed);
+ h_mWW_SBI_bw->SetLineColor(kBlue+2);
+ h_mWW_B_bw->SetLineColor(kRed+2);
 
-//  TString weightWithXsec126 = Form ("(%s) * (%s * %f)",cut.Data(),weight.Data(),xsec[0]/2.);
- TString weightWithXsec126 = Form ("(%s) * (%s * %f) * (numt == 0) * (numb == 0)",cut.Data(),weight.Data(),xsec[0]/2.);
- TString weightWithXsec    ;
-//  if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f)",cut.Data(),xsecToUse);
-//  else                     weightWithXsec    = Form ("(%s) * (%s) * (%f)",weight.Data(), cut.Data(),xsecToUse);
- if (scaleVariation == 0) weightWithXsec    = Form ("(%s) * (%f) * (numb == 0) * (numt == 0)",cut.Data(),xsecToUse);
- else                     weightWithXsec    = Form ("(%s) * (%s) * (%f) * (numb == 0) * (numt == 0)",weight.Data(), cut.Data(),xsecToUse);
+ h_mWW_B->SetLineStyle(1);
 
- TString weightWithXsec_S  ;
- if (scaleVariation == 0) weightWithXsec_S  = Form ("(%s) * (%f) * (numb == 0) * (numt == 0)",cut.Data(),xsecToUse_S);
- else                     weightWithXsec_S  = Form ("(%s) * (%s) * (%f) * (numb == 0) * (numt == 0)",weight.Data(), cut.Data(),xsecToUse_S);
+ h_mWW_SBI_cp->SetLineStyle(2);
+ h_mWW_B_cp->SetLineStyle(2);
+ h_mWW_SBI_bw->SetLineStyle(3);
+ h_mWW_B_bw->SetLineStyle(3);
 
- std::cout << " weightWithXsec126 = " << weightWithXsec126.Data() << std::endl;
- std::cout << " weightWithXsec    = " << weightWithXsec.Data()    << std::endl;
- std::cout << " weightWithXsec_S  = " << weightWithXsec_S.Data()  << std::endl;
-
-//  t1->Draw("mjj >> h_mWW_1",weightWithXsec126.Data(),"goff");
-//  t2->Draw("mjj >> h_mWW_2",weightWithXsec.Data(),   "goff");
-//  t3->Draw("mjj >> h_mWW_3",weightWithXsec_S.Data(), "goff");
-
- t1->Draw("mWW >> h_mWW_1",weightWithXsec126.Data(),"goff");
- t2->Draw("mWW >> h_mWW_2",weightWithXsec.Data(),   "goff");
- t3->Draw("mWW >> h_mWW_3",weightWithXsec_S.Data(), "goff");
-
- h_mWW_1->SetLineColor(kBlue);
- h_mWW_2->SetLineColor(kRed);
- h_mWW_3->SetLineColor(kGreen);
-
- h_mWW_1->SetLineStyle(1);
- h_mWW_2->SetLineStyle(2);
- h_mWW_3->SetLineStyle(2);
-
- h_mWW_1->SetLineWidth(2);
- h_mWW_2->SetLineWidth(2);
- h_mWW_3->SetLineWidth(3);
-
-//  h_mWW_1->Scale (1.2);  //--- me
-//  h_mWW_1->Scale (0.37);  //--- mm
-
+ h_mWW_B->SetLineWidth(3);
+ h_mWW_SBI_cp->SetLineWidth(2);
+ h_mWW_B_cp->SetLineWidth(2);
+ h_mWW_SBI_bw->SetLineWidth(2);
+ h_mWW_B_bw->SetLineWidth(2);
 
 
  TCanvas* cc = new TCanvas("cc","cc",800,600);
- h_mWW_1 -> Draw();
- h_mWW_2 -> Draw("same");
- h_mWW_3 -> Draw("same");
+ h_mWW_B -> Draw();
+ h_mWW_SBI_cp -> Draw("same");
+ h_mWW_B_cp -> Draw("same");
+ h_mWW_SBI_bw -> Draw("same");
+ h_mWW_B_bw -> Draw("same");
 
 
- for (int iBin = 0; iBin < h_mWW_1->GetNbinsX(); iBin++) {
-  float num = h_mWW_2->GetBinContent(iBin+1);
-  float den = h_mWW_1->GetBinContent(iBin+1);
-  if (den != 0) h_Ratio -> SetBinContent (iBin+1, num / den);
-  else  h_Ratio -> SetBinContent (iBin+1, 0);
-
-  h_Subtraction ->  SetBinContent (iBin+1, num - den);
-
-  float S = h_mWW_3->GetBinContent(iBin+1);
-  h_I ->  SetBinContent (iBin+1, num - den - S);
-
+ for (int iBin = 0; iBin < h_mWW_B->GetNbinsX(); iBin++) {
+  float sbi = h_mWW_SBI_cp->GetBinContent(iBin+1);
+  float s   = h_mWW_S_cp->GetBinContent(iBin+1);
+  float b   = h_mWW_B->GetBinContent(iBin+1);
+  if (s != 0) h_weight_cp -> SetBinContent (iBin+1, (sbi - b) / s);
+  else  h_weight_cp -> SetBinContent (iBin+1, 0);
  }
+
+ for (int iBin = 0; iBin < h_mWW_B->GetNbinsX(); iBin++) {
+  float sbi = h_mWW_SBI_bw->GetBinContent(iBin+1);
+  float s   = h_mWW_S_bw->GetBinContent(iBin+1);
+  float b   = h_mWW_B->GetBinContent(iBin+1);
+  if (s != 0) h_weight_bw -> SetBinContent (iBin+1, (sbi - b) / s);
+  else  h_weight_bw -> SetBinContent (iBin+1, 0);
+ }
+
 
  TCanvas* cc_Ratio = new TCanvas("cc_Ratio","cc_Ratio",800,600);
- h_Ratio->SetLineColor(kGreen);
- h_Ratio->SetLineStyle(1);
- h_Ratio->SetLineWidth(2);
+ h_weight_cp->SetLineColor(kGreen);
+ h_weight_cp->SetLineStyle(1);
+ h_weight_cp->SetLineWidth(2);
+
+ h_weight_bw->SetLineColor(kRed);
+ h_weight_bw->SetLineStyle(2);
+ h_weight_bw->SetLineWidth(2);
+
  h_Ratio -> Draw();
-
- TCanvas* cc_Subtraction = new TCanvas("cc_Subtraction","cc_Subtraction",800,600);
-//  h_Subtraction->GetYaxis()->SetRangeUser(-10,5000);
- h_Subtraction->GetYaxis()->SetRangeUser(0.001,h_Subtraction->GetMaximum()*1.1);
- h_Subtraction->SetLineColor(kMagenta);
- h_Subtraction->SetLineStyle(1);
- h_Subtraction->SetLineWidth(2);
- h_Subtraction -> Draw();
- h_mWW_3 -> Draw("same");
- cc_Subtraction->SetGrid();
-
-
-//  bool doFit = true;
-//  bool doFit = false;
-
- if (doFit) {
-
- //---- fit with function ----
-
-  std::cout << " -------------------------------- " << std::endl;
-  std::cout << " ------------ SIGNAL ------------ " << std::endl;
-  std::cout << " -------------------------------- " << std::endl;
-
-  TCanvas* cc_Subtraction_fit = new TCanvas("cc_Subtraction_fit","cc_Subtraction_fit",800,600);
-  cc_Subtraction_fit->cd();
-  cc_Subtraction_fit->SetGrid();
-
-//  TF1 *crystal_S = new TF1("crystal_S",RightCrystalBall,200,MAX,5);
-//  crystal_S->SetParameters(1,1,mass,h_mWW_3->GetRMS(),h_mWW_3->Integral());
-//  crystal_S->SetParNames("#alpha","n","Mean","#sigma","N");
-
-  TF1 *crystal_S = new TF1("crystal_S",crystalBallLowHigh,MIN,MAX,7);
-  crystal_S->SetParameters(h_mWW_3->Integral(),mass,h_mWW_3->GetRMS(),1.,2,1.,2);
-  crystal_S->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
- //                      0    1        2        3     4      5       6
- //                                           juncR        juncL
-  crystal_S->SetNpx(2000);
-  crystal_S->SetParameter (0, h_mWW_3->GetBinContent (h_mWW_3->GetMaximumBin ())) ;
-
-  crystal_S->SetParameter (1, mass) ;
-  crystal_S->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
-
-  crystal_S->SetParameter (2, 0.9 * h_mWW_3->GetRMS ()) ;
-  crystal_S->SetParLimits (2, 0.00005 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
-  if (mass > 700) crystal_S->SetParLimits (2, 0.02 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
-
-  crystal_S->SetParameter (3, 1.0) ;
-  crystal_S->SetParLimits (3, 0.5, 20.) ;
-  if (mass == 500)  crystal_S->SetParLimits (3, 0.3, 20.) ;
-  if (mass == 650)  crystal_S->SetParLimits (3, 0.1, 20.) ;
-  if (mass > 700)   crystal_S->SetParLimits (3, 0.1, 20.) ;
-
-  crystal_S->SetParameter (4, 1.5) ;
-  crystal_S->SetParLimits (4, 1.0, 50) ;
-
-  crystal_S->SetParameter (5, 1.0) ;
-  crystal_S->SetParLimits (5, 0.5, 20.) ;
-  if (mass == 650)  crystal_S->SetParLimits (5, 0.3, 20.) ;
-  if (mass > 700)   crystal_S->SetParLimits (5, 0.3, 20.) ;
-
-  crystal_S->SetParameter (6, 1.5) ;
-  crystal_S->SetParLimits (6, 1.0, 50) ;
-
-  crystal_S->SetLineColor(kCyan);
-  h_mWW_3->Fit (crystal_S, "N", "",  mass - 0.5 * h_mWW_3->GetRMS (), mass + 0.5 * h_mWW_3->GetRMS ()) ;
-  crystal_S->SetParameters (crystal_S->GetParameters ()) ;
-
-//  crystal_S->FixParameter (1, crystal_S->GetParameters ()[1]) ; //---- mean
-//  crystal_S->FixParameter (2, crystal_S->GetParameters ()[2]) ; //---- sigma
-
-  crystal_S->SetLineColor(kBlue);
-//   h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ()) ;
-//   if (mass > 700) h_mWW_3->Fit (crystal_S, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
-//   else            h_mWW_3->Fit (crystal_S, "+Lr", "",250, mass + 4 * h_mWW_3->GetRMS ());
-  h_mWW_3->Fit (crystal_S, "NLr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
-//   if (mass == 650) h_mWW_3->Fit (crystal_S, "+Lr", "",400, mass + 3 * h_mWW_3->GetRMS ());
-
-  
-  //  h_mWW_3->Fit (crystal_S, "+Lr", ""); //,250, mass + 4 * h_mWW_3->GetRMS ()) ;
-//  h_mWW_3->Fit(crystal_S,"r");
-
-
- std::cout << " ----------------------------------------------- " << std::endl;
- std::cout << " ------------ SIGNAL + INTERFERENCE ------------ " << std::endl;
- std::cout << " ----------------------------------------------- " << std::endl;
-  // 
-//  TF1 *crystal_SI = new TF1("crystal_SI",CrystalBall,200,MAX,5);
-//  800   ok:    crystal_SI->SetParameters(1,2,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
-//  800 em ok:  crystal_SI->SetParameters(1,1,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
-//  crystal_SI->SetParameters(0.1,2.,mass,h_Subtraction->GetRMS(),h_Subtraction->Integral());
-//  crystal_SI->SetParNames("#alpha","n","Mean","#sigma","N");
-
-  TF1 *crystal_SI = new TF1("crystal_SI",crystalBallLowHigh,MIN,MAX,7);
-  crystal_SI->SetParameters(h_Subtraction->Integral(),mass,h_Subtraction->GetRMS(),1.,2,1.,2);
-  crystal_SI->SetParNames("N","Mean","#sigma","#alpha","n","#alpha-2","n2");
-
-  crystal_SI->SetNpx(2000);
-  crystal_SI->SetParameter (0, h_Subtraction->GetBinContent (h_Subtraction->GetMaximumBin ())) ;
-
-  crystal_SI->SetParameter (1, mass) ;
-  crystal_SI->SetParLimits (1, 0.90 * mass, 1.10 * mass ) ;
-
-  crystal_SI->SetParameter (2, 0.8 * h_mWW_3->GetRMS ()) ;
-  crystal_SI->SetParLimits (2, 0.001 * h_mWW_3->GetRMS (), 10 * h_mWW_3->GetRMS ()) ;
-
-  crystal_SI->SetParameter (3, 1.0) ;
-  crystal_SI->SetParLimits (3, 0.5, 20.) ;
-
-  crystal_SI->SetParameter (4, 1.5) ;
-  crystal_SI->SetParLimits (4, 1.0, 50) ;
-
-  crystal_SI->SetParameter (5, 1.0) ;
-  crystal_SI->SetParLimits (5, 0.5, 20.) ;
-  if (mass == 500) crystal_SI->SetParLimits (5, 0.1, 20.) ;
-  if (mass == 650) crystal_SI->SetParLimits (5, 0.2, 20.) ;
-  if (mass == 800) crystal_SI->SetParLimits (5, 0.2, 20.) ;
-
-  crystal_SI->SetParameter (6, 1.5) ;
-  crystal_SI->SetParLimits (6, 1.0, 50) ;
-
-  crystal_SI->SetLineColor(kMagenta-10);
-  h_Subtraction->Fit (crystal_SI, "N", "",  mass - 0.5 * h_Subtraction->GetRMS (), mass + 0.5 * h_Subtraction->GetRMS ()) ;
-  crystal_SI->SetParameters (crystal_SI->GetParameters ()) ;
-
-  crystal_SI->SetLineColor(kRed);
-//  h_Subtrac  if (mass > 700) h_Subtraction->Fit (crystal_SI, "+Lr", ""tion->Fit (crystal_SI, "+Lr", "");
-  if (mass > 700)       h_Subtraction->Fit (crystal_SI, "NLr", "",500, mass + 3 * h_mWW_3->GetRMS ());
-//   else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "+Lr", "",300, mass + 3 * h_mWW_3->GetRMS ());
-  else if (mass >= 500) h_Subtraction->Fit (crystal_SI, "NLr", "",400, mass + 3 * h_mWW_3->GetRMS ());
-  else                  h_Subtraction->Fit (crystal_SI, "NLr", "",MIN, mass + 4 * h_mWW_3->GetRMS ());
-
-
-
-
-  h_mWW_3 -> Draw();
-  h_mWW_3->GetXaxis()->SetTitle("m_{WW} [GeV]");
-  h_Subtraction -> Draw("same");
-  crystal_S->Draw("same");
-  crystal_SI->Draw("same");
-  cc_Subtraction_fit->SetGrid();
-
-  //----------------------
-  //---- closure test ----
-
-  TCanvas* cc_I = new TCanvas("cc_I","cc_I",800,600);
-  cc_I->cd();
-  cc_I->SetGrid();
-  h_I -> SetLineColor(kBlue);
-  h_I -> SetLineWidth(2);
-  h_I -> Draw();
-  TF1 *crystal_I = new TF1("crystal_I",CrystalBallLowHighMinusCrystalBallLowHigh,0,MAX,14);
-  for (int i=0; i<7; i++) {
-   crystal_I->SetParameter(i,crystal_SI->GetParameter(i));
-   crystal_I->SetParameter(i+7,crystal_S->GetParameter(i));
-  }
-  crystal_I->Draw("same");
-
- //-----------------------------
- //---- to dump in txt file ----
-
-  std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
-  std::cout << " ---------------------------------- " << std::endl;
-  std::cout << " ---------------------------------- " << std::endl;
-  std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
-
-  std::cout << " S " << std::endl;
-  std::cout << mass << " ";
-  for (int i=0; i<7; i++) {
-   std::cout << " " << crystal_S->GetParameter (i);
-  }
-  std::cout << std::endl;
-  std::cout << " SI " << std::endl;
-  std::cout << mass << " ";
-  for (int i=0; i<7; i++) {
-   std::cout << " " << crystal_SI->GetParameter (i);
-  }
-  std::cout << std::endl;
-
-  std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
-  std::cout << " ---------------------------------- " << std::endl;
-  std::cout << " ---------------------------------- " << std::endl;
-  std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;std::cout << std::endl;
-
- }
-
- //--------------------------------
- //---- Comparison with VBFNLO ----
- //  /home/amassiro/Interference/Interference_VBF/data/800/MCatNLO_Franziska.root
- //  /home/amassiro/Interference/Interference_VBF/data/800/mWW_SBI_dat.root
- //  /home/amassiro/Interference/Interference_VBF/data/800/mWW_B_dat.root
-
- //---- B ----
- TCanvas* cc_B = new TCanvas("cc_B","Background",800,900);
- cc_B->Divide(0,2);
- cc_B->cd(1);
-
- TFile* f_B_VBFNLO = new TFile ("/home/amassiro/Interference/Interference_VBF/data/800/mWW_B_dat.root","READ");
- TH1F* h_B_VBFNLO = (TH1F*) f_B_VBFNLO->Get("h_mWW_B_dat");
- h_B_VBFNLO->SetLineColor(kRed);
- h_B_VBFNLO->SetLineWidth(2);
- h_B_VBFNLO->SetLineStyle(1);
- h_B_VBFNLO->Scale (2000.*20.);
-
-
- h_mWW_1->SetLineColor(kBlue);
- h_mWW_1->SetLineWidth(2);
- h_mWW_1->SetLineStyle(2);
-
- h_mWW_1->GetYaxis()->SetTitle("#sigma [ab]");
- h_mWW_1->Draw();
- h_B_VBFNLO->Draw("same");
-
-//  h_mWW_1->DrawNormalized();
-//  h_B_VBFNLO->DrawNormalized("same");
-
- TLegend* leg_B = new TLegend (0.5,0.5,0.9,0.9);
- leg_B -> SetFillColor(0);
- leg_B -> AddEntry(h_mWW_1,    "Phantom", "L");
- leg_B -> AddEntry(h_B_VBFNLO, "VBFNLO",  "L");
- leg_B -> Draw();
-
- gPad->SetGrid();
-
- TGraphAsymmErrors *gr_B_ratio = new TGraphAsymmErrors();
- gr_B_ratio->SetFillColor (kRed);
- gr_B_ratio->SetLineColor (kRed);
- gr_B_ratio->SetMarkerColor (kRed);
- gr_B_ratio->SetMarkerSize (1);
- gr_B_ratio->SetLineWidth (2);
- gr_B_ratio->SetLineStyle (1);
- gr_B_ratio->SetFillStyle (3001);
- gr_B_ratio->SetMarkerStyle (20);
- 
- for (int iMass = 0; iMass < h_B_VBFNLO->GetNbinsX(); iMass++) {
-  double errYhi = 0;
-  double errYlo = 0;
-  double X = h_B_VBFNLO->GetXaxis()->GetBinCenter(iMass+1);
-  double Y = h_B_VBFNLO->GetBinContent(iMass+1);
-  if (h_mWW_1->GetBinContent(iMass+1) != 0) {
-   Y /= h_mWW_1->GetBinContent(iMass+1);
-  }
-  else {
-   Y = 1.;
-  }
-  double errXhi = 0;
-  double errXlo = 0;  
-  gr_B_ratio -> SetPoint      (iMass, X, Y);
-  gr_B_ratio -> SetPointError (iMass, errXlo, errXhi, errYlo, errYhi);
- }
-
- cc_B->cd(2);
- gr_B_ratio->Draw("APL");
- gr_B_ratio->GetYaxis()->SetTitle("ratio vbfnlo/phantom");
- gr_B_ratio->GetXaxis()->SetTitle("m_{WW} [GeV]");
- gr_B_ratio->GetXaxis()->SetRangeUser(0,2000);
- gPad->SetGrid();
-
-
-
- 
- 
- 
- //---- SBI ----
- TCanvas* cc_SBI = new TCanvas("cc_SBI","S+I+B",800,900);
- cc_SBI->Divide(0,2);
- cc_SBI->cd(1);
- TFile* f_SBI_VBFNLO = new TFile ("/home/amassiro/Interference/Interference_VBF/data/800/mWW_SBI_dat.root","READ");
- TH1F* h_SBI_VBFNLO = (TH1F*) f_SBI_VBFNLO->Get("h_mWW_SBI_dat");
- h_SBI_VBFNLO->SetLineColor(kRed);
- h_SBI_VBFNLO->SetLineWidth(2);
- h_SBI_VBFNLO->SetLineStyle(1);
- h_SBI_VBFNLO->Scale (2000.*20./2.);
-
- h_mWW_2->SetLineColor(kBlue);
- h_mWW_2->SetLineWidth(2);
- h_mWW_2->SetLineStyle(2);
-
- h_mWW_2->GetYaxis()->SetTitle("#sigma [ab]");
- h_mWW_2->Draw();
- h_SBI_VBFNLO->Draw("same");
-
-//  h_mWW_2->DrawNormalized();
-//  h_SBI_VBFNLO->DrawNormalized("same");
-
- TLegend* leg_SBI = new TLegend (0.5,0.5,0.9,0.9);
- leg_SBI -> SetFillColor(0);
- leg_SBI -> AddEntry(h_mWW_2,      "Phantom", "L");
- leg_SBI -> AddEntry(h_SBI_VBFNLO, "VBFNLO",  "L");
- leg_SBI -> Draw();
-
- gPad->SetGrid();
-
- TGraphAsymmErrors *gr_SBI_ratio = new TGraphAsymmErrors();
- gr_SBI_ratio->SetFillColor (kRed);
- gr_SBI_ratio->SetLineColor (kRed);
- gr_SBI_ratio->SetMarkerColor (kRed);
- gr_SBI_ratio->SetMarkerSize (1);
- gr_SBI_ratio->SetLineWidth (2);
- gr_SBI_ratio->SetLineStyle (1);
- gr_SBI_ratio->SetFillStyle (3001);
- gr_SBI_ratio->SetMarkerStyle (20);
-
- for (int iMass = 0; iMass < h_SBI_VBFNLO->GetNbinsX(); iMass++) {
-  double errYhi = 0;
-  double errYlo = 0;
-  double X = h_SBI_VBFNLO->GetXaxis()->GetBinCenter(iMass+1);
-  double Y = h_SBI_VBFNLO->GetBinContent(iMass+1);
-  if (h_mWW_2->GetBinContent(iMass+1) != 0) {
-   Y /= h_mWW_2->GetBinContent(iMass+1);
-  }
-  else {
-   Y = 1.;
-  }
-  double errXhi = 0;
-  double errXlo = 0;  
-  gr_SBI_ratio -> SetPoint      (iMass, X, Y);
-  gr_SBI_ratio -> SetPointError (iMass, errXlo, errXhi, errYlo, errYhi);
- }
-
- cc_SBI->cd(2);
- gr_SBI_ratio->Draw("APL");
- gr_SBI_ratio->GetYaxis()->SetTitle("ratio vbfnlo/phantom");
- gr_SBI_ratio->GetXaxis()->SetTitle("m_{WW} [GeV]");
- gr_SBI_ratio->GetXaxis()->SetRangeUser(0,2000);
- gPad->SetGrid();
-
-
- //---- plot difference ----
-
- TCanvas* cc_Subtraction_vbfnlo = new TCanvas("cc_Subtraction_vbfnlo","cc_Subtraction_vbfnlo",800,600);
-//  h_Subtraction->GetYaxis()->SetRangeUser(-10,5000);
- h_Subtraction->GetXaxis()->SetTitle("m_{WW} [GeV]");
- h_Subtraction->GetYaxis()->SetRangeUser(0.001,h_Subtraction->GetMaximum()*1.1);
- h_Subtraction->SetLineColor(kMagenta);
- h_Subtraction->SetLineStyle(1);
- h_Subtraction->SetLineWidth(2);
- h_Subtraction -> Draw();
- h_mWW_3 -> Draw("same");
-
- TH1F* h_SI_VBFNLO = h_SBI_VBFNLO->Clone("h_mWW_SI_dat");
- for (int iBin = 0; iBin < h_SI_VBFNLO->GetNbinsX(); iBin++) {
-  h_SI_VBFNLO ->SetBinContent(iBin+1, h_SBI_VBFNLO->GetBinContent(iBin+1) - h_B_VBFNLO->GetBinContent(iBin+1));
-//   std::cout << " h_SBI_VBFNLO->GetBinContent(" << iBin+1 << ") - h_B_VBFNLO->GetBinContent(" << iBin+1 << ") = " << h_SBI_VBFNLO->GetBinContent(iBin+1) - h_B_VBFNLO->GetBinContent(iBin+1) << std::endl;
- }
- h_SI_VBFNLO->SetLineColor(kRed);
- h_SI_VBFNLO->SetLineStyle(3);
- h_SI_VBFNLO->SetLineWidth(4);
- h_SI_VBFNLO->Draw("same");
 
  TLegend* leg_SI = new TLegend (0.5,0.5,0.9,0.9);
  leg_SI -> SetFillColor(0);
- leg_SI -> AddEntry(h_mWW_3,       "Madgraph H = 800 GeV", "L");
- leg_SI -> AddEntry(h_Subtraction, "Phantom S+I",  "L");
- leg_SI -> AddEntry(h_B_VBFNLO,    "VBFNLO S+I",  "L");
+ leg_SI -> AddEntry(h_mWW_B,       "B", "L");
+ leg_SI -> AddEntry(h_mWW_SBI_cp,  "SBI cp",  "L");
+ leg_SI -> AddEntry(h_mWW_S_cp,    "S cp",  "L");
+ leg_SI -> AddEntry(h_mWW_SBI_bw,  "SBI bw",  "L");
+ leg_SI -> AddEntry(h_mWW_S_bw,    "S bw",  "L");
  leg_SI -> Draw();
-
- cc_Subtraction_vbfnlo->SetGrid();
-
-
- //---- Normalized ----
-
-
-  //---- B ----
- TCanvas* cc_Norm_B = new TCanvas("cc_Norm_B","Background",800,600);
-//  h_mWW_1->GetYaxis()->SetTitle("");
- h_mWW_1->DrawNormalized();
- h_B_VBFNLO->DrawNormalized("same");
- leg_B -> Draw();
- cc_Norm_B->SetGrid();
-
- //---- SBI ----
- TCanvas* cc_Norm_SBI = new TCanvas("cc_Norm_SBI","S+I+B",800,600);
-//  h_mWW_2->GetYaxis()->SetTitle("");
- h_mWW_2->DrawNormalized();
- h_SBI_VBFNLO->DrawNormalized("same");
- leg_SBI -> Draw();
- cc_Norm_SBI->SetGrid();
-
 
 
 }
