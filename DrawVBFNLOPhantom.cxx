@@ -60,7 +60,7 @@ void DrawVBFNLOPhantom() {
  float xsec_SBI_bw;
  float xsec_S_bw;
 
- xsec_B = 3.59354104959999920E-002; //---- B (126)
+ xsec_B = 3.59354104959999920E-002 / 2.; //---- B (126)
 
  //---- cp
  xsec_SBI_cp = 3.735387534799999E-003;
@@ -124,37 +124,111 @@ void DrawVBFNLOPhantom() {
 
  t_B -> Draw("mWW >> h_mWW_B",weight_B.Data(),"goff");
  t_SBI_cp -> Draw("mWW >> h_mWW_SBI_cp",weight_SBI_cp.Data(),"goff");
- t_B_cp   -> Draw("mWW >> h_mWW_B_cp",weight_B_cp.Data(),"goff");
+ t_S_cp   -> Draw("mWW >> h_mWW_S_cp",weight_S_cp.Data(),"goff");
  t_SBI_bw -> Draw("mWW >> h_mWW_SBI_bw",weight_SBI_bw.Data(),"goff");
- t_B_bw   -> Draw("mWW >> h_mWW_B_bw",weight_B_bw.Data(),"goff");
+ t_S_bw   -> Draw("mWW >> h_mWW_S_bw",weight_S_bw.Data(),"goff");
 
  h_mWW_B->SetLineColor(kGreen);
 
  h_mWW_SBI_cp->SetLineColor(kBlue);
- h_mWW_B_cp->SetLineColor(kRed);
- h_mWW_SBI_bw->SetLineColor(kBlue+2);
- h_mWW_B_bw->SetLineColor(kRed+2);
+ h_mWW_S_cp->SetLineColor(kRed);
+ h_mWW_SBI_bw->SetLineColor(kAzure);
+ h_mWW_S_bw->SetLineColor(kOrange);
 
  h_mWW_B->SetLineStyle(1);
 
  h_mWW_SBI_cp->SetLineStyle(2);
- h_mWW_B_cp->SetLineStyle(2);
+ h_mWW_S_cp->SetLineStyle(2);
  h_mWW_SBI_bw->SetLineStyle(3);
- h_mWW_B_bw->SetLineStyle(3);
+ h_mWW_S_bw->SetLineStyle(3);
 
  h_mWW_B->SetLineWidth(3);
  h_mWW_SBI_cp->SetLineWidth(2);
- h_mWW_B_cp->SetLineWidth(2);
+ h_mWW_S_cp->SetLineWidth(2);
  h_mWW_SBI_bw->SetLineWidth(2);
- h_mWW_B_bw->SetLineWidth(2);
+ h_mWW_S_bw->SetLineWidth(2);
 
+
+
+ TGraphAsymmErrors* gr_SBI_ratio = new TGraphAsymmErrors();
+ gr_SBI_ratio->SetFillColor (kBlue);
+ gr_SBI_ratio->SetLineColor (kBlue);
+ gr_SBI_ratio->SetMarkerColor (kBlue);
+ gr_SBI_ratio->SetMarkerSize (1);
+ gr_SBI_ratio->SetLineWidth (2);
+ gr_SBI_ratio->SetLineStyle (1);
+ gr_SBI_ratio->SetFillStyle (3001);
+ gr_SBI_ratio->SetMarkerStyle (20);
+
+ for (int iMass = 0; iMass < h_mWW_SBI_cp->GetNbinsX(); iMass++) {
+  double errYhi = 0;
+  double errYlo = 0;
+  double X = h_mWW_SBI_cp->GetXaxis()->GetBinCenter(iMass+1);
+  double Y1 = h_mWW_SBI_cp->GetBinContent(iMass+1);
+  double Y2 = h_mWW_SBI_bw->GetBinContent(iMass+1);
+  if (Y2 != 0) {
+   Y1 /= Y2;
+  }
+  else {
+   Y1 = 1.;
+  }
+  double errXhi = 0;
+  double errXlo = 0;  
+  gr_SBI_ratio -> SetPoint      (iMass, X, Y1);
+  gr_SBI_ratio -> SetPointError (iMass, errXlo, errXhi, errYlo, errYhi);
+ }
+
+
+ TGraphAsymmErrors* gr_S_ratio = new TGraphAsymmErrors();
+ gr_S_ratio->SetFillColor (kRed);
+ gr_S_ratio->SetLineColor (kRed);
+ gr_S_ratio->SetMarkerColor (kRed);
+ gr_S_ratio->SetMarkerSize (1);
+ gr_S_ratio->SetLineWidth (2);
+ gr_S_ratio->SetLineStyle (2);
+ gr_S_ratio->SetFillStyle (3001);
+ gr_S_ratio->SetMarkerStyle (20);
+
+ for (int iMass = 0; iMass < h_mWW_S_cp->GetNbinsX(); iMass++) {
+  double errYhi = 0;
+  double errYlo = 0;
+  double X = h_mWW_S_cp->GetXaxis()->GetBinCenter(iMass+1);
+  double Y1 = h_mWW_S_cp->GetBinContent(iMass+1);
+  double Y2 = h_mWW_S_bw->GetBinContent(iMass+1);
+  if (Y2 != 0) {
+   Y1 /= Y2;
+  }
+  else {
+   Y1 = 1.;
+  }
+  double errXhi = 0;
+  double errXlo = 0;
+  gr_S_ratio -> SetPoint      (iMass, X, Y1);
+  gr_S_ratio -> SetPointError (iMass, errXlo, errXhi, errYlo, errYhi);
+ }
 
  TCanvas* cc = new TCanvas("cc","cc",800,600);
+ cc->Divide(1,2);
+ cc->cd(1);
  h_mWW_B -> Draw();
  h_mWW_SBI_cp -> Draw("same");
- h_mWW_B_cp -> Draw("same");
+ h_mWW_S_cp -> Draw("same");
  h_mWW_SBI_bw -> Draw("same");
- h_mWW_B_bw -> Draw("same");
+ h_mWW_S_bw -> Draw("same");
+
+ TLegend* leg_SI = new TLegend (0.5,0.5,0.9,0.9);
+ leg_SI -> SetFillColor(0);
+ leg_SI -> AddEntry(h_mWW_B,       "B", "L");
+ leg_SI -> AddEntry(h_mWW_SBI_cp,  "SBI cp",  "L");
+ leg_SI -> AddEntry(h_mWW_S_cp,    "S cp",  "L");
+ leg_SI -> AddEntry(h_mWW_SBI_bw,  "SBI bw",  "L");
+ leg_SI -> AddEntry(h_mWW_S_bw,    "S bw",  "L");
+ leg_SI -> Draw();
+
+ cc->cd(2);
+ gr_SBI_ratio->Draw();
+ gr_S_ratio->Draw("same");
+ gPad->SetGrid();
 
 
  for (int iBin = 0; iBin < h_mWW_B->GetNbinsX(); iBin++) {
@@ -173,8 +247,38 @@ void DrawVBFNLOPhantom() {
   else  h_weight_bw -> SetBinContent (iBin+1, 0);
  }
 
+ TGraphAsymmErrors* gr_weight_ratio = new TGraphAsymmErrors();
+ gr_weight_ratio->SetFillColor (kRed);
+ gr_weight_ratio->SetLineColor (kRed);
+ gr_weight_ratio->SetMarkerColor (kRed);
+ gr_weight_ratio->SetMarkerSize (1);
+ gr_weight_ratio->SetLineWidth (2);
+ gr_weight_ratio->SetLineStyle (2);
+ gr_weight_ratio->SetFillStyle (3001);
+ gr_weight_ratio->SetMarkerStyle (20);
 
- TCanvas* cc_Ratio = new TCanvas("cc_Ratio","cc_Ratio",800,600);
+ for (int iMass = 0; iMass < h_weight_cp->GetNbinsX(); iMass++) {
+  double errYhi = 0;
+  double errYlo = 0;
+  double X = h_weight_cp->GetXaxis()->GetBinCenter(iMass+1);
+  double Y1 = h_weight_cp->GetBinContent(iMass+1);
+  double Y2 = h_weight_bw->GetBinContent(iMass+1);
+  if (Y2 != 0) {
+   Y1 /= Y2;
+  }
+  else {
+   Y1 = 1.;
+  }
+  double errXhi = 0;
+  double errXlo = 0;
+  gr_weight_ratio -> SetPoint      (iMass, X, Y1);
+  gr_weight_ratio -> SetPointError (iMass, errXlo, errXhi, errYlo, errYhi);
+ }
+
+ TCanvas* cc_weight = new TCanvas("cc_weight","cc_weight",800,600);
+ cc_weight->Divide(1,2);
+
+ cc_weight->cd(1);
  h_weight_cp->SetLineColor(kGreen);
  h_weight_cp->SetLineStyle(1);
  h_weight_cp->SetLineWidth(2);
@@ -183,17 +287,12 @@ void DrawVBFNLOPhantom() {
  h_weight_bw->SetLineStyle(2);
  h_weight_bw->SetLineWidth(2);
 
- h_Ratio -> Draw();
+ h_weight_bw -> Draw();
+ h_weight_cp -> Draw("same");
 
- TLegend* leg_SI = new TLegend (0.5,0.5,0.9,0.9);
- leg_SI -> SetFillColor(0);
- leg_SI -> AddEntry(h_mWW_B,       "B", "L");
- leg_SI -> AddEntry(h_mWW_SBI_cp,  "SBI cp",  "L");
- leg_SI -> AddEntry(h_mWW_S_cp,    "S cp",  "L");
- leg_SI -> AddEntry(h_mWW_SBI_bw,  "SBI bw",  "L");
- leg_SI -> AddEntry(h_mWW_S_bw,    "S bw",  "L");
- leg_SI -> Draw();
-
+ cc_weight->cd(2);
+ gr_weight_ratio->Draw("APL");
+ gPad->SetGrid();
 
 }
 
