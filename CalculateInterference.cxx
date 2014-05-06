@@ -41,6 +41,7 @@ double doubleGausCrystalBallLowHighPlusExp (double* x, double* par) {
   double B = n/fabs(alpha) - fabs(alpha);
 
   return par[0] * ( A * pow(B + (xx-mean)/sigmaP, -1.*n) + R * exp(-xx/tau));
+//   return par[0] * ( A * (1-R) * pow(B + (xx-mean)/sigmaP, -1.*n) + R * exp(-xx/tau));
  }
 
  else if ((xx-mean)/sigmaN < -1.*fabs(alpha2)) {
@@ -48,14 +49,17 @@ double doubleGausCrystalBallLowHighPlusExp (double* x, double* par) {
   double B = n2/fabs(alpha2) - fabs(alpha2);
 
   return par[0] * ( A * pow(B - (xx-mean)/sigmaN, -1.*n2) + R * exp(-xx/tau));
+//   return par[0] * ( A * (1-R) * pow(B - (xx-mean)/sigmaN, -1.*n2) + R * exp(-xx/tau));
  }
 
  else if ((xx-mean) > 0) {
   return par[0] * ( exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaP*sigmaP) ) + R * exp(-xx/tau));
+//   return par[0] * ( (1-R) * exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaP*sigmaP) ) + R * exp(-xx/tau));
  }
 
  else {
   return par[0] * ( exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaN*sigmaN) ) + R * exp(-xx/tau));
+//   return par[0] * ( (1-R) * exp(-1. * (xx-mean)*(xx-mean) / (2*sigmaN*sigmaN) ) + R * exp(-xx/tau));
  }
 
 }
